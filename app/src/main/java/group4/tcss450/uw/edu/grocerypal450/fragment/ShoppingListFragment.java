@@ -205,7 +205,6 @@ public class ShoppingListFragment extends Fragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String text) {
         if (mListener != null) {
             mListener.onFragmentInteraction(TAG, text);
