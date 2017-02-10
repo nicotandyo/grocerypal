@@ -125,6 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
                         .addToBackStack(null);
                 // Commit the transaction
                 transaction.commit();*/
+                mDrawerLayout.closeDrawer(mDrawerList);
             }
         });
     }
