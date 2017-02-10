@@ -13,17 +13,30 @@ import org.json.JSONObject;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 
+/**
+ * This class will handle the result from the RecipeSearch class.
+ */
 public class RecipeResults extends Fragment {
 
-    //private OnFragmentInteractionListener mListener;
-
+    /**
+     * TextView to show the results.
+     */
     private TextView mResults;
 
+    /**
+     * This is the constructor.
+     */
     public RecipeResults() {
         // Required empty public constructor
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return inflater.inflate(R.layout.fragment_inventory, container, false)
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,41 +48,4 @@ public class RecipeResults extends Fragment {
         mResults.setText(recipeString);
         return v;
     }
-/*
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }*/
-
-/*    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
-
-/*    *//**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     *//*
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String jsonRecipe);
-    }*/
 }

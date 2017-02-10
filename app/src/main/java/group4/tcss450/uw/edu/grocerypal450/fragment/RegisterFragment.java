@@ -37,18 +37,32 @@ import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.models.Response;
 import group4.tcss450.uw.edu.grocerypal450.models.User;
 
+/**
+ * This class will let the user to register to the system.
+ */
 public class RegisterFragment extends Fragment {
-
+    /** TAG for the RegisterFragment. */
     public static final String TAG = "RegisterFragment";
     //private static final String REGISTER_URL = "http://10.0.2.2/grocerypal-php/register.php";
     private static final String REGISTER_URL = "https://limitless-chamber-51693.herokuapp.com/register.php";
     //private static final String REGISTER_URL = "http://cssgate.insttech.washington.edu/~lambm6/grocerypal/register.php";
 
+    /** EditText for the name. */
     private EditText mRegisterName;
+    /** EditText for the email. */
     private EditText mRegisterEmail;
+    /** EditText for the password. */
     private EditText mRegisterPassword1;
+    /** EditText to verify the password. */
     private EditText mRegisterPassword2;
 
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View v = inflater.inflate(R.layout.fragment_register,container,false)
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -167,20 +181,36 @@ public class RegisterFragment extends Fragment {
         ft.commit();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
+    /**
+     * A class for creating a properly formated url and then using it to make a successful API call.
+     *
+     */
     private class RegisterTask extends AsyncTask<String, Void, String> {
+        /** This is the progress dialog. */
         private ProgressDialog dialog = new ProgressDialog(getActivity());
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onPreExecute() {
             this.dialog.setMessage("Registering.");
             this.dialog.show();
         }
 
+        /**
+         * {@inheritDoc}
+         * @param strings
+         * @return
+         */
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length != 4) {
@@ -218,6 +248,11 @@ public class RegisterFragment extends Fragment {
             }
             return response;
         }
+
+        /**
+         * {@inheritDoc}
+         * @param result
+         */
         @Override
         protected void onPostExecute(String result) {
             if (dialog.isShowing()) {
@@ -259,6 +294,12 @@ public class RegisterFragment extends Fragment {
             }
         }
 
+        /**
+         * Get the query.
+         * @param params
+         * @return the string value of the result.
+         * @throws UnsupportedEncodingException
+         */
         private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
             StringBuilder result = new StringBuilder();
             boolean first = true;

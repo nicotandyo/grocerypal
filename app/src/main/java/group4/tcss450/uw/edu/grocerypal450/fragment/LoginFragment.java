@@ -45,6 +45,7 @@ public class LoginFragment extends Fragment {
     //private static final String LOGIN_URL = "http://cssgate.insttech.washington.edu/~lambm6/grocerypal/login.php";
     private EditText mLoginEmail, mLoginPassword;
 
+
     public LoginFragment() {
         // Required empty public constructor
     }
