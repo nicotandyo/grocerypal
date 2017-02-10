@@ -30,17 +30,28 @@ import group4.tcss450.uw.edu.grocerypal450.R;
  * to handle interaction events.
  */
 public class ShoppingListFragment extends Fragment {
+    /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
-    //private OnFragmentInteractionListener mListener;
+    /** The list of what is in the shopping list. */
     private List<String> mList = new ArrayList<String>();
+    /** The TextView that holds the shopping list. */
     private TextView mTextViewList;
 
+    /**
+     * The constructor for the ShoppingListFragment.
+     */
     public ShoppingListFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View v = inflater.inflate(R.layout.fragment_shopping_list, container, false)
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +67,10 @@ public class ShoppingListFragment extends Fragment {
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the add button.
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 boolean b = false;
@@ -75,6 +90,10 @@ public class ShoppingListFragment extends Fragment {
         });
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the remove button.
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 boolean b = false;
@@ -94,6 +113,10 @@ public class ShoppingListFragment extends Fragment {
         });
         Button s = (Button) v.findViewById(R.id.shopListBtnSave);
         s.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the save button.
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 if(saveTheList()) {
@@ -103,6 +126,9 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        /**
+         * Handles the click on the load button.
+         */
         Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
         l.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +142,10 @@ public class ShoppingListFragment extends Fragment {
         });
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the clear all button.
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 clearAll();
@@ -204,29 +234,7 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-/*
-    public void onButtonPressed(String text) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(TAG, text);
-        }
-    }*/
 
-//    @Override
-/*    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
 
     /**
      * This interface must be implemented by activities that contain this

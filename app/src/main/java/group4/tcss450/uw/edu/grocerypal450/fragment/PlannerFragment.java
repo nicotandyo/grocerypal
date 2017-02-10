@@ -14,12 +14,20 @@ import group4.tcss450.uw.edu.grocerypal450.R;
  */
 public class PlannerFragment extends Fragment {
 
-
+    /**
+     * This is the constructor.
+     */
     public PlannerFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return inflater.inflate(R.layout.fragment_inventory, container, false)
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -36,20 +36,30 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 
 
 public class ProfileActivity extends AppCompatActivity {
-
+    /** mDrawerList populates the navigation drawer. */
     private ListView mDrawerList;
+    /** Layout that holds the navigation drawer. */
     private DrawerLayout mDrawerLayout;
+    /** Adapter that attaches to the navigation drawer. */
     private ArrayAdapter<String> mAdapter;
+    /** Action bar button to toggle the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
+    /** Displays the current activity that you are in. */
     private String mActivityTitle;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
+    /**
+     * This is the profile fragment.
+     */
     private ProfileFragment mProfileFragment;
 
+    /**
+     * Creates the drawer on creation.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +96,9 @@ public class ProfileActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    /**
+     * Populates the navigation drawer list view from string array resource.
+     */
     private void addDrawerItems() {
         String[] drawerItems = getResources().getStringArray(R.array.nav_drawer_items);
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
@@ -130,6 +143,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sets up the navigation drawer.
+     */
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 
@@ -152,6 +168,10 @@ public class ProfileActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -159,12 +179,21 @@ public class ProfileActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
     }
 
+    /**
+     * {@inheritDoc}
+     * @param newConfig
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -172,6 +201,11 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -198,8 +232,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
+                .setName("Main Page")
                 .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
                 .build();
         return new Action.Builder(Action.TYPE_VIEW)
@@ -208,6 +241,9 @@ public class ProfileActivity extends AppCompatActivity {
                 .build();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -218,6 +254,9 @@ public class ProfileActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onStop() {
         super.onStop();

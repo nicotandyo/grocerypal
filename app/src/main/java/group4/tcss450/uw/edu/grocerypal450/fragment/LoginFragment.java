@@ -59,8 +59,8 @@ public class LoginFragment extends Fragment {
     private EditText mLoginPassword;
 
     /**
-     * Create new LoginFragment.
-     */
+    * Create new LoginFragment
+    */
     public LoginFragment() {
         // Required empty public constructor
     }

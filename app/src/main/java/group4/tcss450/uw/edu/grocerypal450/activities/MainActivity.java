@@ -11,9 +11,13 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.LoginFragment;
  * handling the login and registration fragments.
  */
 public class MainActivity extends AppCompatActivity {
-
+    /** mLoginFragment is the login fragment. */
     private LoginFragment mLoginFragment;
 
+    /**
+     * Displays the initial fragment to user on creation.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
