@@ -36,5 +36,11 @@
             android:background="@color/colorAccent"
             android:text="@string/search"
             android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/displayResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </FrameLayout>

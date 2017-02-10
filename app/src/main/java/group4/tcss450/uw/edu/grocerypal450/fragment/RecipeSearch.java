@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -36,12 +37,14 @@ public class RecipeSearch extends Fragment {
 
     public static final String TAG = "RecipeSearch";
 
-    //private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
-    private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
+    private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
+    //private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
 
     private EditText mSearch;
+    private TextView mResults;
+    private String mJsonString;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
     public RecipeSearch() {
         // Required empty public constructor
@@ -58,6 +61,7 @@ public class RecipeSearch extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
         mSearch = (EditText) v.findViewById(R.id.recipeSearch);
+        mResults = (TextView) v.findViewById(R.id.displayResults);
         Button b = (Button) v.findViewById(R.id.searchBtn);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -67,7 +71,7 @@ public class RecipeSearch extends Fragment {
         return v;
     }
 
-    @Override
+/*    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -76,13 +80,13 @@ public class RecipeSearch extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
+    }*/
 
     private void search() {
         String searchParam = mSearch.getText().toString();
@@ -155,6 +159,7 @@ public class RecipeSearch extends Fragment {
         }
         @Override
         protected void onPostExecute(String result) {
+            mJsonString = result;
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
@@ -183,7 +188,8 @@ public class RecipeSearch extends Fragment {
                     //JSONObject numMatches = response.getJSONObject("totalMatchCount");
                     //JSONObject jsonRecipes = response.getJSONObject("matches");
                     //String recipeString = response.toString();
-                    System.out.println(result);
+                    System.out.println(mJsonString);
+                    mResults.setText(mJsonString);
                     //mListener.onFragmentInteraction(result);
 /*                } catch (JSONException e) {
                     System.out.println(e.getMessage());
