@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
-import group4.tcss450.uw.edu.grocerypal450.models.Response;
 import group4.tcss450.uw.edu.grocerypal450.models.User;
 
 public class RegisterFragment extends Fragment {

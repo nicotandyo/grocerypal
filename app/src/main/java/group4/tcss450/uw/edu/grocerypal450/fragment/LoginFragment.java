@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,26 +31,53 @@ import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
-import group4.tcss450.uw.edu.grocerypal450.models.Response;
-import group4.tcss450.uw.edu.grocerypal450.models.User;
 
-
+/**
+ * This class is used to build the Login fragment which allows
+ * the user to enter an email address and password to login.
+ * User input has verification for formatting.
+ * The user also has the option go to the register fragment
+ * to create a new account.
+ */
 public class LoginFragment extends Fragment {
 
+    /**
+     * Tag for login fragment.
+     */
     public static final String TAG = "LoginFragment";
-    //private static final String LOGIN_URL = "http://10.0.2.2/grocerypal-php/login.php";
+    /**
+     * Base url for web-service API to login to application.
+     */
     private static final String LOGIN_URL = "https://limitless-chamber-51693.herokuapp.com/login.php";
-    //private static final String LOGIN_URL = "http://cssgate.insttech.washington.edu/~lambm6/grocerypal/login.php";
-    private EditText mLoginEmail, mLoginPassword;
+    /**
+     * EditText for user to enter login email.
+     */
+    private EditText mLoginEmail;
+    /**
+     * EditText for user to enter login password.
+     */
+    private EditText mLoginPassword;
 
+    /**
+     * Create new LoginFragment.
+     */
     public LoginFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * This method connects the LoginFragment class to the
+     * UI elements of the fragment including the email and
+     * password boxes, the login button, and the register button.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         mLoginEmail = (EditText) v.findViewById(R.id.loginEmail);
         mLoginPassword = (EditText) v.findViewById(R.id.loginPassword);
@@ -71,6 +96,10 @@ public class LoginFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Gather user input from the email and password fields,
+     * parse for correct format and pass to LoginProcess().
+     */
     private void login( ) {
         boolean error = false;
         String email = "", pass = "";
@@ -80,7 +109,7 @@ public class LoginFragment extends Fragment {
             error = true;
             mLoginEmail.setError("Please enter a valid email.");
         }
-        if (TextUtils.isEmpty(pass)) {
+        if (TextUtils.isEmpty(pass) || pass.length() > 50) {
             error = true;
             mLoginPassword.setError("Please enter a password.");
         }
@@ -95,26 +124,21 @@ public class LoginFragment extends Fragment {
 
     /**
      * Check to make sure the email entered is not empty and in valid form.
-     *
      * @param string
-     * @return True if email is in valid form and not empty.
+     * @return True if email is in valid form and not empty and not greater than 50 characters.
      */
     private boolean validateEmail(String string) {
-        return (!TextUtils.isEmpty(string) || Patterns.EMAIL_ADDRESS.matcher(string).matches());
+        return (!TextUtils.isEmpty(string) || Patterns.EMAIL_ADDRESS.matcher(string).matches() || string.length() > 50);
     }
 
     private void loginProcess(String email, String password) {
 
-        /*mSubscriptions.add(Retrofit.getRetrofit(email, password).login()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse, this::handleError));*/
         AsyncTask<String, Void, String> task = new LoginTask();
         task.execute(LOGIN_URL, email, password);
     }
 
     /**
-     * Send the user back to the login fragment.
+     * Send the user to the register fragment.
      */
     private void goToRegister(){
 
@@ -129,6 +153,11 @@ public class LoginFragment extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * This private class creates a new Asynctask that is used
+     * to make an http request to the web service API to verify the
+     * user's login credentials and send the user to the profile screen.
+     */
     private class LoginTask extends AsyncTask<String, Void, String> {
         private ProgressDialog dialog = new ProgressDialog(getActivity());
 
@@ -154,6 +183,7 @@ public class LoginFragment extends Fragment {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+                //set key/value pairs to be used in POST request
                 ArrayList<Pair> params = new ArrayList<Pair>();
                 params.add(new Pair("email", strings[1]));
                 params.add(new Pair("password", strings[2]));
@@ -176,6 +206,7 @@ public class LoginFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(String result){
+            //hide progress bar
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
@@ -205,6 +236,7 @@ public class LoginFragment extends Fragment {
                 try {
                     JSONObject jsonUser = response.getJSONObject("user");
                     Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                    //set user info to pass to the ProfileActivity
                     ArrayList<String> userInfo =  new ArrayList<String>();
                     userInfo.add((String) jsonUser.get("name"));
                     userInfo.add((String) jsonUser.get("email"));
@@ -217,6 +249,12 @@ public class LoginFragment extends Fragment {
 
         }
 
+        /**
+         *
+         * @param params key/value pairs to send in POST
+         * @return URL encoded String
+         * @throws UnsupportedEncodingException
+         */
         private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
             StringBuilder result = new StringBuilder();
             boolean first = true;
