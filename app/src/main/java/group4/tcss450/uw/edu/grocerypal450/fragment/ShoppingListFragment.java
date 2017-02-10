@@ -32,7 +32,7 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 public class ShoppingListFragment extends Fragment {
     public static final String TAG = "ShoppingListFragment";
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
     private List<String> mList = new ArrayList<String>();
     private TextView mTextViewList;
 
@@ -204,15 +204,15 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-
+/*
     public void onButtonPressed(String text) {
         if (mListener != null) {
             mListener.onFragmentInteraction(TAG, text);
         }
-    }
+    }*/
 
-    @Override
-    public void onAttach(Context context) {
+//    @Override
+/*    public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -226,7 +226,7 @@ public class ShoppingListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
+    }*/
 
     /**
      * This interface must be implemented by activities that contain this
