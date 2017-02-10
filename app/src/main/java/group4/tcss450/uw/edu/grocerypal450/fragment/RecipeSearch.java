@@ -38,29 +38,57 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
+/**
+ * This class allows the user to enter a search query
+ * that is used by the web service to call the Yummly API
+ * for a set of recipes.
+ */
 public class RecipeSearch extends Fragment {
-
+    /**
+     * Tag for RecipeSearch fragment.
+     */
     public static final String TAG = "RecipeSearch";
-
+    /**
+     * Base url of the web service which calls the Yummly API to get recipe results.
+     */
     private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
-    //private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
-
+    /**
+     * Editext containing the user's search input.
+     */
     private EditText mSearch;
-    private TextView mResults;
+    /**
+     * LinearLayout that contains a set of buttons used to display the returned recipes from the search.
+     */
     private LinearLayout mRecipeList;
+    /**
+     * String representing a JSON response for the user's API call.
+     */
     private String mJsonString;
 
-    //private OnFragmentInteractionListener mListener;
-
+    /**
+     * Construct a new RecipeSearch fragment.
+     */
     public RecipeSearch() {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    /**
+     * {@inheritDoc}
+     * Links the search box and button to the RecipeSearch class to provide functionality.
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,23 +105,9 @@ public class RecipeSearch extends Fragment {
         return v;
     }
 
-/*    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
-
-/*    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }*/
-
+    /**
+     * Take the user input string from the edittext and send to the web service.
+     */
     private void search() {
         String searchParam = mSearch.getText().toString();
         if(TextUtils.isEmpty(searchParam)) {
@@ -106,26 +120,20 @@ public class RecipeSearch extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Generate an ArrayList of Recipe objects based on the returned information in the JSON response from the Yummly API.
+     * @param stringResult
+     * @return
      */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String tag, String text);
-    }
-
     private ArrayList<Recipe> parseResults(String stringResult) {
         ArrayList<Recipe> recipeList = new ArrayList<Recipe>();
         try {
+            //take the string response from the server and construct a JSONObject
             JSONObject jsonResult = new JSONObject(stringResult);
+            //get only the recipes from the JSONObject
             JSONArray jsonRecipes = jsonResult.getJSONArray("matches");
             Recipe newRecipe;
 
+            //for the number of recipes in the response, create new Recipe Java Objects
             for(int i = 0; i < jsonRecipes.length(); i++) {
                 newRecipe = new Recipe();
                 ArrayList<String> recipeIngredients = new ArrayList<String>();
@@ -135,6 +143,7 @@ public class RecipeSearch extends Fragment {
                 newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
 
+                //add all ingredients found to the Recipe's ingredients list
                 for(int j = 0; j < jsonIngredients.length(); j++) {
                     String ingredient = jsonIngredients.getString(j);
                     recipeIngredients.add(ingredient);
@@ -151,6 +160,11 @@ public class RecipeSearch extends Fragment {
         return recipeList;
     }
 
+    /**
+     * Populate the LinearLayout in the RecipeSearch fragment to show the user the recipes that
+     * were returned from their search.
+     * @param recipes
+     */
     private void populateList(ArrayList<Recipe> recipes) {
         System.out.println("Number of recipes found:" + recipes.size());
         for(int i = 0; i < recipes.size(); i++) {
@@ -162,6 +176,10 @@ public class RecipeSearch extends Fragment {
         }
     }
 
+    /**
+     * Private class that creates an Asynctask which calls the web service, which in turn
+     * calls the Yummly API to get a response based off of the user's search parameters.
+     */
     private class RegisterTask extends AsyncTask<String, Void, String> {
         private ProgressDialog dialog = new ProgressDialog(getActivity());
 
@@ -233,18 +251,10 @@ public class RecipeSearch extends Fragment {
                     System.out.println(e.getMessage());
                 }
             } else {
-                //try {
-                    //JSONObject numMatches = response.getJSONObject("totalMatchCount");
-                    //JSONObject jsonRecipes = response.getJSONObject("matches");
-                    //String recipeString = response.toString();
-                    System.out.println(mJsonString);
-                    //mResults.setText(mJsonString);
-                    ArrayList<Recipe> recipes = parseResults(mJsonString);
-                    populateList(recipes);
-                    //mListener.onFragmentInteraction(result);
-/*                } catch (JSONException e) {
-                    System.out.println(e.getMessage());
-                }*/
+                System.out.println(mJsonString);
+                //mResults.setText(mJsonString);
+                ArrayList<Recipe> recipes = parseResults(mJsonString);
+                populateList(recipes);
                 }
             }
         }
