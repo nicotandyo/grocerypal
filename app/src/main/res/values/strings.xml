@@ -1,4 +1,30 @@
 <resources>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+
+    <string name="chicken">Chicken</string>
+    <string name="bacon">Bacon</string>
+    <string name="cheese">Cheese</string>
+    <string name="rice">Rice</string>
+    <string name="onion">Onion</string>
+    <string name="carrot">Carrot</string>
+    <string name="beef">Beef</string>
+    <string name="pasta">Pasta</string>
+    <string name="potato">Potato</string>
+
+
+    <string-array name="nav_drawer_items">
+        <item>Recipe Search</item>
+        <item>Meal Planner</item>
+        <item>Ingredient Inventory</item>
+        <item>Shopping List</item>
+        <item>Settings</item>
+    </string-array>
+
     <string name="app_name">GroceryPal</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
@@ -9,7 +35,152 @@
     <string name="welcome">Welcome</string>
     <string name="searchHint">search by ingredient or recipe</string>
     <string name="search">Search Recipes</string>
+    <string name="btn_shoppingList">Shopping List</string>
+    <string name="text_add">Add</string>
+    <string name="text_remove">Remove</string>
+    <string name="text_addIngredientsToList"> Add Ingredients to List</string>
+    <string name="text_save">Save</string>
+    <string name="text_load">Load</string>
+    <string name="text_shopList">Shopping List:</string>
+    <string name="text_clearAll">Clear All</string>
+    <string-array name="auto_complete_cuisine">
+        <item>American</item>
+        <item>Asian</item>
+        <item>Barbecue</item>
+        <item>Chinese</item>
+        <item>Cuban</item>
+        <item>English</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Hawaiin</item>
+        <item>Hungarian</item>
+        <item>Italian</item>
+        <item>Indian</item>
+        <item>Irish</item>
+        <item>Japanese</item>
+        <item>Mediterranean</item>
+        <item>Mexican</item>
+        <item>Moroccan</item>
+        <item>Portugese</item>
+        <item>Southwestern</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Thai</item>
+    </string-array>
+    <string-array name="auto_complete_course">
+        <item>Appetizers</item>
+        <item>Breads</item>
+        <item>Breakfast and Brunch</item>
+        <item>Beverages</item>
+        <item>Condiments and Sauces</item>
+        <item>Cocktails</item>
+        <item>Desserts</item>
+        <item>Lunch and Snacks</item>
+        <item>Main Dishes</item>
+        <item>Salads</item>
+        <item>Side Dishes</item>
+        <item>Soups</item>
+    </string-array>
+    <string-array name="auto_complete_holiday">
+        <item>Christmas</item>
+        <item>Halloween</item>
+        <item>Hanukkah</item>
+        <item>New Year</item>
+        <item>Summer</item>
+        <item>Super Bowl / Game Day</item>
+        <item>Thanksgiving</item>
+        <item>4th of July</item>
+    </string-array>
+    <string-array name="auto_complete_diet">
+        <item>Lacto vegetarian</item>
+        <item>Ovo vegetarian</item>
+        <item>Pescetarian</item>
+        <item>Vegan</item>
+        <item>Vegetarian</item>
+    </string-array>
+    <string-array name="auto_complete_allergy">
+        <item>Dairy</item>
+        <item>Egg</item>
+        <item>Gluten</item>
+        <item>Peanut</item>
+        <item>Seafood</item>
+        <item>Sesame</item>
+        <item>Soy</item>
+        <item>Sulfite</item>
+        <item>Tree Nut</item>
+        <item>Wheat</item>
+    </string-array>
+    <string-array name="auto_complete_ingredients">
+        <item>Butter</item>
+        <item>Eggs</item>
+        <item>Milk</item>
+        <item>Cheese</item>
+        <item>Yogurt</item>
+        <item>Whipped Cream</item>
+        <item>Cottage Cheese</item>
+        <item>Ice Cream</item>
+        <item>Ground Beef</item>
+        <item>Ground Pork</item>
+        <item>Ground Chicken</item>
+        <item>Bacon</item>
+        <item>Sausage</item>
+        <item>Ham</item>
+        <item>Beef</item>
+        <item>Pork</item>
+        <item>Chicken</item>
+        <item>Turkey</item>
+        <item>Ground Turkey</item>
+        <item>Spam</item>
+        <item>Corned Beef</item>
+        <item>Duck</item>
+        <item>Pork Belly</item>
+        <item>Garlic</item>
+        <item>Onion</item>
+        <item>Olive</item>
+        <item>Tomato</item>
+        <item>Potato</item>
+        <item>Carrot</item>
+        <item>Basil</item>
+        <item>Parsley</item>
+        <item>Pepper</item>
+        <item>Chili</item>
+        <item>Corn</item>
+        <item>Mushroom</item>
+        <item>Broccoli</item>
+        <item>Spinach</item>
+        <item>Beans</item>
+        <item>Red onion</item>
+        <item>Pumpkin</item>
+        <item>Cauliflower</item>
+        <item>Avocado</item>
+        <item>Cucumber</item>
+        <item>Pickle</item>
+        <item>Scallop</item>
+        <item>Prawn</item>
+        <item>Shrimp</item>
+        <item>Lemon</item>
+        <item>Banana</item>
+        <item>Coconut</item>
+        <item>Mango</item>
+        <item>Apple</item>
+        <item>Pineapple</item>
+        <item>Orange</item>
+        <item>Strawberry</item>
+        <item>Blueberry</item>
+        <item>Peach</item>
+        <item>Kiwi</item>
+        <item>Watermelon</item>
+        <item>Flour</item>
+        <item>Papaya</item>
+        <item>Tuna</item>
+        <item>Salmon</item>
+        <item>Sardine</item>
+        <item>Tilapia</item>
+        <item>Crab</item>
+        <item>Lobster</item>
+        <item>Pasta</item>
+        <item>Spaghetti</item>
+    </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

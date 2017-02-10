@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 
 
 public class ProfileFragment extends Fragment {
@@ -50,6 +51,13 @@ public class ProfileFragment extends Fragment {
                 goToSearch();
             }
         });
+        Button buttonShop = (Button) v.findViewById(R.id.goToShoppingList);
+        buttonShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToShoppingList();
+            }
+        });
         return v;
     }
 
@@ -62,8 +70,15 @@ public class ProfileFragment extends Fragment {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RecipeSearch fragment = new RecipeSearch();
-        ft.replace(R.id.ProfileActivity_Frame, fragment, RecipeSearch.TAG);
-        ft.commit();
+        ft.replace(R.id.fragmentContainer, fragment, RecipeSearch.TAG);
+        ft.addToBackStack(RecipeSearch.TAG).commit();
+    }
+    private void goToShoppingList(){
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ShoppingListFragment fragment = new ShoppingListFragment();
+        ft.replace(R.id.fragmentContainer, fragment, ShoppingListFragment.TAG);
+        ft.addToBackStack(ShoppingListFragment.TAG).commit();
     }
 /*
     public void onButtonPressed(Uri uri) {

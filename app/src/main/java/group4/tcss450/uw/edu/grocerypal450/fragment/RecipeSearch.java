@@ -106,7 +106,7 @@ public class RecipeSearch extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String jsonRecipes);
+        void onFragmentInteraction(String tag, String text);
     }
 
     private class RegisterTask extends AsyncTask<String, Void, String> {

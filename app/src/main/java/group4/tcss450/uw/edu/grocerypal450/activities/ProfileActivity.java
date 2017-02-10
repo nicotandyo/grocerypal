@@ -1,22 +1,52 @@
 package group4.tcss450.uw.edu.grocerypal450.activities;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;
+import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ProfileFragment;
-import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch;
+import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;
 
-/**
- * This class handles all fragments related to a user's profile, such as
- * searching for recipes, editing inventory, and editing shopping lists.
- */
-public class ProfileActivity extends AppCompatActivity implements RecipeSearch.OnFragmentInteractionListener {
+
+
+public class ProfileActivity extends AppCompatActivity {
+
+    private ListView mDrawerList;
+    private DrawerLayout mDrawerLayout;
+    private ArrayAdapter<String> mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private String mActivityTitle;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     private ProfileFragment mProfileFragment;
 
@@ -24,28 +54,179 @@ public class ProfileActivity extends AppCompatActivity implements RecipeSearch.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActivityTitle = getTitle().toString();
+
+        addDrawerItems();
+        setupDrawer();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         mProfileFragment = new ProfileFragment();
         Bundle args = new Bundle();
         Intent sourceIntent = getIntent();
         ArrayList<String> userStuff = sourceIntent.getStringArrayListExtra("userInfo");
         args.putStringArrayList("userInfo", userStuff);
         mProfileFragment.setArguments(args);
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.ProfileActivity_Frame, mProfileFragment, ProfileFragment.TAG)
-                .commit();
+
+
+        if (savedInstanceState == null) {
+            if (findViewById(R.id.fragmentContainer) != null) {
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, mProfileFragment, ProfileFragment.TAG)
+                        .commit();
+            }
+        }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private void addDrawerItems() {
+        String[] drawerItems = getResources().getStringArray(R.array.nav_drawer_items);
+        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
+        mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String itemClicked = (String) parent.getItemAtPosition(position);
+                Log.d("MAIN_ACTIVITY", itemClicked);
+                Fragment tempFrag = null;
+                switch (itemClicked) {
+                    case "Recipe Search":
+
+                        break;
+                    case "Meal Planner":
+                        tempFrag = new PlannerFragment();
+                        break;
+                    case "Ingredient Inventory":
+                        tempFrag = new InventoryFragment();
+                        break;
+                    case "Shopping List":
+                        //tempFrag = new ShoppingListFragment();
+                        break;
+                    case "Settings":
+                        tempFrag = new SettingsFragment();
+                        break;
+                }
+                FragmentTransaction transaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, tempFrag)
+                        .addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+                Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle("Navigation!");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(mActivityTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
     @Override
-    public void onFragmentInteraction(String jsonRecipes) {
-        RecipeResults resultsFragment = new RecipeResults();
-        Bundle args = new Bundle();
-        args.putString("jsonRecipes", jsonRecipes);
-        resultsFragment.setArguments(args);
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.ProfileActivity_Frame, resultsFragment)
-                .addToBackStack(null);
-        transaction.commit();
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        // Activate the navigation drawer toggle
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+    /*
+    @Override
+    public void onFragmentInteraction(int color) {
+
+    }
+    */
 }
