@@ -18,8 +18,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Recipe Search Placeholder" />
-
+                    android:text="Recipe Search Placeholder"
+                    android:textColor="@color/white"
+                    android:paddingBottom="5dp"/>
                 <EditText
                     android:id="@+id/recipeSearch"
                     android:layout_width="fill_parent"

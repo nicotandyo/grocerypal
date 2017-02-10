@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <EditText
+<!--        <EditText
             android:id="@+id/registerUsername"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -47,9 +47,9 @@
             android:inputType="text"
             android:maxLines='1'
             android:textColor="@color/black"
-            android:textColorHint="@color/grey" />
+            android:textColorHint="@color/grey" />-->
 
-        <EditText
+<!--        <EditText
             android:id="@+id/registerPassword1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -60,9 +60,9 @@
             android:padding="10dp"
             android:maxLines='1'
             android:textColor="@color/black"
-            android:textColorHint="@color/grey" />
+            android:textColorHint="@color/grey" />-->
 
-        <EditText
+<!--        <EditText
             android:id="@+id/registerPassword2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -73,7 +73,80 @@
             android:padding="10dp"
             android:maxLines='1'
             android:textColor="@color/black"
-            android:textColorHint="@color/grey" />
+            android:textColorHint="@color/grey" />-->
+        <android.support.design.widget.TextInputLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/registerUsername"
+                android:hint="@string/username"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
+                android:maxLines='1' />
+
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/registerEmail"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
+                android:maxLines='1' />
+
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/registerPassword1"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
+                android:maxLines='1' />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/registerPassword2"
+                android:hint="@string/confirmPassword"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textColorHint="@color/grey"
+                android:maxLines='1' />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/registerBtn"
