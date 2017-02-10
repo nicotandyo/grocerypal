@@ -70,14 +70,14 @@ public class ProfileFragment extends Fragment {
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RecipeSearch fragment = new RecipeSearch();
-        ft.replace(R.id.ProfileActivity_Frame, fragment, RecipeSearch.TAG);
+        ft.replace(R.id.fragmentContainer, fragment, RecipeSearch.TAG);
         ft.addToBackStack(RecipeSearch.TAG).commit();
     }
     private void goToShoppingList(){
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ShoppingListFragment fragment = new ShoppingListFragment();
-        ft.replace(R.id.ProfileActivity_Frame, fragment, ShoppingListFragment.TAG);
+        ft.replace(R.id.fragmentContainer, fragment, ShoppingListFragment.TAG);
         ft.addToBackStack(ShoppingListFragment.TAG).commit();
     }
 /*
