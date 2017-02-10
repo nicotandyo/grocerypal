@@ -1,4 +1,30 @@
 <resources>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+
+    <string name="chicken">Chicken</string>
+    <string name="bacon">Bacon</string>
+    <string name="cheese">Cheese</string>
+    <string name="rice">Rice</string>
+    <string name="onion">Onion</string>
+    <string name="carrot">Carrot</string>
+    <string name="beef">Beef</string>
+    <string name="pasta">Pasta</string>
+    <string name="potato">Potato</string>
+
+
+    <string-array name="nav_drawer_items">
+        <item>Recipe Search</item>
+        <item>Meal Planner</item>
+        <item>Ingredient Inventory</item>
+        <item>Shopping List</item>
+        <item>Settings</item>
+    </string-array>
+
     <string name="app_name">GroceryPal</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
