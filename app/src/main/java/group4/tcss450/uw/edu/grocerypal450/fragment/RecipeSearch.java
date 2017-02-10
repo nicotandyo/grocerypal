@@ -9,14 +9,17 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,9 +32,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
+import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
 public class RecipeSearch extends Fragment {
 
@@ -42,6 +47,7 @@ public class RecipeSearch extends Fragment {
 
     private EditText mSearch;
     private TextView mResults;
+    private LinearLayout mRecipeList;
     private String mJsonString;
 
     //private OnFragmentInteractionListener mListener;
@@ -61,7 +67,7 @@ public class RecipeSearch extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
         mSearch = (EditText) v.findViewById(R.id.recipeSearch);
-        mResults = (TextView) v.findViewById(R.id.displayResults);
+        mRecipeList = (LinearLayout) v.findViewById(R.id.dynamic_recipeList);
         Button b = (Button) v.findViewById(R.id.searchBtn);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -111,6 +117,49 @@ public class RecipeSearch extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String tag, String text);
+    }
+
+    private ArrayList<Recipe> parseResults(String stringResult) {
+        ArrayList<Recipe> recipeList = new ArrayList<Recipe>();
+        try {
+            JSONObject jsonResult = new JSONObject(stringResult);
+            JSONArray jsonRecipes = jsonResult.getJSONArray("matches");
+            Recipe newRecipe;
+
+            for(int i = 0; i < jsonRecipes.length(); i++) {
+                newRecipe = new Recipe();
+                ArrayList<String> recipeIngredients = new ArrayList<String>();
+                JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
+                newRecipe.setRecipeId(jsonRecipe.getString("id"));
+                newRecipe.setRecipeName(jsonRecipe.getString("recipeName"));
+                newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
+                JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
+
+                for(int j = 0; j < jsonIngredients.length(); j++) {
+                    String ingredient = jsonIngredients.getString(j);
+                    recipeIngredients.add(ingredient);
+
+                }
+                newRecipe.setIngredients(recipeIngredients);
+                recipeList.add(newRecipe);
+
+            }
+
+        } catch (JSONException e) {
+            System.err.println("Exception parsing results: " + e.getMessage());
+        }
+        return recipeList;
+    }
+
+    private void populateList(ArrayList<Recipe> recipes) {
+        System.out.println("Number of recipes found:" + recipes.size());
+        for(int i = 0; i < recipes.size(); i++) {
+            Button recipeButton = new Button(getActivity());
+            recipeButton.setText(recipes.get(i).getRecipeName());
+            recipeButton.setEms(10);
+            //Display display = getActivity().getWindowManager().getDefaultDisplay();
+            mRecipeList.addView(recipeButton);
+        }
     }
 
     private class RegisterTask extends AsyncTask<String, Void, String> {
@@ -189,7 +238,9 @@ public class RecipeSearch extends Fragment {
                     //JSONObject jsonRecipes = response.getJSONObject("matches");
                     //String recipeString = response.toString();
                     System.out.println(mJsonString);
-                    mResults.setText(mJsonString);
+                    //mResults.setText(mJsonString);
+                    ArrayList<Recipe> recipes = parseResults(mJsonString);
+                    populateList(recipes);
                     //mListener.onFragmentInteraction(result);
 /*                } catch (JSONException e) {
                     System.out.println(e.getMessage());
