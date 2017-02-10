@@ -41,7 +41,7 @@ public class RecipeSearch extends Fragment {
 
     private EditText mSearch;
 
-    private OnFragmentInteractionListener mListener;
+    //private OnFragmentInteractionListener mListener;
 
     public RecipeSearch() {
         // Required empty public constructor
@@ -67,7 +67,7 @@ public class RecipeSearch extends Fragment {
         return v;
     }
 
-    @Override
+/*    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -76,13 +76,13 @@ public class RecipeSearch extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
+    }*/
 
     private void search() {
         String searchParam = mSearch.getText().toString();

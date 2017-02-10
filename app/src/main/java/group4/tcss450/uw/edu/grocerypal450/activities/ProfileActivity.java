@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,7 +32,7 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ProfileFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch;
 import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;
-
+import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -96,31 +96,35 @@ public class ProfileActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final String itemClicked = (String) parent.getItemAtPosition(position);
                 Log.d("MAIN_ACTIVITY", itemClicked);
-                Fragment tempFrag = null;
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                //Fragment tempFrag = null;
                 switch (itemClicked) {
                     case "Recipe Search":
-
+                        RecipeSearch searchFragment = new RecipeSearch();
+                        ft.replace(R.id.fragmentContainer, searchFragment, RecipeSearch.TAG);
+                        ft.addToBackStack(RecipeSearch.TAG).commit();
                         break;
                     case "Meal Planner":
-                        tempFrag = new PlannerFragment();
+                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
                         break;
                     case "Ingredient Inventory":
-                        tempFrag = new InventoryFragment();
+                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
                         break;
                     case "Shopping List":
-                        //tempFrag = new ShoppingListFragment();
+                        ShoppingListFragment shoppingFragment = new ShoppingListFragment();
+                        ft.replace(R.id.fragmentContainer, shoppingFragment, ShoppingListFragment.TAG);
+                        ft.addToBackStack(ShoppingListFragment.TAG).commit();
                         break;
                     case "Settings":
-                        tempFrag = new SettingsFragment();
+                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
                         break;
                 }
-                FragmentTransaction transaction = getSupportFragmentManager()
+/*                FragmentTransaction transaction = getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragmentContainer, tempFrag)
+                        .replace(R.id.fragmentContainer, tempFrag, tempFrag.getClass().TAG)
                         .addToBackStack(null);
                 // Commit the transaction
-                transaction.commit();
-                Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
+                transaction.commit();*/
             }
         });
     }
