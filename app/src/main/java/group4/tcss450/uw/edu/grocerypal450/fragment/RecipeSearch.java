@@ -2,21 +2,24 @@ package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.Display;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -32,11 +35,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
-import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
+import group4.tcss450.uw.edu.grocerypal450.adapters.RecyclerViewAdapter;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
+
+import static group4.tcss450.uw.edu.grocerypal450.R.id.ingredient_list_view;
 
 /**
  * This class allows the user to enter a search query
@@ -59,11 +65,27 @@ public class RecipeSearch extends Fragment {
     /**
      * LinearLayout that contains a set of buttons used to display the returned recipes from the search.
      */
-    private LinearLayout mRecipeList;
+    private RecyclerView mRecipeList;
     /**
      * String representing a JSON response for the user's API call.
      */
     private String mJsonString;
+
+    private View v;
+
+    private RecyclerViewAdapter mAdapter;
+
+    ArrayAdapter<String> itemsAdapter;
+
+    private ListView mIngredientList;
+
+    private List<String> masterList;
+
+    private List<String> masterCopy;
+
+    private List<String> mIngredientsToSearch;
+
+    String searchParam;
 
     /**
      * Construct a new RecipeSearch fragment.
@@ -93,29 +115,87 @@ public class RecipeSearch extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
+        v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
         mSearch = (EditText) v.findViewById(R.id.recipeSearch);
-        mRecipeList = (LinearLayout) v.findViewById(R.id.dynamic_recipeList);
+        mSearch.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                displayIngredientList();
+            }
+        });
+        ImageView i = (ImageView) v.findViewById(R.id.addIngredient);
+        i.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addIngredient();
+            }
+        });
         Button b = (Button) v.findViewById(R.id.searchBtn);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 search();
             }
         });
+
+        mIngredientList = (ListView) v.findViewById(R.id.ingredient_list_view);
+
+        mRecipeList = (RecyclerView) v.findViewById(R.id.dynamic_recipeList);
+        LinearLayoutManager llm = new LinearLayoutManager(v.getContext());
+        mRecipeList.setLayoutManager(llm);
+        mRecipeList.setHasFixedSize(true);
+
         return v;
+    }
+
+    /**
+     *
+     */
+    private void addIngredient() {
+        searchParam = mSearch.getText().toString();
+        mSearch.getText().clear();
+        mIngredientsToSearch.add(searchParam);
+    }
+
+    /**
+     * Displays list view with searchable ingredient list.
+     */
+    private void displayIngredientList() {
+        masterList = Arrays.asList(v.getResources().getStringArray(R.array.ingredient_list_array));
+        final ArrayList<String> masterCopy = new ArrayList<String>(masterList);
+        mIngredientsToSearch = new ArrayList();
+        itemsAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, masterCopy);
+        mIngredientList.setAdapter(itemsAdapter);
+
+        //define what happens when an element in the ListView is clicked
+        mIngredientList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    int position, long id) {
+                final String itemClicked = (String) parent.getItemAtPosition(position);
+                mIngredientsToSearch.add(itemClicked);
+                masterCopy.remove(itemClicked);
+                itemsAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
      * Take the user input string from the edittext and send to the web service.
      */
     private void search() {
-        String searchParam = mSearch.getText().toString();
+        searchParam = mSearch.getText().toString();
+        // Clear editText view on search button pressed.
+        mSearch.getText().clear();
+        mIngredientList.setAdapter(null);
+        // Close soft keyboard on search button pressed.
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mSearch.getWindowToken(), 0);
+
         if(TextUtils.isEmpty(searchParam)) {
             Toast.makeText(getActivity(), "Search by recipe or ingredient.", Toast.LENGTH_SHORT).show();
             return;
         }
         AsyncTask<String, Void, String> task = new RegisterTask();
         task.execute(API_ENDPOINT, searchParam);
+        Log.d("ATTN: ", API_ENDPOINT);
 
     }
 
@@ -124,8 +204,8 @@ public class RecipeSearch extends Fragment {
      * @param stringResult
      * @return
      */
-    private ArrayList<Recipe> parseResults(String stringResult) {
-        ArrayList<Recipe> recipeList = new ArrayList<Recipe>();
+    private List<Recipe> parseResults(String stringResult) {
+        List<Recipe> recipeList = new ArrayList<Recipe>();
         try {
             //take the string response from the server and construct a JSONObject
             JSONObject jsonResult = new JSONObject(stringResult);
@@ -140,8 +220,12 @@ public class RecipeSearch extends Fragment {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 newRecipe.setRecipeId(jsonRecipe.getString("id"));
                 newRecipe.setRecipeName(jsonRecipe.getString("recipeName"));
-                newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
+                //newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
+
+                String small_image = jsonRecipe.getJSONObject("imageUrlsBySize").getString("90");
+                String choppedImage = small_image.substring(0, small_image.length() - 4);
+                newRecipe.setImage(choppedImage + "1000");
 
                 //add all ingredients found to the Recipe's ingredients list
                 for(int j = 0; j < jsonIngredients.length(); j++) {
@@ -165,15 +249,14 @@ public class RecipeSearch extends Fragment {
      * were returned from their search.
      * @param recipes
      */
-    private void populateList(ArrayList<Recipe> recipes) {
+    private void populateList(List<Recipe> recipes) {
         System.out.println("Number of recipes found:" + recipes.size());
-        for(int i = 0; i < recipes.size(); i++) {
-            Button recipeButton = new Button(getActivity());
-            recipeButton.setText(recipes.get(i).getRecipeName());
-            recipeButton.setEms(10);
-            //Display display = getActivity().getWindowManager().getDefaultDisplay();
-            mRecipeList.addView(recipeButton);
-        }
+
+        //Remove previous search results from view if present.
+        mRecipeList.removeAllViews();
+
+        mAdapter = new RecyclerViewAdapter(v.getContext(), recipes);
+        mRecipeList.setAdapter(mAdapter);
     }
 
     /**
@@ -253,7 +336,7 @@ public class RecipeSearch extends Fragment {
             } else {
                 System.out.println(mJsonString);
                 //mResults.setText(mJsonString);
-                ArrayList<Recipe> recipes = parseResults(mJsonString);
+                List<Recipe> recipes = parseResults(mJsonString);
                 populateList(recipes);
                 }
             }

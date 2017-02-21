@@ -85,7 +85,9 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item added: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
+
             }
         });
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
@@ -108,6 +110,7 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item removed: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
             }
         });
