@@ -58,7 +58,7 @@ public class ShoppingListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity().getApplicationContext(),
+                new ArrayAdapter<String>(getActivity().getBaseContext(),
                         android.R.layout.simple_dropdown_item_1line,
                         ingredients);
         final AutoCompleteTextView text = (AutoCompleteTextView) v.findViewById(R.id.shopListEditTextSearch);
@@ -234,7 +234,6 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-
 
     /**
      * This interface must be implemented by activities that contain this

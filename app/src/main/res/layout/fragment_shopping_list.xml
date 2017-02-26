@@ -25,7 +25,8 @@
             android:layout_height="35dp"
             android:inputType="textPersonName"
             android:hint="@string/text_addIngredientsToList"
-            android:textSize="14dp"
+            android:textSize="14sp"
+            android:textColor="@color/black"
             android:completionThreshold="2"
             android:id="@+id/shopListEditTextSearch"
             android:layout_weight="0.94" />
