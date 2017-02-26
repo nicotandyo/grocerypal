@@ -1,12 +1,17 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Fragment;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +38,15 @@ public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
+    /**
+     * Key to retrieve arguments sent from MainActivity.
+     */
+    public static final String KEY = "userInfo";
+    /**
+     * ArrayList containing the arguments passed from MainActivity.
+     */
+    private ArrayList<String> mNameEmail;
+
     /** The list of what is in the shopping list. */
     private List<String> mList = new ArrayList<String>();
     /** The TextView that holds the shopping list. */
@@ -43,6 +57,15 @@ public class ShoppingListFragment extends Fragment {
      */
     public ShoppingListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mNameEmail = getArguments().getStringArrayList(KEY);
+            System.out.println(mNameEmail);
+        }
     }
 
     /**
@@ -155,6 +178,39 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+        Button e = (Button) v.findViewById(R.id.shopListBtnExport);
+        e.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the clear all button.
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                String subject = "Shopping List";
+                StringBuilder stringBuilder = new StringBuilder();
+                Map<String, Integer> duplicates = new HashMap<String, Integer>();
+                for (String word : mList) {
+                    duplicates.put(word, duplicates.containsKey(word)
+                            ? duplicates.get(word) + 1 : 1);
+                }
+                for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
+                    stringBuilder.append(entry.getKey() + " (x" + entry.getValue() + ")");
+                    stringBuilder.append("\n");
+                }
+
+                String message = stringBuilder.toString();
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                email.putExtra(Intent.EXTRA_TEXT, message);
+
+                //need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+
+            }
+        });
         return v;
     }
     /**
@@ -237,6 +293,8 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this
