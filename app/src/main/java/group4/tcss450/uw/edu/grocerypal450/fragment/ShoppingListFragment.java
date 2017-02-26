@@ -1,17 +1,12 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Fragment;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,15 +33,6 @@ public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
-    /**
-     * Key to retrieve arguments sent from MainActivity.
-     */
-    public static final String KEY = "userInfo";
-    /**
-     * ArrayList containing the arguments passed from MainActivity.
-     */
-    private ArrayList<String> mNameEmail;
-
     /** The list of what is in the shopping list. */
     private List<String> mList = new ArrayList<String>();
     /** The TextView that holds the shopping list. */
@@ -59,6 +45,10 @@ public class ShoppingListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +78,7 @@ public class ShoppingListFragment extends Fragment {
         text.setAdapter(adapter);
         mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
             /**
@@ -108,9 +99,12 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item added: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
+
             }
         });
+        //remove button
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
             /**
@@ -131,9 +125,11 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item removed: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
             }
         });
+        //save button
         Button s = (Button) v.findViewById(R.id.shopListBtnSave);
         s.setOnClickListener(new View.OnClickListener() {
             /**
@@ -149,11 +145,12 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
-        /**
-         * Handles the click on the load button.
-         */
+        //load button
         Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
         l.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the load button.
+             */
             @Override
             public void onClick(View v) {
                 loadTheList(getActivity().getApplicationContext());
@@ -163,6 +160,7 @@ public class ShoppingListFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        //clear button
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
             /**
@@ -175,10 +173,11 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+        //export button
         Button e = (Button) v.findViewById(R.id.shopListBtnExport);
         e.setOnClickListener(new View.OnClickListener() {
             /**
-             * Handles the click on the clear all button.
+             * Handles the click on the export button.
              * @param v
              */
             @Override
@@ -290,8 +289,6 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-
-
 
     /**
      * This interface must be implemented by activities that contain this
