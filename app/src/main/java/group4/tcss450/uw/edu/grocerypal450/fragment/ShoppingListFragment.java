@@ -1,17 +1,12 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Fragment;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,15 +32,6 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
-
-    /**
-     * Key to retrieve arguments sent from MainActivity.
-     */
-    public static final String KEY = "userInfo";
-    /**
-     * ArrayList containing the arguments passed from MainActivity.
-     */
-    private ArrayList<String> mNameEmail;
 
     /** The list of what is in the shopping list. */
     private List<String> mList = new ArrayList<String>();
@@ -113,7 +99,9 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item added: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
+
             }
         });
         //remove button
@@ -137,6 +125,7 @@ public class ShoppingListFragment extends Fragment {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "item removed: " + ingredient,
                             Toast.LENGTH_SHORT).show();
+                    text.getText().clear();
                 }
             }
         });
@@ -300,8 +289,6 @@ public class ShoppingListFragment extends Fragment {
         }
 
     }
-
-
 
     /**
      * This interface must be implemented by activities that contain this

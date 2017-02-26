@@ -1,6 +1,7 @@
 package group4.tcss450.uw.edu.grocerypal450.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This class will be used to model a recipe returned as JSON
@@ -24,6 +25,10 @@ public class Recipe {
      * Image URL to load image from.
      */
     public String mImage;
+
+    public boolean isFavorite;
+
+    public Date date;
 
     /**
      * Construct empty Recipe object.
