@@ -47,6 +47,19 @@ public class ShoppingListFragment extends Fragment {
 
     /**
      * {@inheritDoc}
+     * @param savedInstanceState
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mNameEmail = getArguments().getStringArrayList(KEY);
+            System.out.println(mNameEmail);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -65,6 +78,7 @@ public class ShoppingListFragment extends Fragment {
         text.setAdapter(adapter);
         mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
             /**
@@ -90,6 +104,7 @@ public class ShoppingListFragment extends Fragment {
 
             }
         });
+        //remove button
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
             /**
@@ -114,6 +129,7 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //save button
         Button s = (Button) v.findViewById(R.id.shopListBtnSave);
         s.setOnClickListener(new View.OnClickListener() {
             /**
@@ -129,11 +145,12 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
-        /**
-         * Handles the click on the load button.
-         */
+        //load button
         Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
         l.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the load button.
+             */
             @Override
             public void onClick(View v) {
                 loadTheList(getActivity().getApplicationContext());
@@ -143,6 +160,7 @@ public class ShoppingListFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        //clear button
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
             /**
@@ -153,6 +171,40 @@ public class ShoppingListFragment extends Fragment {
             public void onClick(View v) {
                 clearAll();
                 updateTheList();
+            }
+        });
+        //export button
+        Button e = (Button) v.findViewById(R.id.shopListBtnExport);
+        e.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the export button.
+             * @param v
+             */
+            @Override
+            public void onClick(View v) {
+                String subject = "Shopping List";
+                StringBuilder stringBuilder = new StringBuilder();
+                Map<String, Integer> duplicates = new HashMap<String, Integer>();
+                for (String word : mList) {
+                    duplicates.put(word, duplicates.containsKey(word)
+                            ? duplicates.get(word) + 1 : 1);
+                }
+                for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
+                    stringBuilder.append(entry.getKey() + " (x" + entry.getValue() + ")");
+                    stringBuilder.append("\n");
+                }
+
+                String message = stringBuilder.toString();
+
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_SUBJECT, subject);
+                email.putExtra(Intent.EXTRA_TEXT, message);
+
+                //need this to prompts email client only
+                email.setType("message/rfc822");
+
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+
             }
         });
         return v;
