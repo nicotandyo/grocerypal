@@ -59,6 +59,10 @@ public class ShoppingListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +92,7 @@ public class ShoppingListFragment extends Fragment {
         text.setAdapter(adapter);
         mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
             /**
@@ -111,6 +116,7 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //remove button
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
             /**
@@ -134,6 +140,7 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //save button
         Button s = (Button) v.findViewById(R.id.shopListBtnSave);
         s.setOnClickListener(new View.OnClickListener() {
             /**
@@ -149,11 +156,12 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
-        /**
-         * Handles the click on the load button.
-         */
+        //load button
         Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
         l.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the click on the load button.
+             */
             @Override
             public void onClick(View v) {
                 loadTheList(getActivity().getApplicationContext());
@@ -163,6 +171,7 @@ public class ShoppingListFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        //clear button
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
             /**
@@ -175,10 +184,11 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+        //export button
         Button e = (Button) v.findViewById(R.id.shopListBtnExport);
         e.setOnClickListener(new View.OnClickListener() {
             /**
-             * Handles the click on the clear all button.
+             * Handles the click on the export button.
              * @param v
              */
             @Override
