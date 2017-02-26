@@ -41,6 +41,7 @@
     <string name="text_addIngredientsToList"> Add Ingredients to List</string>
     <string name="text_save">Save</string>
     <string name="text_load">Load</string>
+    <string name="text_export">Export</string>
     <string name="text_shopList">Shopping List:</string>
     <string name="text_clearAll">Clear All</string>
     <string-array name="auto_complete_cuisine">

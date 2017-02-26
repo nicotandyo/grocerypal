@@ -235,7 +235,7 @@ public class LoginFragment extends Fragment {
             } else {
                 try {
                     JSONObject jsonUser = response.getJSONObject("user");
-                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                        Intent intent = new Intent(getActivity(), ProfileActivity.class);
                     //set user info to pass to the ProfileActivity
                     ArrayList<String> userInfo =  new ArrayList<String>();
                     userInfo.add((String) jsonUser.get("name"));
