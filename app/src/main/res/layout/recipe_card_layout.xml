@@ -10,7 +10,7 @@
 <android.support.v7.widget.CardView
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="380dp"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     cardView:cardCornerRadius="25dp"
     cardView:cardElevation="10dp"
@@ -26,26 +26,30 @@
         <ImageView
             android:id="@+id/recipe_imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="250dp"
             android:scaleType="fitXY" />
 
         <RelativeLayout
             android:id="@+id/recipe_image_overlay"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
+            android:layout_height="match_parent">
+
+            <ImageView
                 android:id="@+id/add_planner_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:textColor="@color/black"
+                android:src="@android:drawable/ic_input_add"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true" />
+
             <TextView
                 android:id="@+id/recipe_name_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:textColor="@color/white"
-                android:textSize="12pt"
+                android:textSize="10pt"
                 android:gravity="center"
                 android:layout_toRightOf="@+id/add_planner_button"
                 android:layout_toLeftOf="@+id/add_favorite_button"/>

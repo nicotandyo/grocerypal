@@ -30,9 +30,9 @@
     <string name="text_addIngredientsToList"> Add Ingredients to List</string>
     <string name="text_save">Save</string>
     <string name="text_load">Load</string>
-    <string name="text_export">Export</string>
     <string name="text_shopList">Shopping List:</string>
     <string name="text_clearAll">Clear All</string>
+    <string name="ingredient_text">Search for recipes containing:</string>
     <string-array name="auto_complete_cuisine">
         <item>American</item>
         <item>Asian</item>
@@ -171,9 +171,6 @@
         <item>Lobster</item>
         <item>Pasta</item>
         <item>Spaghetti</item>
-    </string-array>
-
-    <string-array name="ingredient_list_array">
         <item>agave nectar</item>
         <item>all-purpose flour</item>
         <item>allspice</item>

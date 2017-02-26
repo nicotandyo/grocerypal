@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.util.Pair;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -14,12 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -37,12 +42,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.adapters.ListViewTextImageAdapter;
 import group4.tcss450.uw.edu.grocerypal450.adapters.RecyclerViewAdapter;
+import group4.tcss450.uw.edu.grocerypal450.adapters.ViewPagerAdapter;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
-import static group4.tcss450.uw.edu.grocerypal450.R.id.ingredient_list_view;
 
 /**
  * This class allows the user to enter a search query
@@ -62,6 +69,10 @@ public class RecipeSearch extends Fragment {
      * Editext containing the user's search input.
      */
     private EditText mSearch;
+
+    private EditText mEditText;
+
+
     /**
      * LinearLayout that contains a set of buttons used to display the returned recipes from the search.
      */
@@ -75,15 +86,29 @@ public class RecipeSearch extends Fragment {
 
     private RecyclerViewAdapter mAdapter;
 
+    private ArrayAdapter<String> mSuggestedAdapter;
+
+    private ArrayAdapter<String> mSearchAdapter;
+
+    private ArrayAdapter<String> tempAdapter;
+
     ArrayAdapter<String> itemsAdapter;
 
-    private ListView mIngredientList;
+    private ListView mSuggestedList;
+
+    private ListView mSearchList;
 
     private List<String> masterList;
 
     private List<String> masterCopy;
 
     private List<String> mIngredientsToSearch;
+
+    private String[] mSuggestedIngredients;
+
+    private ListView mListView;
+
+    private ViewPager vp;
 
     String searchParam;
 
@@ -96,6 +121,7 @@ public class RecipeSearch extends Fragment {
 
     /**
      * {@inheritDoc}
+     *
      * @param savedInstanceState
      */
     @Override
@@ -106,6 +132,7 @@ public class RecipeSearch extends Fragment {
     /**
      * {@inheritDoc}
      * Links the search box and button to the RecipeSearch class to provide functionality.
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -116,18 +143,84 @@ public class RecipeSearch extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
-        mSearch = (EditText) v.findViewById(R.id.recipeSearch);
-        mSearch.setOnClickListener(new View.OnClickListener() {
+
+        mEditText = (EditText) v.findViewById(R.id.recipeSearch);
+        mEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                displayIngredientList();
+                vp.setVisibility(v.VISIBLE);
             }
         });
+
+        mSuggestedIngredients = getResources().getStringArray(R.array.auto_complete_ingredients);
+        mIngredientsToSearch = new ArrayList();
+
+        Vector<View> mPages = new Vector<View>();
+
+        mSuggestedList = new ListView(v.getContext());
+        mSearchList = new ListView(v.getContext());
+
+        mPages.add(mSuggestedList);
+        mPages.add(mSearchList);
+
+        vp = (ViewPager) v.findViewById(R.id.view_pager);
+        ViewPagerAdapter mPagerAdapter = new ViewPagerAdapter(v.getContext(), mPages);
+        vp.setAdapter(mPagerAdapter);
+
+
+        /*
+        mSuggestedAdapter = new ListViewTextImageAdapter(getActivity().getBaseContext(),
+                R.layout.suggested_ingredient_list_item, mSuggestedIngredients);
+        mSuggestedList.setAdapter(mSuggestedAdapter);
+        mSuggestedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Log.d("U clicked mSuggestdList", " ");
+                addIngredient(position);
+            }
+        });
+        */
+
+
+        mSuggestedAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+                android.R.layout.simple_list_item_1, mSuggestedIngredients);
+        mSuggestedList.setAdapter(mSuggestedAdapter);
+        mSuggestedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Log.d("U clicked mSuggestdList", " ");
+                addIngredient(position);
+            }
+        });
+
+
+
+
+        mSearchAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+                android.R.layout.simple_list_item_1, mIngredientsToSearch);
+        mSearchList.setAdapter(mSearchAdapter);
+        mSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                removeIngredient(position);
+            }
+        });
+
+
+
         ImageView i = (ImageView) v.findViewById(R.id.addIngredient);
+
         i.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addIngredient();
+                searchParam = mEditText.getText().toString().toLowerCase();
+                mIngredientsToSearch.add(searchParam);
+                mEditText.getText().clear();
+                mSearchAdapter.notifyDataSetChanged();
             }
         });
+
+
         Button b = (Button) v.findViewById(R.id.searchBtn);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -135,7 +228,6 @@ public class RecipeSearch extends Fragment {
             }
         });
 
-        mIngredientList = (ListView) v.findViewById(R.id.ingredient_list_view);
 
         mRecipeList = (RecyclerView) v.findViewById(R.id.dynamic_recipeList);
         LinearLayoutManager llm = new LinearLayoutManager(v.getContext());
@@ -146,61 +238,60 @@ public class RecipeSearch extends Fragment {
     }
 
     /**
-     *
+     * This method adds the text in the AutoCOmplete view to the lit of ingredients to search.
      */
-    private void addIngredient() {
-        searchParam = mSearch.getText().toString();
-        mSearch.getText().clear();
+    private void addIngredient(int position) {
+        Log.d("addIngredient(): ", "begin");
+        searchParam = mSuggestedList.getItemAtPosition(position).toString().toLowerCase();
         mIngredientsToSearch.add(searchParam);
+        Log.d("EditText getText = ", searchParam);
+        Log.d("You added: ", mIngredientsToSearch.get(mIngredientsToSearch.size() - 1));
+        mSearchAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Displays list view with searchable ingredient list.
-     */
-    private void displayIngredientList() {
-        masterList = Arrays.asList(v.getResources().getStringArray(R.array.ingredient_list_array));
-        final ArrayList<String> masterCopy = new ArrayList<String>(masterList);
-        mIngredientsToSearch = new ArrayList();
-        itemsAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_list_item_1, masterCopy);
-        mIngredientList.setAdapter(itemsAdapter);
 
-        //define what happens when an element in the ListView is clicked
-        mIngredientList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                final String itemClicked = (String) parent.getItemAtPosition(position);
-                mIngredientsToSearch.add(itemClicked);
-                masterCopy.remove(itemClicked);
-                itemsAdapter.notifyDataSetChanged();
-            }
-        });
+    private void removeIngredient(int position) {
+        System.out.println("mIngredientsToSearch Size before removal = " + mIngredientsToSearch.size());
+        System.out.println("List position clicked = " + position);
+        Log.d("You removed: ", mIngredientsToSearch.get(position));
+        mIngredientsToSearch.remove(position);
+        System.out.println("mIngredientsToSearch Size after removal = " + mIngredientsToSearch.size());
+
+        if (mIngredientsToSearch.size() != 0) {
+            Log.d("The last item is now: ", mIngredientsToSearch.get(mIngredientsToSearch.size() - 1));
+        }
+        mSearchAdapter.notifyDataSetChanged();
     }
 
     /**
      * Take the user input string from the edittext and send to the web service.
      */
     private void search() {
-        searchParam = mSearch.getText().toString();
-        // Clear editText view on search button pressed.
-        mSearch.getText().clear();
-        mIngredientList.setAdapter(null);
-        // Close soft keyboard on search button pressed.
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mSearch.getWindowToken(), 0);
+        vp.setVisibility(v.GONE);
 
-        if(TextUtils.isEmpty(searchParam)) {
-            Toast.makeText(getActivity(), "Search by recipe or ingredient.", Toast.LENGTH_SHORT).show();
-            return;
+
+        String encodedIngredient = "";
+        for (int i = 0; i < mIngredientsToSearch.size(); i++) {
+            encodedIngredient += "&allowedIngredient[]=" + mIngredientsToSearch.get(i).replace(" ", "+");
         }
-        AsyncTask<String, Void, String> task = new RegisterTask();
-        task.execute(API_ENDPOINT, searchParam);
-        Log.d("ATTN: ", API_ENDPOINT);
 
+
+        //mIngredientList.setAdapter(null);
+        // Close soft keyboard on search button pressed.
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+
+        //mIngredientsToSearch.clear();
+
+        Log.d("Search String = ", encodedIngredient);
+        AsyncTask<String, Void, String> task = new RegisterTask();
+        task.execute(API_ENDPOINT, encodedIngredient);
+        Log.d("ATTN: ", API_ENDPOINT);
     }
 
     /**
      * Generate an ArrayList of Recipe objects based on the returned information in the JSON response from the Yummly API.
+     *
      * @param stringResult
      * @return
      */
@@ -214,7 +305,7 @@ public class RecipeSearch extends Fragment {
             Recipe newRecipe;
 
             //for the number of recipes in the response, create new Recipe Java Objects
-            for(int i = 0; i < jsonRecipes.length(); i++) {
+            for (int i = 0; i < jsonRecipes.length(); i++) {
                 newRecipe = new Recipe();
                 ArrayList<String> recipeIngredients = new ArrayList<String>();
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
@@ -228,7 +319,7 @@ public class RecipeSearch extends Fragment {
                 newRecipe.setImage(choppedImage + "1000");
 
                 //add all ingredients found to the Recipe's ingredients list
-                for(int j = 0; j < jsonIngredients.length(); j++) {
+                for (int j = 0; j < jsonIngredients.length(); j++) {
                     String ingredient = jsonIngredients.getString(j);
                     recipeIngredients.add(ingredient);
 
@@ -247,6 +338,7 @@ public class RecipeSearch extends Fragment {
     /**
      * Populate the LinearLayout in the RecipeSearch fragment to show the user the recipes that
      * were returned from their search.
+     *
      * @param recipes
      */
     private void populateList(List<Recipe> recipes) {
@@ -307,6 +399,7 @@ public class RecipeSearch extends Fragment {
             }
             return response;
         }
+
         @Override
         protected void onPostExecute(String result) {
             mJsonString = result;
@@ -324,7 +417,7 @@ public class RecipeSearch extends Fragment {
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG)
                         .show();
                 return;
-            } else if(error) {
+            } else if (error) {
                 try {
                     String errorResponse = response.getString("error_msg");
                     Toast.makeText(getActivity(), errorResponse, Toast.LENGTH_LONG)
@@ -338,24 +431,24 @@ public class RecipeSearch extends Fragment {
                 //mResults.setText(mJsonString);
                 List<Recipe> recipes = parseResults(mJsonString);
                 populateList(recipes);
-                }
             }
-        }
-
-        private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
-            StringBuilder result = new StringBuilder();
-            boolean first = true;
-
-            for (Pair pair : params) {
-                if (first)
-                    first = false;
-                else
-                    result.append("&");
-                result.append(URLEncoder.encode((String) pair.first, "UTF-8"));
-                result.append("=");
-                result.append(URLEncoder.encode((String) pair.second, "UTF-8"));
-            }
-            return result.toString();
         }
     }
+
+    private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        for (Pair pair : params) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+            result.append(URLEncoder.encode((String) pair.first, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode((String) pair.second, "UTF-8"));
+        }
+        return result.toString();
+    }
+}
 

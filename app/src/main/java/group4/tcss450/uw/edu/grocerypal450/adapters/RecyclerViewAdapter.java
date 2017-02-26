@@ -52,14 +52,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
         protected ImageView imageView;
-        protected Button leftButton;
+        protected ImageView leftButton;
         protected ImageButton rightButton;
         protected TextView textView;
 
         public CustomViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.recipe_imageView);
-            leftButton = (Button) view.findViewById(R.id.add_planner_button);
+            leftButton = (ImageView) view.findViewById(R.id.add_planner_button);
             rightButton = (ImageButton) view.findViewById(R.id.add_favorite_button);
             textView = (TextView) view.findViewById(R.id.recipe_name_textView);
         }
