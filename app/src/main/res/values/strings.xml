@@ -681,4 +681,21 @@
         <item>zucchini</item>
     </string-array>
 
+    <string name="DB_NAME">Ingredients.db</string>
+    <string name="INGREDIENT_TABLE">Ingredients</string>
+    <string-array name="DB_COLUMN_NAMES">
+        <item>ingredient</item>
+        <item>quantity</item>
+        <item>isInventory</item>
+    </string-array>
+
+    <string name="CREATE_INGREDIENTS_SQL">
+     CREATE TABLE IF NOT EXISTS Ingredients
+     (id INTEGER PRIMARY KEY, ingredient VARCHAR(127) NOT NULL,
+     quantity INTEGER NOT NULL, isInventory TINYINT NOT NULL DEFAULT 0)
+    </string>
+    <string name="DROP_INGREDIENTS_SQL">
+     DROP TABLE IF EXISTS Ingredients
+    </string>
+
 </resources>
