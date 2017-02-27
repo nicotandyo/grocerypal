@@ -1,0 +1,72 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:cardView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:paddingTop="10dp">
+
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    cardView:cardCornerRadius="25dp"
+    cardView:cardElevation="10dp"
+    cardView:cardPreventCornerOverlap="false">
+
+    <RelativeLayout
+        android:id="@+id/recipe_card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:paddingTop="36dp">
+
+        <ImageView
+            android:id="@+id/recipe_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:id="@+id/recipe_image_overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/add_planner_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:textColor="@color/black"
+                android:src="@android:drawable/ic_input_add"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:id="@+id/recipe_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:textColor="@color/white"
+                android:textSize="10pt"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/add_planner_button"
+                android:layout_toLeftOf="@+id/add_favorite_button"/>
+
+            <ImageButton
+                android:id="@+id/add_favorite_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:src="@android:drawable/btn_star"
+                android:background="#00ffffff" /> //Needed to remove the button background
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+
+</LinearLayout>
