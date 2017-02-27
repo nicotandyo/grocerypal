@@ -55,7 +55,7 @@ public class IngredientDB {
      * @param ingredient
      * @return
      */
-    public int getQuantity(String ingredient) {
+    public int getQuantityShoplist(String ingredient) {
         SQLiteDatabase database = mIngredientDBHelper.getReadableDatabase();
 
         Cursor cursor = database.query(INGREDIENT_TABLE,
@@ -73,11 +73,11 @@ public class IngredientDB {
     }
 
     /**
-     * Increment quantity by 1.
+     * Increment item quantity by 1.
      * @param ingredient
      */
-    public void incrementIngredient(String ingredient) {
-        int ingredientQuantity = getQuantity(ingredient);
+    public void incrementIngredientShoplist(String ingredient) {
+        int ingredientQuantity = getQuantityShoplist(ingredient);
         int increment = ++ingredientQuantity;
         ContentValues cv = new ContentValues();
         cv.put("quantity", increment);
@@ -91,8 +91,8 @@ public class IngredientDB {
      * Decrement quantity by 1.
      * @param ingredient
      */
-    public void decrementIngredient(String ingredient) {
-        int ingredientQuantity = getQuantity(ingredient);
+    public void decrementIngredientShoplist(String ingredient) {
+        int ingredientQuantity = getQuantityShoplist(ingredient);
         int increment = --ingredientQuantity;
         ContentValues cv = new ContentValues();
         cv.put("quantity", increment);
@@ -106,7 +106,7 @@ public class IngredientDB {
      * @param ingredient
      * @return
      */
-    public boolean deleteItem(String ingredient) {
+    public boolean deleteItemShoplist(String ingredient) {
         Log.d("DELETE ITEM", "WORKS");
         return mSQLiteDatabase.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 0 ",
                 new String[] {String.valueOf(ingredient)}) > 0;

@@ -214,24 +214,19 @@ public class ShoppingListFragment extends Fragment {
      */
     private boolean addToList(String ingredient) {
         Map<String, Integer> duplicates = new HashMap<String, Integer>();
-        boolean added = false;
         for (String word : mList) {
             duplicates.put(word, duplicates.containsKey(word)
                     ? duplicates.get(word) + 1 : 1);
         }
         for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
             if(entry.getKey().equals(ingredient) && entry.getValue() > 0) {
-                mShoplistDB.incrementIngredient(ingredient);
+                mShoplistDB.incrementIngredientShoplist(ingredient);
                 mList.add(ingredient);
-
-                added = true;
                 return true;
             }
         }
-        if(!added) {
+        if(mList.add(ingredient)) {
             mShoplistDB.insertColor(ingredient, 1, 0);
-            mList.add(ingredient);
-
             return true;
         } else {
             return false;
@@ -245,23 +240,21 @@ public class ShoppingListFragment extends Fragment {
      */
     private boolean removeFromList(String ingredient) {
         Map<String, Integer> duplicates = new HashMap<String, Integer>();
-        boolean removed = false;
         for (String word : mList) {
             duplicates.put(word, duplicates.containsKey(word)
                     ? duplicates.get(word) + 1 : 1);
         }
         for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
             if(entry.getKey().equals(ingredient) && entry.getValue() > 1) {
-                mShoplistDB.decrementIngredient(ingredient);
+                mShoplistDB.decrementIngredientShoplist(ingredient);
                 mList.remove(ingredient);
 
-                removed = true;
                 return true;
             }
         }
         //if(mList.remove(ingredient) && !removed) {
-        if(!removed && mList.remove(ingredient)) {
-            mShoplistDB.deleteItem(ingredient);
+        if(mList.remove(ingredient)) {
+            mShoplistDB.deleteItemShoplist(ingredient);
 
             return true;
         } else {
