@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class IngredientDB {
         contentValues.put(COLUMN_NAMES[0], ingredient);
         contentValues.put(COLUMN_NAMES[1], quantity);
         contentValues.put(COLUMN_NAMES[2], isInventory);
+        Log.d("CREATE ITEM", "WORKS");
 
         long rowId = mSQLiteDatabase.insert(INGREDIENT_TABLE, null, contentValues);
         return rowId != -1;
@@ -48,6 +50,75 @@ public class IngredientDB {
         mSQLiteDatabase.close();
     }
 
+    /**
+     * Get the quantity.
+     * @param ingredient
+     * @return
+     */
+    public int getQuantity(String ingredient) {
+        SQLiteDatabase database = mIngredientDBHelper.getReadableDatabase();
+
+        Cursor cursor = database.query(INGREDIENT_TABLE,
+                COLUMN_NAMES,
+                " ingredient = ?" + " AND " + "isInventory = 0",
+                new String[] {String.valueOf(ingredient) },
+                null, null, null, null); //null = groupby, having, orderby, limit
+
+
+        if (cursor !=null) { cursor.moveToFirst(); }
+
+        int output = cursor.getInt(2);
+
+        return output;
+    }
+
+    /**
+     * Increment quantity by 1.
+     * @param ingredient
+     */
+    public void incrementIngredient(String ingredient) {
+        int ingredientQuantity = getQuantity(ingredient);
+        int increment = ++ingredientQuantity;
+        ContentValues cv = new ContentValues();
+        cv.put("quantity", increment);
+        Log.d("INCREMENT", "WORKS");
+        mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = ? AND isInventory = 0 ",
+                new String[] {String.valueOf(ingredient)});
+
+    }
+
+    /**
+     * Decrement quantity by 1.
+     * @param ingredient
+     */
+    public void decrementIngredient(String ingredient) {
+        int ingredientQuantity = getQuantity(ingredient);
+        int increment = --ingredientQuantity;
+        ContentValues cv = new ContentValues();
+        cv.put("quantity", increment);
+        Log.d("DECREMENT 1", "WORKS");
+        mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = ? AND isInventory = 0 ",
+                new String[] {String.valueOf(ingredient)});
+    }
+
+    /**
+     * Delete item in the shopping list.
+     * @param ingredient
+     * @return
+     */
+    public boolean deleteItem(String ingredient) {
+        Log.d("DELETE ITEM", "WORKS");
+        return mSQLiteDatabase.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 0 ",
+                new String[] {String.valueOf(ingredient)}) > 0;
+    }
+
+    /**
+     * Delete all item in the shopping list.
+     */
+    public void deleteAllShoplist() {
+        Log.d("CLEAR ALL", "WORKS");
+        mSQLiteDatabase.delete(INGREDIENT_TABLE, "isInventory = 0 ", null);
+    }
 
     /**
      * Returns the list of Ingredient objects from the local Ingredients table.

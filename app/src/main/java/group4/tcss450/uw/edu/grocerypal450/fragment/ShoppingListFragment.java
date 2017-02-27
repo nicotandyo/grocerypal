@@ -1,15 +1,11 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Fragment;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.models.IngredientDB;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,19 +35,13 @@ public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
-    /**
-     * Key to retrieve arguments sent from MainActivity.
-     */
-    public static final String KEY = "userInfo";
-    /**
-     * ArrayList containing the arguments passed from MainActivity.
-     */
-    private ArrayList<String> mNameEmail;
 
     /** The list of what is in the shopping list. */
     private List<String> mList = new ArrayList<String>();
     /** The TextView that holds the shopping list. */
     private TextView mTextViewList;
+
+    private IngredientDB mShoplistDB;
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -62,9 +53,8 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mNameEmail = getArguments().getStringArrayList(KEY);
-            System.out.println(mNameEmail);
+        if(mShoplistDB == null) {
+            mShoplistDB = new IngredientDB(getActivity().getApplicationContext());
         }
     }
 
@@ -88,18 +78,19 @@ public class ShoppingListFragment extends Fragment {
         text.setAdapter(adapter);
         mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the add button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
                 boolean b = false;
                 String ingredient = text.getText().toString().trim();
                 b = addToList(ingredient);
-                if(b == false) {
+                if(!b) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "unable to add: " + ingredient,
                             Toast.LENGTH_SHORT).show();
@@ -111,18 +102,19 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //remove button
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the remove button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
                 boolean b = false;
                 String ingredient = text.getText().toString().trim();
                 b = removeFromList(ingredient);
-                if(b == false) {
+                if(!b) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "unable to remove: " + ingredient,
                             Toast.LENGTH_SHORT).show();
@@ -134,11 +126,12 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //save button
         Button s = (Button) v.findViewById(R.id.shopListBtnSave);
         s.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the save button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
@@ -149,11 +142,13 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
-        /**
-         * Handles the click on the load button.
-         */
+        //Load button
         Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
         l.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Handles the load button.
+             * @param v is the view
+             */
             @Override
             public void onClick(View v) {
                 loadTheList(getActivity().getApplicationContext());
@@ -163,11 +158,12 @@ public class ShoppingListFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        //clear button
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the clear all button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
@@ -175,11 +171,12 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+        //export button
         Button e = (Button) v.findViewById(R.id.shopListBtnExport);
         e.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the clear all button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
@@ -212,11 +209,29 @@ public class ShoppingListFragment extends Fragment {
     }
     /**
      * Add ingredient to the shopping list.
-     * @param ingredient
+     * @param ingredient is the ingredient
      * @return true if ingredient is added, false otherwise
      */
     private boolean addToList(String ingredient) {
-        if(mList.add(ingredient)) {
+        Map<String, Integer> duplicates = new HashMap<String, Integer>();
+        boolean added = false;
+        for (String word : mList) {
+            duplicates.put(word, duplicates.containsKey(word)
+                    ? duplicates.get(word) + 1 : 1);
+        }
+        for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
+            if(entry.getKey().equals(ingredient) && entry.getValue() > 0) {
+                mShoplistDB.incrementIngredient(ingredient);
+                mList.add(ingredient);
+
+                added = true;
+                return true;
+            }
+        }
+        if(!added) {
+            mShoplistDB.insertColor(ingredient, 1, 0);
+            mList.add(ingredient);
+
             return true;
         } else {
             return false;
@@ -229,10 +244,29 @@ public class ShoppingListFragment extends Fragment {
      * @return true if ingredient is removed, false otherwise
      */
     private boolean removeFromList(String ingredient) {
-        if(mList.remove(ingredient)) {
+        Map<String, Integer> duplicates = new HashMap<String, Integer>();
+        boolean removed = false;
+        for (String word : mList) {
+            duplicates.put(word, duplicates.containsKey(word)
+                    ? duplicates.get(word) + 1 : 1);
+        }
+        for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
+            if(entry.getKey().equals(ingredient) && entry.getValue() > 1) {
+                mShoplistDB.decrementIngredient(ingredient);
+                mList.remove(ingredient);
+
+                removed = true;
+                return true;
+            }
+        }
+        //if(mList.remove(ingredient) && !removed) {
+        if(!removed && mList.remove(ingredient)) {
+            mShoplistDB.deleteItem(ingredient);
+
             return true;
         } else {
             return false;
+
         }
     }
     /**
@@ -240,6 +274,7 @@ public class ShoppingListFragment extends Fragment {
      */
     private void clearAll() {
         mList.clear();
+        mShoplistDB.deleteAllShoplist();
     }
 
     /**
@@ -279,14 +314,16 @@ public class ShoppingListFragment extends Fragment {
 
     /**
      * Load the previous shopping list file.
-     * @param context
+     * @param context is the application context
      */
     private void loadTheList(Context context){
         SharedPreferences mSharedPreference1 =   PreferenceManager.getDefaultSharedPreferences(context);
         mList.clear();
+        mShoplistDB.deleteAllShoplist();
         int size = mSharedPreference1.getInt("Status_size", 0);
         for(int i=0;i<size;i++){
-            mList.add(mSharedPreference1.getString("Status_" + i, null));
+            //mList.add(mSharedPreference1.getString("Status_" + i, null));
+            addToList(mSharedPreference1.getString("Status_" + i, null));
         }
 
     }
