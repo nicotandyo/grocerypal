@@ -13,7 +13,7 @@ public class Ingredient implements Serializable {
 
     //0 if shopping, 1 if inventory
     public Ingredient(String name, int quantity, int isInventory) {
-        if(isInventory != 1 || isInventory != 0 || quantity < 0 || name.length() > 127 || name.length() < 2) {
+        if((isInventory != 1 && isInventory != 0) || quantity < 0 || name.length() > 127 || name.length() < 1) {
             throw new IllegalArgumentException();
         }
         mIngredient = name.toLowerCase();
@@ -31,6 +31,11 @@ public class Ingredient implements Serializable {
 
     public boolean isInventory() {
         return mIsInventory;
+    }
+
+    @Override
+    public String toString() {
+        return mIngredient + " " + mQuantity + " " + mIsInventory;
     }
 
 }
