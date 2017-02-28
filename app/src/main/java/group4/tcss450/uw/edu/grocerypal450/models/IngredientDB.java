@@ -101,11 +101,30 @@ public class IngredientDB {
     }
 
     /**
+     * Delete item in the inventory list.
+     * @param  ingredient
+     * @return true if item deleted
+     */
+    public boolean deleteItemInventory(String ingredient) {
+        Log.d("DELETE ITEM", "WORKS");
+        return mSQLiteDatabase.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 1 ",
+                new String[] {String.valueOf(ingredient)}) > 0;
+    }
+
+    /**
      * Delete all item in the shopping list.
      */
     public void deleteAllShoplist() {
         Log.d("CLEAR ALL", "WORKS");
         mSQLiteDatabase.delete(INGREDIENT_TABLE, "isInventory = 0 ", null);
+    }
+
+    /**
+     * Delete all item in the inventory list.
+     */
+    public void deleteAllInventory() {
+        Log.d("CLEAR ALL", "WORKS");
+        mSQLiteDatabase.delete(INGREDIENT_TABLE, "isInventory = 1 ", null);
     }
 
     /**

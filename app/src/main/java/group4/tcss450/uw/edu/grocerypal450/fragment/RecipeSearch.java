@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.ProgressDialog;
@@ -478,3 +479,4 @@ public class RecipeSearch extends Fragment {
         return result.toString();
     }
 }
+
