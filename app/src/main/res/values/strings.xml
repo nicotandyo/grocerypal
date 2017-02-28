@@ -25,6 +25,7 @@
     <string name="search">Search Recipes</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>
+    <string name="inventory">Inventory</string>
     <string name="text_add">Add</string>
     <string name="text_remove">Remove</string>
     <string name="text_addIngredientsToList"> Add Ingredients to List</string>
