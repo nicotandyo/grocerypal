@@ -26,6 +26,7 @@ public class Recipe {
      */
     public String mImage;
 
+
     public boolean isFavorite;
 
     public Date date;
@@ -69,6 +70,7 @@ public class Recipe {
         return mImage;
     }
 
+    public boolean getIsFav() { return isFavorite; }
     /**
      * Set the recipe name.
      * @param recipeName
@@ -100,4 +102,8 @@ public class Recipe {
     public void setImage(String imageUrl) {
         mImage = imageUrl;
     }
+
+    public void setIsFav(boolean tf) {    }
+
 }
+

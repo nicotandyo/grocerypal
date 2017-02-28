@@ -48,10 +48,10 @@
         android:textColor="@color/black" />
 
     <TextView
+        android:id="@+id/list_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recipeSearch"
-        android:text="@string/ingredient_text" />
+        android:layout_below="@id/recipeSearch" />
 
     <LinearLayout
         android:id="@+id/pageview_linear_layout"
@@ -62,7 +62,8 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:padding="20dp"/>
 
     </LinearLayout>
 

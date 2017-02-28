@@ -1,17 +1,9 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.Fragment;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,35 +14,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
+import group4.tcss450.uw.edu.grocerypal450.models.IngredientDB;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ShoppingListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
+
 public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
-    /**
-     * Key to retrieve arguments sent from MainActivity.
-     */
-    public static final String KEY = "userInfo";
-    /**
-     * ArrayList containing the arguments passed from MainActivity.
-     */
-    private ArrayList<String> mNameEmail;
 
     /** The list of what is in the shopping list. */
-    private List<String> mList = new ArrayList<String>();
+    private List<Ingredient> mList = new ArrayList<Ingredient>();
     /** The TextView that holds the shopping list. */
     private TextView mTextViewList;
+
+    private IngredientDB mShoplistDB;
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -62,9 +43,15 @@ public class ShoppingListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mNameEmail = getArguments().getStringArrayList(KEY);
-            System.out.println(mNameEmail);
+        if(mShoplistDB == null) {
+            mShoplistDB = new IngredientDB(getActivity().getApplicationContext());
+        }
+        List<Ingredient> list = mShoplistDB.getIngredients();
+        //System.out.println(list.toString());
+        for(Ingredient i: list) {
+            if(!i.isInventory()) {
+                mList.add(i);
+            }
         }
     }
 
@@ -88,18 +75,23 @@ public class ShoppingListFragment extends Fragment {
         text.setAdapter(adapter);
         mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
         mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        updateTheList();
+        //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the add button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
                 boolean b = false;
-                String ingredient = text.getText().toString().trim();
+                String ingredient = text.getText().toString().trim().toLowerCase();
+                if(ingredient.length() < 1) {
+                    return;
+                }
                 b = addToList(ingredient);
-                if(b == false) {
+                if(!b) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "unable to add: " + ingredient,
                             Toast.LENGTH_SHORT).show();
@@ -111,18 +103,22 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
+        //remove button
         Button r = (Button) v.findViewById(R.id.shopListBtnRemove);
         r.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the remove button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
                 boolean b = false;
-                String ingredient = text.getText().toString().trim();
+                String ingredient = text.getText().toString().trim().toLowerCase();
+                if(ingredient.length() < 1) {
+                    return;
+                }
                 b = removeFromList(ingredient);
-                if(b == false) {
+                if(!b) {
                     Toast.makeText(getActivity().getApplicationContext(),
                             "unable to remove: " + ingredient,
                             Toast.LENGTH_SHORT).show();
@@ -134,40 +130,12 @@ public class ShoppingListFragment extends Fragment {
                 }
             }
         });
-        Button s = (Button) v.findViewById(R.id.shopListBtnSave);
-        s.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Handles the click on the save button.
-             * @param v
-             */
-            @Override
-            public void onClick(View v) {
-                if(saveTheList()) {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            "file saved successfully",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        /**
-         * Handles the click on the load button.
-         */
-        Button l = (Button) v.findViewById(R.id.shopListBtnLoad);
-        l.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTheList(getActivity().getApplicationContext());
-                updateTheList();
-                Toast.makeText(getActivity().getApplicationContext(),
-                        "file loaded successfully",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        //clear button
         Button c = (Button) v.findViewById(R.id.shopListBtnClear);
         c.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the clear all button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
@@ -175,26 +143,20 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+        //export button
         Button e = (Button) v.findViewById(R.id.shopListBtnExport);
         e.setOnClickListener(new View.OnClickListener() {
             /**
              * Handles the click on the clear all button.
-             * @param v
+             * @param v is the view
              */
             @Override
             public void onClick(View v) {
                 String subject = "Shopping List";
                 StringBuilder stringBuilder = new StringBuilder();
-                Map<String, Integer> duplicates = new HashMap<String, Integer>();
-                for (String word : mList) {
-                    duplicates.put(word, duplicates.containsKey(word)
-                            ? duplicates.get(word) + 1 : 1);
+                for(int i = 0; i < mList.size(); i++) {
+                    stringBuilder.append(mList.get(i).getIngredient() + " (x" + mList.get(i).getQuantity() + ")\n");
                 }
-                for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
-                    stringBuilder.append(entry.getKey() + " (x" + entry.getValue() + ")");
-                    stringBuilder.append("\n");
-                }
-
                 String message = stringBuilder.toString();
 
                 Intent email = new Intent(Intent.ACTION_SEND);
@@ -212,15 +174,19 @@ public class ShoppingListFragment extends Fragment {
     }
     /**
      * Add ingredient to the shopping list.
-     * @param ingredient
+     * @param ingredient is the ingredient
      * @return true if ingredient is added, false otherwise
      */
     private boolean addToList(String ingredient) {
-        if(mList.add(ingredient)) {
-            return true;
-        } else {
-            return false;
+        for(int i = 0; i < mList.size(); i++) {
+            Ingredient ing = mList.get(i);
+            if (ingredient.toLowerCase().equals(ing.getIngredient().trim())) {
+                if (ing.getQuantity() >= 1) {
+                    return mShoplistDB.incrementIngredient(ing);
+                }
+            }
         }
+        return mShoplistDB.insertIngredient(ingredient, 1, 0);
     }
 
     /**
@@ -229,81 +195,47 @@ public class ShoppingListFragment extends Fragment {
      * @return true if ingredient is removed, false otherwise
      */
     private boolean removeFromList(String ingredient) {
-        if(mList.remove(ingredient)) {
-            return true;
-        } else {
-            return false;
+        boolean isRemove = false;
+        for(int i = 0; i < mList.size(); i++) {
+            Ingredient ing = mList.get(i);
+            if(ingredient.toLowerCase().equals(ing.getIngredient().trim())) {
+                if(ing.getQuantity() > 1) {
+                    isRemove = mShoplistDB.decrementIngredient(ing);
+                } else if (ing.getQuantity() == 1){
+                    isRemove = mShoplistDB.deleteItemShoplist(ingredient);
+                }
+            }
         }
+        return isRemove;
     }
+
     /**
      * Remove ingredient from the list.
      */
     private void clearAll() {
         mList.clear();
+        mShoplistDB.deleteAllShoplist();
+        mTextViewList.setText("");
     }
 
     /**
      * Update the the value on the TextView.
      */
     private void updateTheList() {
-        mTextViewList.setText("");
-        Map<String, Integer> duplicates = new HashMap<String, Integer>();
-        for (String word : mList) {
-            duplicates.put(word, duplicates.containsKey(word)
-                    ? duplicates.get(word) + 1 : 1);
-        }
-        for(Map.Entry<String, Integer> entry: duplicates.entrySet()) {
-            mTextViewList.append(entry.getKey() + " (x" + entry.getValue() + ")");
-            mTextViewList.append("\n");
-        }
-    }
-
-    /**
-     * Save the shopping list file.
-     * @return true if successful, false otherwise.
-     */
-    private boolean saveTheList() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        SharedPreferences.Editor mEdit1 = sp.edit();
-    /* sKey is an array */
-        mEdit1.putInt("Status_size", mList.size());
-
-        for(int i=0;i<mList.size();i++)
-        {
-            mEdit1.remove("Status_" + i);
-            mEdit1.putString("Status_" + i, mList.get(i));
-        }
-
-        return mEdit1.commit();
-    }
-
-    /**
-     * Load the previous shopping list file.
-     * @param context
-     */
-    private void loadTheList(Context context){
-        SharedPreferences mSharedPreference1 =   PreferenceManager.getDefaultSharedPreferences(context);
         mList.clear();
-        int size = mSharedPreference1.getInt("Status_size", 0);
-        for(int i=0;i<size;i++){
-            mList.add(mSharedPreference1.getString("Status_" + i, null));
+        mTextViewList.setText("");
+        List<Ingredient> list = mShoplistDB.getIngredients();
+        //System.out.println(list.toString());
+        for(Ingredient i: list) {
+            if(!i.isInventory()) {
+                mList.add(i);
+            }
         }
-
-    }
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String tag, String text);
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < mList.size(); i++) {
+            stringBuilder.append(mList.get(i).getIngredient() + " (x" + mList.get(i).getQuantity() + ")\n");
+        }
+        String message = stringBuilder.toString();
+        mTextViewList.setText(message);
     }
 }
