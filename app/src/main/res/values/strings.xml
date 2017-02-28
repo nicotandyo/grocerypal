@@ -103,75 +103,6 @@
         <item>Wheat</item>
     </string-array>
     <string-array name="auto_complete_ingredients">
-        <item>Butter</item>
-        <item>Eggs</item>
-        <item>Milk</item>
-        <item>Cheese</item>
-        <item>Yogurt</item>
-        <item>Whipped Cream</item>
-        <item>Cottage Cheese</item>
-        <item>Ice Cream</item>
-        <item>Ground Beef</item>
-        <item>Ground Pork</item>
-        <item>Ground Chicken</item>
-        <item>Bacon</item>
-        <item>Sausage</item>
-        <item>Ham</item>
-        <item>Beef</item>
-        <item>Pork</item>
-        <item>Chicken</item>
-        <item>Turkey</item>
-        <item>Ground Turkey</item>
-        <item>Spam</item>
-        <item>Corned Beef</item>
-        <item>Duck</item>
-        <item>Pork Belly</item>
-        <item>Garlic</item>
-        <item>Onion</item>
-        <item>Olive</item>
-        <item>Tomato</item>
-        <item>Potato</item>
-        <item>Carrot</item>
-        <item>Basil</item>
-        <item>Parsley</item>
-        <item>Pepper</item>
-        <item>Chili</item>
-        <item>Corn</item>
-        <item>Mushroom</item>
-        <item>Broccoli</item>
-        <item>Spinach</item>
-        <item>Beans</item>
-        <item>Red onion</item>
-        <item>Pumpkin</item>
-        <item>Cauliflower</item>
-        <item>Avocado</item>
-        <item>Cucumber</item>
-        <item>Pickle</item>
-        <item>Scallop</item>
-        <item>Prawn</item>
-        <item>Shrimp</item>
-        <item>Lemon</item>
-        <item>Banana</item>
-        <item>Coconut</item>
-        <item>Mango</item>
-        <item>Apple</item>
-        <item>Pineapple</item>
-        <item>Orange</item>
-        <item>Strawberry</item>
-        <item>Blueberry</item>
-        <item>Peach</item>
-        <item>Kiwi</item>
-        <item>Watermelon</item>
-        <item>Flour</item>
-        <item>Papaya</item>
-        <item>Tuna</item>
-        <item>Salmon</item>
-        <item>Sardine</item>
-        <item>Tilapia</item>
-        <item>Crab</item>
-        <item>Lobster</item>
-        <item>Pasta</item>
-        <item>Spaghetti</item>
         <item>agave nectar</item>
         <item>all-purpose flour</item>
         <item>allspice</item>
@@ -334,8 +265,7 @@
         <item>dijon mustard</item>
         <item>dill</item>
         <item>dill pickle</item>
-        <item>double cream</item>
-        <item>dragon fruit</item>
+        <item>double cream</item>\
         <item>dragonfruit</item>
         <item>dressing</item>
         <item>dry coconut</item>
