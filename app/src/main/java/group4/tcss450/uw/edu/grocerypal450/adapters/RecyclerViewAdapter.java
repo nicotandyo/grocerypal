@@ -20,8 +20,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Recipe> mRecipeSearchResults;
     private Context mContext;
 
-    public RecyclerViewAdapter(Context context, List<Recipe> feedItemList) {
-        mRecipeSearchResults = feedItemList;
+    public RecyclerViewAdapter(Context context, List<Recipe> theList) {
+        mRecipeSearchResults = theList;
         mContext = context;
     }
 
@@ -41,6 +41,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     .into(customViewHolder.imageView);
 
 
+        customViewHolder.rightButton.setId(i);
+        customViewHolder.rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int tempIndex = v.getId();
+
+            }
+        });
         //Setting text view title
         customViewHolder.textView.setText(Html.fromHtml(tempRecipe.getRecipeName()));
     }
