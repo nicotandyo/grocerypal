@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -85,6 +86,21 @@ public class InventoryFragment extends Fragment {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, stringList);
         mListViewInven.setAdapter(adapter1);
+        mListViewInven.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = mListViewInven.getItemAtPosition(position).toString();
+
+                text.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        text.showDropDown();
+                    }
+                },500);
+                text.setText(item.substring(0, item.length()-5));
+                text.setSelection(text.getText().length());
+            }
+        });
         updateTheList();
         //add button
         Button a = (Button) v.findViewById(R.id.inventoryAddBtn);

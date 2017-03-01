@@ -1,23 +1,32 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
+
+import static android.R.attr.autoText;
 
 /**
  * This class handles the shopping list fragment.
@@ -35,6 +44,10 @@ public class ShoppingListFragment extends Fragment {
 
 
     private GroceryDB mShoplistDB;
+
+    static final int DELTA = 50;
+    enum Direction {LEFT, RIGHT;}
+    float historicX = Float.NaN, historicY = Float.NaN;
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -57,6 +70,7 @@ public class ShoppingListFragment extends Fragment {
             }
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -82,11 +96,32 @@ public class ShoppingListFragment extends Fragment {
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
         }
+
+
+
+
+
+
         mListView = (ListView) v.findViewById(R.id.shopListListView);
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, stringList);
         mListView.setAdapter(adapter1);
-        //updateTheList();
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = mListView.getItemAtPosition(position).toString();
+
+                text.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        text.showDropDown();
+                    }
+                },500);
+                text.setText(item.substring(0, item.length()-5));
+                text.setSelection(text.getText().length());
+            }
+        });
+        updateTheList();
         //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
@@ -253,4 +288,6 @@ public class ShoppingListFragment extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, stringList);
         mListView.setAdapter(adapter1);
     }
+
+
 }
