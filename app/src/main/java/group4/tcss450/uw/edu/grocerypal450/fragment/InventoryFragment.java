@@ -1,10 +1,8 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
-import group4.tcss450.uw.edu.grocerypal450.models.IngredientDB;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,7 +33,7 @@ public class InventoryFragment extends Fragment {
     //private TextView mTextViewList;
     private ListView mListViewInven;
 
-    private IngredientDB mInventoryDB;
+    private GroceryDB mInventoryDB;
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -49,7 +46,7 @@ public class InventoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(mInventoryDB == null) {
-            mInventoryDB = new IngredientDB(getActivity().getApplicationContext());
+            mInventoryDB = new GroceryDB(getActivity().getApplicationContext());
         }
         List<Ingredient> list = mInventoryDB.getIngredients();
         //System.out.println(list.toString());

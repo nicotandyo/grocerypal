@@ -1,4 +1,3 @@
-
 <resources>
 
 
@@ -26,7 +25,7 @@
     <string name="search">Search Recipes</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>
-     <string name="inventory">Inventory</string>
+    <string name="inventory">Inventory</string>
     <string name="text_add">Add</string>
     <string name="text_remove">Remove</string>
     <string name="text_addIngredientsToList"> Add Ingredients to List</string>
@@ -612,13 +611,27 @@
         <item>ziti</item>
         <item>zucchini</item>
     </string-array>
-	
-    <string name="DB_NAME">Ingredients.db</string>
+
+    <string name="DB_NAME">GroceryDB.db</string>
     <string name="INGREDIENT_TABLE">Ingredients</string>
-    <string-array name="DB_COLUMN_NAMES">
+    <string name="RECIPE_TABLE">Recipes</string>
+    <string-array name="DB_INGREDIENT_NAMES">
         <item>ingredient</item>
         <item>quantity</item>
         <item>isInventory</item>
+    </string-array>
+
+    <string-array name="DB_RECIPE_NAMES">
+        <item>name</item>
+        <item>recipeId</item>
+        <item>ingredients</item>
+        <item>image</item>
+        <item>numServings</item>
+        <item>totalTime</item>
+        <item>cuisine</item>
+        <item>rating</item>
+        <item>isFavorite</item>
+        <item>date</item>
     </string-array>
 
     <string name="CREATE_INGREDIENTS_SQL">
@@ -628,6 +641,16 @@
     </string>
     <string name="DROP_INGREDIENTS_SQL">
      DROP TABLE IF EXISTS Ingredients
+    </string>
+
+    <string name="CREATE_RECIPES_SQL">
+     CREATE TABLE IF NOT EXISTS Recipes
+     (id INTEGER PRIMARY KEY, name VARCHAR(127) NOT NULL, recipeId VARCHAR(127) NOT NULL, ingredients VARCHAR(511),
+     image VARCHAR(127), numServings INTEGER, totalTime INTEGER, cuisine VARCHAR(127),
+        ,rating FLOAT, isFavorite TINYINT NOT NULL DEFAULT 0, date VARCHAR(127))
+    </string>
+    <string name="DROP_RECIPES_SQL">
+     DROP TABLE IF EXISTS Recipes
     </string>
 
 </resources>
