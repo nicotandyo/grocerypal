@@ -30,7 +30,9 @@ public class Recipe {
 
     public boolean isFavorite;
 
-    public Date date;
+    public Date mDate;
+
+
 
     /**
      * Construct empty Recipe object.
@@ -104,7 +106,17 @@ public class Recipe {
         mImage = imageUrl;
     }
 
-    public void setIsFav(boolean tf) {    }
+    public void setIsFav(boolean tf) {
+        isFavorite = tf;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
+    }
+
+    public Date getDate() {
+        return mDate;
+    }
 
 }
 

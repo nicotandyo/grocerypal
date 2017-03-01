@@ -13,38 +13,68 @@ import java.util.List;
 import group4.tcss450.uw.edu.grocerypal450.R;
 
 
-public class IngredientDB {
+public class GroceryDB {
 
     public static final int DB_VERSION = 1;
     private final String DB_NAME;
     private final String INGREDIENT_TABLE;
-    private final String[] COLUMN_NAMES;
+    private final String RECIPE_TABLE;
+    private final String[] INGREDIENT_COLUMN_NAMES;
+    private final String[] RECIPE_COLUMN_NAMES;
 
     private IngredientDBHelper mIngredientDBHelper;
+    private RecipeDBHelper mRecipeDBHelper;
     private SQLiteDatabase mSQLiteDatabase;
 
-    public IngredientDB(Context context) {
+    public GroceryDB(Context context) {
 
-        COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_COLUMN_NAMES);
+        INGREDIENT_COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_INGREDIENT_NAMES);
+        RECIPE_COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_RECIPE_NAMES);
+
         DB_NAME = context.getString(R.string.DB_NAME);
+
         INGREDIENT_TABLE = context.getString(R.string.INGREDIENT_TABLE);
+        RECIPE_TABLE = context.getString(R.string.RECIPE_TABLE);
 
         mIngredientDBHelper = new IngredientDBHelper(
                 context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = mIngredientDBHelper.getWritableDatabase();
+
+        mRecipeDBHelper = new RecipeDBHelper(
+                context, DB_NAME, null, DB_VERSION);
+        mSQLiteDatabase = mRecipeDBHelper.getWritableDatabase();
     }
 
     public boolean insertIngredient(String ingredient, int quantity, int isInventory) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN_NAMES[0], ingredient);
-        contentValues.put(COLUMN_NAMES[1], quantity);
-        contentValues.put(COLUMN_NAMES[2], isInventory);
+        contentValues.put(INGREDIENT_COLUMN_NAMES[0], ingredient);
+        contentValues.put(INGREDIENT_COLUMN_NAMES[1], quantity);
+        contentValues.put(INGREDIENT_COLUMN_NAMES[2], isInventory);
         Log.d("CREATE ITEM", "WORKS");
 
         long rowId = mSQLiteDatabase.insert(INGREDIENT_TABLE, null, contentValues);
         return rowId != -1;
     }
+
+    public boolean insertRecipe(Recipe recipe) {
+        ContentValues contentValues = new ContentValues();
+        int isFavorite = recipe.getIsFav() ? 1 : 0;
+
+        contentValues.put(RECIPE_COLUMN_NAMES[0], recipe.getRecipeName());
+        contentValues.put(RECIPE_COLUMN_NAMES[1], recipe.getRecipeId());
+        //store ingredients as CSV
+        contentValues.put(RECIPE_COLUMN_NAMES[2], android.text.TextUtils.join(",", recipe.getIngredients()));
+        contentValues.put(RECIPE_COLUMN_NAMES[3], recipe.getImgUrl());
+        contentValues.put(RECIPE_COLUMN_NAMES[4], isFavorite);
+        contentValues.put(RECIPE_COLUMN_NAMES[5], recipe.getDate().toString());
+        Log.d("CREATE RECIPE", "WORKS");
+
+        long rowId = mSQLiteDatabase.insert(RECIPE_TABLE, null, contentValues);
+        return rowId != -1;
+    }
+
+
 
     public void closeDB() {
         mSQLiteDatabase.close();
@@ -136,8 +166,8 @@ public class IngredientDB {
 
         Cursor c = mSQLiteDatabase.query(
                 INGREDIENT_TABLE,  // The table to query
-                COLUMN_NAMES,                               // The COLUMN_NAMES to return
-                null,                                // The COLUMN_NAMES for the WHERE clause
+                INGREDIENT_COLUMN_NAMES,                               // The INGREDIENT_COLUMN_NAMES to return
+                null,                                // The INGREDIENT_COLUMN_NAMES for the WHERE clause
                 null,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -154,6 +184,68 @@ public class IngredientDB {
         }
         c.close();
         return list;
+    }
+
+    public List<Recipe> getRecipes() {
+
+
+        Cursor c = mSQLiteDatabase.query(
+                RECIPE_TABLE,  // The table to query
+                RECIPE_COLUMN_NAMES,                      // The RECIPE_COLUMN_NAMES to return
+                null,                                // The RECIPE_COLUMN_NAMES for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+        c.moveToFirst();
+        List<Recipe> list = new ArrayList<Recipe>();
+        for (int i=0; i<c.getCount(); i++) {
+//            String name = c.getString(0);
+//            String recipeId = c.getString(1);
+//            String ingredients = c.getString(2);
+//            String img = c.getString(3);
+//            int isFav = c.getInt(4);
+//            String date = c.getString(5);
+
+            Recipe recipe = new Recipe();
+            recipe.setRecipeName(c.getString(0));
+            recipe.setRecipeId(c.getString(1));
+            recipe.setIngredients(stringToList(c.getString(2)));
+            recipe.setImage(c.getString(3));
+            recipe.setIsFav((c.getInt(4) == 1) ? true : false);
+            list.add(recipe);
+
+            c.moveToNext();
+        }
+        c.close();
+        return list;
+    }
+
+    //helper method to convert CSV ingredients to ArrayList
+    private static ArrayList<String> stringToList(final String input) {
+        String[] elements = input.substring(1, input.length() - 1).split(",");
+        ArrayList<String> result = new ArrayList<String>(elements.length);
+        for (String item : elements) {
+            result.add(item);
+        }
+        return result;
+    }
+
+    public boolean updateFavorite(Recipe recipe) {
+        ContentValues cv = new ContentValues();
+        int isFavorite = recipe.getIsFav() ? 1 : 0;
+        cv.put("isFavorite", isFavorite);
+        int numRow = mSQLiteDatabase.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
+        return numRow > 0;
+    }
+
+    public boolean updateDate(Recipe recipe) {
+        ContentValues cv = new ContentValues();
+        String date = recipe.getDate().toString();
+        cv.put("date", date);
+        int numRow = mSQLiteDatabase.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
+        return numRow > 0;
     }
 
     class IngredientDBHelper extends SQLiteOpenHelper {
@@ -177,6 +269,31 @@ public class IngredientDB {
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
             sqLiteDatabase.execSQL(DROP_INGREDIENTS_SQL);
+            onCreate(sqLiteDatabase);
+        }
+    }
+
+    class RecipeDBHelper extends SQLiteOpenHelper {
+
+        private final String CREATE_RECIPES_SQL;
+
+        private final String DROP_RECIPES_SQL;
+
+        public RecipeDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+            CREATE_RECIPES_SQL = context.getString(R.string.CREATE_RECIPES_SQL);
+            DROP_RECIPES_SQL = context.getString(R.string.DROP_RECIPES_SQL);
+
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase) {
+            sqLiteDatabase.execSQL(CREATE_RECIPES_SQL);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+            sqLiteDatabase.execSQL(DROP_RECIPES_SQL);
             onCreate(sqLiteDatabase);
         }
     }
