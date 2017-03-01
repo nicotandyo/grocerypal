@@ -169,7 +169,16 @@ public class InventoryFragment extends Fragment {
                 updateTheList();
             }
         });
-        //export button
+        //move button
+        Button m = (Button) v.findViewById(R.id.invenMove);
+        m.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ingredient = text.getText().toString().trim().toLowerCase();
+                sendToShoplist(ingredient);
+                updateTheList();
+            }
+        });
         return v;
     }
     /**
@@ -216,6 +225,22 @@ public class InventoryFragment extends Fragment {
         mList.clear();
         mInventoryDB.deleteAllInventory();
         mListViewInven.setAdapter(null);
+    }
+
+    /**
+     * Send the item to the shopping list
+     * @param ingredient
+     * @return
+     */
+    private boolean sendToShoplist(String ingredient) {
+        boolean isSent = false;
+        for(int i = 0; i < mList.size(); i++) {
+            Ingredient ing = mList.get(i);
+            if(ingredient.toLowerCase().equals(ing.getIngredient().trim())) {
+                isSent = mInventoryDB.moveItemInvenToShoplist(ing);
+            }
+        }
+        return isSent;
     }
 
     /**

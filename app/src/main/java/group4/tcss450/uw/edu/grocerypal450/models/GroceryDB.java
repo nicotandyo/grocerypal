@@ -146,6 +146,38 @@ public class GroceryDB {
     }
 
     /**
+     * Move item from the shopping list to the inventory.
+     * @param ingredient
+     * @return
+     */
+    public boolean moveItemShoplistToInven(Ingredient ingredient) {
+        ContentValues cv = new ContentValues();
+        cv.put("isInventory", 1);
+        Log.d("MOVE TO INVEN ", "WORKS");
+        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+                + ingredient.getIngredient().toLowerCase() + "' AND quantity = " +
+                ingredient.getQuantity(),
+                null);
+        return numRow > 0;
+    }
+
+    /**
+     * Move the item from the inventory to the shopping list.
+     * @param ingredient
+     * @return
+     */
+    public boolean moveItemInvenToShoplist(Ingredient ingredient) {
+        ContentValues cv = new ContentValues();
+        cv.put("isInventory", 0);
+        Log.d("MOVE TO SHOPLIST ", "WORKS");
+        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+                        + ingredient.getIngredient().toLowerCase() + "' AND quantity = " +
+                        ingredient.getQuantity(),
+                null);
+        return numRow > 0;
+    }
+
+    /**
      * Delete all item in the shopping list.
      */
     public void deleteAllShoplist() {

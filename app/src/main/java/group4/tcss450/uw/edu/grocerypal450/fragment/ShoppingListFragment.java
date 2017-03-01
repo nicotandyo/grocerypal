@@ -1,5 +1,6 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,9 +14,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CursorAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,7 +31,6 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
-import static android.R.attr.autoText;
 
 /**
  * This class handles the shopping list fragment.
@@ -106,6 +110,9 @@ public class ShoppingListFragment extends Fragment {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line, stringList);
         mListView.setAdapter(adapter1);
+//        LstViewAdapter adapter1 = new LstViewAdapter(getActivity().getApplicationContext()
+//                , R.layout.item_list_shoplist,R.id.txt, stringList);
+//        mListView.setAdapter(adapter1);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -216,6 +223,16 @@ public class ShoppingListFragment extends Fragment {
 
             }
         });
+        //inventory button
+        Button i = (Button) v.findViewById(R.id.shopListBtnInven);
+        i.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ingredient = text.getText().toString().trim().toLowerCase();
+                sendToInven(ingredient);
+                updateTheList();
+            }
+        });
         return v;
     }
     /**
@@ -256,6 +273,22 @@ public class ShoppingListFragment extends Fragment {
     }
 
     /**
+     * Send the item to the inventory.
+     * @param ingredient
+     * @return
+     */
+    private boolean sendToInven(String ingredient) {
+        boolean isSent = false;
+        for(int i = 0; i < mList.size(); i++) {
+            Ingredient ing = mList.get(i);
+            if(ingredient.toLowerCase().equals(ing.getIngredient().trim())) {
+                isSent = mShoplistDB.moveItemShoplistToInven(ing);
+            }
+        }
+        return isSent;
+    }
+
+    /**
      * Remove ingredient from the list.
      */
     private void clearAll() {
@@ -289,5 +322,44 @@ public class ShoppingListFragment extends Fragment {
         mListView.setAdapter(adapter1);
     }
 
-
+//    public class LstViewAdapter extends ArrayAdapter<String> {
+//        int groupid;
+//        List<String> item_list;
+//        ArrayList<String> desc;
+//        Context context;
+//        public LstViewAdapter(Context context, int vg, int id, List<String> item_list){
+//            super(context,vg, id, item_list);
+//            this.context=context;
+//            groupid=vg;
+//            this.item_list=item_list;
+//
+//        }
+//        // Hold views of the ListView to improve its scrolling performance
+//        public class ViewHolder {
+//            public TextView textview;
+//            public Button button;
+//
+//        }
+//
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//
+//            View rowView = convertView;
+//            // Inflate the list_item.xml file if convertView is null
+//            if(rowView==null){
+//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                rowView= inflater.inflate(groupid, parent, false);
+//                ViewHolder viewHolder = new ViewHolder();
+//                viewHolder.textview= (TextView) rowView.findViewById(R.id.txt);
+//                viewHolder.button= (Button) rowView.findViewById(R.id.bt);
+//                rowView.setTag(viewHolder);
+//
+//            }
+//            // Set text to each TextView of ListView item
+//            ViewHolder holder = (ViewHolder) rowView.getTag();
+//            holder.textview.setText(item_list.get(position));
+//            holder.button.setText(item_list.get(position));
+//            return rowView;
+//        }
+//
+//    }
 }

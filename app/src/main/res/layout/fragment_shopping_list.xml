@@ -47,6 +47,7 @@
             android:layout_height="35dp"
             android:id="@+id/shopListBtnRemove" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +59,19 @@
             android:textColor="@color/black"
             android:layout_width="129dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.99" />
+            android:layout_weight="0.76" />
+
+        <Button
+            android:layout_width="49dp"
+            android:layout_height="42dp"
+            android:id="@+id/shopListBtnInven"
+            android:layout_weight="0.06"
+            android:background="@drawable/inventory"/>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.22" />
 
         <Button
             android:layout_width="49dp"
@@ -67,18 +80,6 @@
             android:background="@drawable/ic_close_black_48dp"/>
     </LinearLayout>
 
-
-    <!--
-    <TextView
-        android:maxLines="100"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="328dp"
-        android:id="@+id/shopListTextView"
-        android:layout_weight="0.56"
-        android:textSize="16dp"
-        android:textColor="@color/black"/>
-        -->
 
     <ListView
         android:layout_width="match_parent"
