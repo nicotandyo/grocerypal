@@ -627,6 +627,10 @@
         <item>recipeId</item>
         <item>ingredients</item>
         <item>image</item>
+        <item>numServings</item>
+        <item>totalTime</item>
+        <item>cuisine</item>
+        <item>rating</item>
         <item>isFavorite</item>
         <item>date</item>
     </string-array>
@@ -643,7 +647,8 @@
     <string name="CREATE_RECIPES_SQL">
      CREATE TABLE IF NOT EXISTS Recipes
      (id INTEGER PRIMARY KEY, name VARCHAR(127) NOT NULL, recipeId VARCHAR(127) NOT NULL, ingredients VARCHAR(511),
-     image VARCHAR(127), isFavorite TINYINT NOT NULL DEFAULT 0, date VARCHAR(127))
+     image VARCHAR(127), numServings INTEGER, totalTime INTEGER, cuisine VARCHAR(127),
+        ,rating FLOAT, isFavorite TINYINT NOT NULL DEFAULT 0, date VARCHAR(127))
     </string>
     <string name="DROP_RECIPES_SQL">
      DROP TABLE IF EXISTS Recipes
