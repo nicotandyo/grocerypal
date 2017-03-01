@@ -121,7 +121,9 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
                         break;
                     case "Ingredient Inventory":
-                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
+                        InventoryFragment inventory = new InventoryFragment();
+                        ft.replace(R.id.fragmentContainer, inventory, InventoryFragment.TAG);
+                        ft.addToBackStack(InventoryFragment.TAG).commit();
                         break;
                     case "Shopping List":
                         ShoppingListFragment shoppingFragment = new ShoppingListFragment();

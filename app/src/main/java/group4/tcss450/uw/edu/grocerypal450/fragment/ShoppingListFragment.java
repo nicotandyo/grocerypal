@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,9 @@ public class ShoppingListFragment extends Fragment {
     /** The list of what is in the shopping list. */
     private List<Ingredient> mList = new ArrayList<Ingredient>();
     /** The TextView that holds the shopping list. */
-    private TextView mTextViewList;
+    //private TextView mTextViewList;
+    private ListView mListView;
+
 
     private IngredientDB mShoplistDB;
 
@@ -73,9 +76,17 @@ public class ShoppingListFragment extends Fragment {
                         ingredients);
         final AutoCompleteTextView text = (AutoCompleteTextView) v.findViewById(R.id.shopListEditTextSearch);
         text.setAdapter(adapter);
-        mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
-        mTextViewList.setMovementMethod(new ScrollingMovementMethod());
-        updateTheList();
+        //mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
+        //mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        List<String> stringList = new ArrayList<String>();
+        for(int i=0; i<mList.size(); i++) {
+            stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
+        }
+        mListView = (ListView) v.findViewById(R.id.shopListListView);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, stringList);
+        mListView.setAdapter(adapter1);
+        //updateTheList();
         //add button
         Button a = (Button) v.findViewById(R.id.shopListBtnAdd);
         a.setOnClickListener(new View.OnClickListener() {
@@ -215,7 +226,8 @@ public class ShoppingListFragment extends Fragment {
     private void clearAll() {
         mList.clear();
         mShoplistDB.deleteAllShoplist();
-        mTextViewList.setText("");
+        mListView.setAdapter(null);
+        //mTextViewList.setText("");
     }
 
     /**
@@ -223,7 +235,9 @@ public class ShoppingListFragment extends Fragment {
      */
     private void updateTheList() {
         mList.clear();
-        mTextViewList.setText("");
+        //mTextViewList.setText("");
+        mListView.setAdapter(null);
+
         List<Ingredient> list = mShoplistDB.getIngredients();
         //System.out.println(list.toString());
         for(Ingredient i: list) {
@@ -231,11 +245,12 @@ public class ShoppingListFragment extends Fragment {
                 mList.add(i);
             }
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < mList.size(); i++) {
-            stringBuilder.append(mList.get(i).getIngredient() + " (x" + mList.get(i).getQuantity() + ")\n");
+        List<String> stringList = new ArrayList<String>();
+        for(int i=0; i<mList.size(); i++) {
+            stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        String message = stringBuilder.toString();
-        mTextViewList.setText(message);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, stringList);
+        mListView.setAdapter(adapter1);
     }
 }
