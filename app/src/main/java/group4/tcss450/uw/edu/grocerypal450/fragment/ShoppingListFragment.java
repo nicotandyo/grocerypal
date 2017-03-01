@@ -19,7 +19,9 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
-
+/**
+ * This class handles the shopping list fragment.
+ */
 public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
@@ -58,9 +60,9 @@ public class ShoppingListFragment extends Fragment {
 
     /**
      * {@inheritDoc}
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
+     * @param inflater is the inflater.
+     * @param container is the container.
+     * @param savedInstanceState is the saved instance state.
      * @return View v = inflater.inflate(R.layout.fragment_shopping_list, container, false)
      */
     @Override
@@ -94,7 +96,7 @@ public class ShoppingListFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
-                boolean b = false;
+                boolean b;
                 String ingredient = text.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
@@ -121,7 +123,7 @@ public class ShoppingListFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
-                boolean b = false;
+                boolean b;
                 String ingredient = text.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
@@ -200,7 +202,7 @@ public class ShoppingListFragment extends Fragment {
 
     /**
      * Remove ingredient from the list.
-     * @param ingredient
+     * @param ingredient is the ingredient
      * @return true if ingredient is removed, false otherwise
      */
     private boolean removeFromList(String ingredient) {
