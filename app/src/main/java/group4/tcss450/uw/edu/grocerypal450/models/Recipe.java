@@ -32,6 +32,14 @@ public class Recipe {
 
     public Date mDate;
 
+    public int mNumServings;
+
+    public int mTotalTime;
+
+    public String mCuisine;
+
+    public float mRating;
+
 
 
     /**
@@ -116,6 +124,38 @@ public class Recipe {
 
     public Date getDate() {
         return mDate;
+    }
+
+    public void setNumServings(int num) {
+        mNumServings = num;
+    }
+
+    public int getNumServings() {
+        return mNumServings;
+    }
+
+    public void setTotalTime(int time) {
+        mTotalTime = time;
+    }
+
+    public int getTotalTime() {
+        return mTotalTime;
+    }
+
+    public void setCuisine(String cuisine) {
+        mCuisine = cuisine;
+    }
+
+    public String getCuisine() {
+        return mCuisine;
+    }
+
+    public void setRating(float rating) {
+        mRating = rating;
+    }
+
+    public float getRating() {
+        return mRating;
     }
 
 }

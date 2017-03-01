@@ -66,8 +66,12 @@ public class GroceryDB {
         //store ingredients as CSV
         contentValues.put(RECIPE_COLUMN_NAMES[2], android.text.TextUtils.join(",", recipe.getIngredients()));
         contentValues.put(RECIPE_COLUMN_NAMES[3], recipe.getImgUrl());
-        contentValues.put(RECIPE_COLUMN_NAMES[4], isFavorite);
-        contentValues.put(RECIPE_COLUMN_NAMES[5], recipe.getDate().toString());
+        contentValues.put(RECIPE_COLUMN_NAMES[4], recipe.getNumServings());
+        contentValues.put(RECIPE_COLUMN_NAMES[5], recipe.getTotalTime());
+        contentValues.put(RECIPE_COLUMN_NAMES[6], recipe.getCuisine());
+        contentValues.put(RECIPE_COLUMN_NAMES[7], recipe.getRating());
+        contentValues.put(RECIPE_COLUMN_NAMES[8], isFavorite);
+        contentValues.put(RECIPE_COLUMN_NAMES[9], recipe.getDate().toString());
         Log.d("CREATE RECIPE", "WORKS");
 
         long rowId = mSQLiteDatabase.insert(RECIPE_TABLE, null, contentValues);
@@ -213,7 +217,11 @@ public class GroceryDB {
             recipe.setRecipeId(c.getString(1));
             recipe.setIngredients(stringToList(c.getString(2)));
             recipe.setImage(c.getString(3));
-            recipe.setIsFav((c.getInt(4) == 1) ? true : false);
+            recipe.setNumServings(c.getInt(4));
+            recipe.setTotalTime(c.getInt(5));
+            recipe.setCuisine(c.getString(6));
+            recipe.setRating(c.getFloat(7));
+            recipe.setIsFav((c.getInt(8) == 1) ? true : false);
             list.add(recipe);
 
             c.moveToNext();
