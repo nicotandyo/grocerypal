@@ -25,6 +25,7 @@
     <string name="search">Search Recipes</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>
+    <string name="btn_inventory">Inventory</string>
     <string name="inventory">Inventory</string>
     <string name="text_add">Add</string>
     <string name="text_remove">Remove</string>
@@ -652,5 +653,6 @@
     <string name="DROP_RECIPES_SQL">
      DROP TABLE IF EXISTS Recipes
     </string>
+    <string name="logout_txt">Logout</string>
 
 </resources>

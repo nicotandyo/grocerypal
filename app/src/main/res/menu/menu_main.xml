@@ -6,4 +6,8 @@
           android:title="@string/action_settings"
           android:orderInCategory="100"
           app:showAsAction="never"/>
+    <item android:id="@+id/logout_settings"
+        android:title="@string/logout_txt"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
 </menu>
