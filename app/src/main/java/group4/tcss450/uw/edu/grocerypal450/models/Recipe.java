@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.models;
 
 import java.util.ArrayList;
@@ -29,7 +30,17 @@ public class Recipe {
 
     public boolean isFavorite;
 
-    public Date date;
+    public Date mDate;
+
+    public int mNumServings;
+
+    public int mTotalTime;
+
+    public String mCuisine;
+
+    public float mRating;
+
+
 
     /**
      * Construct empty Recipe object.
@@ -103,7 +114,49 @@ public class Recipe {
         mImage = imageUrl;
     }
 
-    public void setIsFav(boolean tf) {    }
+    public void setIsFav(boolean tf) {
+        isFavorite = tf;
+    }
+
+    public void setDate(Date date) {
+        mDate = date;
+    }
+
+    public Date getDate() {
+        return mDate;
+    }
+
+    public void setNumServings(int num) {
+        mNumServings = num;
+    }
+
+    public int getNumServings() {
+        return mNumServings;
+    }
+
+    public void setTotalTime(int time) {
+        mTotalTime = time;
+    }
+
+    public int getTotalTime() {
+        return mTotalTime;
+    }
+
+    public void setCuisine(String cuisine) {
+        mCuisine = cuisine;
+    }
+
+    public String getCuisine() {
+        return mCuisine;
+    }
+
+    public void setRating(float rating) {
+        mRating = rating;
+    }
+
+    public float getRating() {
+        return mRating;
+    }
 
 }
 

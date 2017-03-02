@@ -18,7 +18,7 @@ import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
-import group4.tcss450.uw.edu.grocerypal450.models.IngredientDB;
+import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 
 
 public class ShoppingListFragment extends Fragment {
@@ -31,7 +31,7 @@ public class ShoppingListFragment extends Fragment {
     /** The TextView that holds the shopping list. */
     private TextView mTextViewList;
 
-    private IngredientDB mShoplistDB;
+    private GroceryDB mShoplistDB;
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -44,7 +44,7 @@ public class ShoppingListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(mShoplistDB == null) {
-            mShoplistDB = new IngredientDB(getActivity().getApplicationContext());
+            mShoplistDB = new GroceryDB(getActivity().getApplicationContext());
         }
         List<Ingredient> list = mShoplistDB.getIngredients();
         //System.out.println(list.toString());
