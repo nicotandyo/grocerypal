@@ -1,3 +1,4 @@
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="395dp"
         android:layout_gravity="center"
         android:orientation="vertical"
         android:paddingLeft="20dp"
@@ -46,6 +47,14 @@
             android:layout_marginTop="20dip"
             android:background="@color/colorAccent"
             android:text="@string/search"
+            android:textColor="@color/black" />
+        <Button
+            android:id="@+id/goToInventory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:background="@color/colorAccent"
+            android:text="@string/btn_inventory"
             android:textColor="@color/black" />
         <Button
             android:id="@+id/goToShoppingList"
