@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.FragmentTransaction;
@@ -81,6 +82,15 @@ public class ProfileFragment extends Fragment {
                 goToShoppingList();
             }
         });
+
+        Button buttonInven = (Button) v.findViewById(R.id.goToInventory);
+        buttonInven.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToInventory();
+            }
+        });
+
         return v;
     }
 
@@ -104,6 +114,18 @@ public class ProfileFragment extends Fragment {
         ft.replace(R.id.fragmentContainer, fragment, RecipeSearch.TAG);
         ft.addToBackStack(RecipeSearch.TAG).commit();
     }
+
+    /**
+     * Replace this fragment with the Inventory fragment.
+     */
+    private void goToInventory(){
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        InventoryFragment fragment = new InventoryFragment();
+        ft.replace(R.id.fragmentContainer, fragment, InventoryFragment.TAG);
+        ft.addToBackStack(InventoryFragment.TAG).commit();
+    }
+
 
     /**
      * Replace this fragment with the ShoppingList fragment.

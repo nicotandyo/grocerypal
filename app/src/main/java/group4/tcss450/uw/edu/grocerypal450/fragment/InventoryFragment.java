@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 
@@ -11,14 +12,18 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.view.LayoutInflater;
+i
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
-import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
+import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +36,9 @@ public class InventoryFragment extends Fragment {
     /** The list of what is in the shopping list. */
     private List<Ingredient> mList = new ArrayList<Ingredient>();
     /** The TextView that holds the shopping list. */
-    private TextView mTextViewList;
+
+    //private TextView mTextViewList;
+    private ListView mListViewInven;
 
     private GroceryDB mInventoryDB;
 
@@ -75,8 +82,33 @@ public class InventoryFragment extends Fragment {
                         ingredients);
         final AutoCompleteTextView text = (AutoCompleteTextView) v.findViewById(R.id.inventoryEditText);
         text.setAdapter(adapter);
-        mTextViewList = (TextView) v.findViewById(R.id.inventoryTextView);
-        mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+
+        //mTextViewList = (TextView) v.findViewById(R.id.inventoryTextView);
+       // mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        List<String> stringList = new ArrayList<String>();
+        for(int i=0; i<mList.size(); i++) {
+            stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
+        }
+        mListViewInven = (ListView) v.findViewById(R.id.inventoryListView);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, stringList);
+        mListViewInven.setAdapter(adapter1);
+        mListViewInven.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = mListViewInven.getItemAtPosition(position).toString();
+
+                text.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        text.showDropDown();
+                    }
+                },500);
+                text.setText(item.substring(0, item.length()-5));
+                text.setSelection(text.getText().length());
+            }
+        });
+
         updateTheList();
         //add button
         Button a = (Button) v.findViewById(R.id.inventoryAddBtn);
@@ -145,7 +177,18 @@ public class InventoryFragment extends Fragment {
                 updateTheList();
             }
         });
-        //export button
+
+        //move button
+        Button m = (Button) v.findViewById(R.id.invenMove);
+        m.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ingredient = text.getText().toString().trim().toLowerCase();
+                sendToShoplist(ingredient);
+                updateTheList();
+            }
+        });
+
         return v;
     }
     /**
@@ -191,7 +234,25 @@ public class InventoryFragment extends Fragment {
     private void clearAll() {
         mList.clear();
         mInventoryDB.deleteAllInventory();
-        mTextViewList.setText("");
+
+        mListViewInven.setAdapter(null);
+    }
+
+    /**
+     * Send the item to the shopping list
+     * @param ingredient
+     * @return
+     */
+    private boolean sendToShoplist(String ingredient) {
+        boolean isSent = false;
+        for(int i = 0; i < mList.size(); i++) {
+            Ingredient ing = mList.get(i);
+            if(ingredient.toLowerCase().equals(ing.getIngredient().trim())) {
+                isSent = mInventoryDB.moveItemInvenToShoplist(ing);
+            }
+        }
+        return isSent;
+
     }
 
     /**
@@ -199,7 +260,9 @@ public class InventoryFragment extends Fragment {
      */
     private void updateTheList() {
         mList.clear();
-        mTextViewList.setText("");
+
+        mListViewInven.setAdapter(null);
+
         List<Ingredient> list = mInventoryDB.getIngredients();
         //System.out.println(list.toString());
         for(Ingredient i: list) {
@@ -207,11 +270,14 @@ public class InventoryFragment extends Fragment {
                 mList.add(i);
             }
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < mList.size(); i++) {
-            stringBuilder.append(mList.get(i).getIngredient() + " (x" + mList.get(i).getQuantity() + ")\n");
+
+        List<String> stringList = new ArrayList<String>();
+        for(int i=0; i<mList.size(); i++) {
+            stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        String message = stringBuilder.toString();
-        mTextViewList.setText(message);
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, stringList);
+        mListViewInven.setAdapter(adapter1);
+
     }
 }
