@@ -131,7 +131,7 @@ public class RegisterFragment extends Fragment {
      * @return True if name is not empty and between 3 and 50 characters.
      */
     private boolean validateName(String string) {
-        return (!TextUtils.isEmpty(string) || string.length() > 3 || string.length() > 50);
+        return (!TextUtils.isEmpty(string) || string.length() < 3 || string.length() > 50);
     }
 
     /**
