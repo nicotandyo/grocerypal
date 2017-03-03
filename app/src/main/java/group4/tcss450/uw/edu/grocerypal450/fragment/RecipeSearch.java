@@ -102,11 +102,11 @@ public class RecipeSearch extends Fragment {
 
     private ListView mSearchList;
 
-    private List<String> masterList;
-
-    private List<String> masterCopy;
+    private List<String> tempStorage;
 
     private List<String> mIngredientsToSearch;
+
+    private List<String> mIngredientResourceList;
 
     private List<String> mSuggestedIngredients;
 
@@ -159,6 +159,7 @@ public class RecipeSearch extends Fragment {
      * This method creates views and sets adapters where required.
      */
     private void initViews() {
+        tempStorage = new ArrayList();
         mIngredientArrayResource = getResources().getStringArray(R.array.auto_complete_ingredients);
         mSuggestedIngredients = new ArrayList<String>(Arrays.asList(mIngredientArrayResource));
         mIngredientsToSearch = new ArrayList();
@@ -200,7 +201,7 @@ public class RecipeSearch extends Fragment {
         // add ingredient to search list on item clicked.
         mSuggestedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {addIngredient(position);    }
+                                    int position, long id) {addIngredientFromList(position);    }
         });
         // Close soft keyboard on list touched.
         mSuggestedList.setOnTouchListener(new View.OnTouchListener() {
@@ -230,12 +231,7 @@ public class RecipeSearch extends Fragment {
 
         ImageView i = (ImageView) v.findViewById(R.id.addIngredient);
         i.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                searchParam = mEditText.getText().toString().toLowerCase();
-                mIngredientsToSearch.add(searchParam);
-                mEditText.getText().clear();
-                mSearchAdapter.notifyDataSetChanged();
-            }
+            public void onClick(View v) {addIngredientFromText();}
         });
 
         Button b = (Button) v.findViewById(R.id.searchBtn);
@@ -255,15 +251,25 @@ public class RecipeSearch extends Fragment {
      * This method removes an ingredient from the suggested list of ingredients
      * and adds it to the list of ingredients to search.
      */
-    private void addIngredient(int position) {
+    private void addIngredientFromList(int position) {
         mEditText.getText().clear();
         searchParam = mSuggestedList.getItemAtPosition(position).toString().toLowerCase();
         mIngredientsToSearch.add(searchParam);
+        tempStorage.add(searchParam);
         Collections.sort(mIngredientsToSearch);
         mSuggestedIngredients.remove(searchParam);
-        mSuggestedAdapter.remove(mSuggestedAdapter.getItem(position));
+        //mSuggestedAdapter.remove(mSuggestedAdapter.getItem(position));
         mSuggestedAdapter.notifyDataSetChanged();
         mSearchAdapter.notifyDataSetChanged();
+    }
+
+    private void addIngredientFromText() {
+        if (mEditText.getText().toString().length() != 0) {
+            searchParam = mEditText.getText().toString().toLowerCase();
+            mIngredientsToSearch.add(searchParam);
+            mEditText.getText().clear();
+            mSearchAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -275,7 +281,9 @@ public class RecipeSearch extends Fragment {
     private void removeIngredient(int position) {
         searchParam = mSearchList.getItemAtPosition(position).toString().toLowerCase();
         mIngredientsToSearch.remove(searchParam);
-        mSuggestedIngredients.add(searchParam);
+        if(tempStorage.contains(searchParam)) {
+            mSuggestedIngredients.add(searchParam);
+        }
         Collections.sort(mSuggestedIngredients);
         mSuggestedAdapter.notifyDataSetChanged();
         mSearchAdapter.notifyDataSetChanged();
@@ -285,6 +293,7 @@ public class RecipeSearch extends Fragment {
      * Take the user input string from the edittext and send to the web service.
      */
     private void search() {
+        addIngredientFromText();
         vp.setVisibility(v.GONE);
         String encodedIngredient = "";
         for (int i = 0; i < mIngredientsToSearch.size(); i++) {

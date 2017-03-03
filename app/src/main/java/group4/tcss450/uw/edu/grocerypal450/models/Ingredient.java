@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.models;
 
 import java.io.Serializable;
@@ -39,3 +40,4 @@ public class Ingredient implements Serializable {
     }
 
 }
+

@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.models;
 
 import android.content.ContentValues;
@@ -146,6 +147,7 @@ public class GroceryDB {
     }
 
     /**
+
      * Move item from the shopping list to the inventory.
      * @param ingredient
      * @return
@@ -178,6 +180,7 @@ public class GroceryDB {
     }
 
     /**
+
      * Delete all item in the shopping list.
      */
     public void deleteAllShoplist() {
@@ -339,3 +342,4 @@ public class GroceryDB {
     }
 
 }
+
