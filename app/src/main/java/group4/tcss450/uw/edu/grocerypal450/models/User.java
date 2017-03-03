@@ -9,10 +9,6 @@ public class User {
      */
     private String name;
     /**
-     * User's email
-     */
-    private String email;
-    /**
      * User's password
      */
     private String password;
@@ -20,11 +16,9 @@ public class User {
     /**
      * Create a new user with given name and email.
      * @param name
-     * @param email
-     */
-    public User(String name, String email) {
+      */
+    public User(String name) {
         this.name = name;
-        this.email = email;
     }
 
     /**
@@ -35,13 +29,6 @@ public class User {
         return name;
     }
 
-    /**
-     * Get this user's email.
-     * @return String email
-     */
-    public String getEmail() {
-        return email;
-    }
 
     /**
      * Set this user's password

@@ -3,7 +3,9 @@ package group4.tcss450.uw.edu.grocerypal450.fragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,12 +48,13 @@ public class RegisterFragment extends Fragment {
 
     /** EditText for the name. */
     private EditText mRegisterName;
-    /** EditText for the email. */
-    private EditText mRegisterEmail;
     /** EditText for the password. */
     private EditText mRegisterPassword1;
     /** EditText to verify the password. */
     private EditText mRegisterPassword2;
+    /** Save logged-status to shared preferences */
+    private SharedPreferences mPrefs;
+
 
     /**
      * {@inheritDoc}
@@ -64,8 +67,8 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_register,container,false);
+        mPrefs = this.getActivity().getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
         mRegisterName = (EditText) v.findViewById(R.id.registerUsername);
-        mRegisterEmail = (EditText) v.findViewById(R.id.registerEmail);
         mRegisterPassword1 = (EditText) v.findViewById(R.id.registerPassword1);
         mRegisterPassword2 = (EditText) v.findViewById(R.id.registerPassword2);
         Button b = (Button) v.findViewById(R.id.registerBtn);
@@ -92,35 +95,29 @@ public class RegisterFragment extends Fragment {
     private void register() {
 
         String name = mRegisterName.getText().toString();
-        String email = mRegisterEmail.getText().toString();
         String pass1 = mRegisterPassword1.getText().toString();
         String pass2 = mRegisterPassword2.getText().toString();
 
         boolean error = false;
 
-        if (!validateFields(name)) {
+        if (!validateName(name)) {
             error = true;
-            mRegisterName.setError("Please enter a username.");
+            mRegisterName.setError("Username must have at least 3 characters.");
         }
-        if (!validateEmail(email)) {
+        if (!validatePass(pass1)) {
             error = true;
-            mRegisterEmail.setError("Enter a valid email.");
+            mRegisterPassword1.setError("Password must have at least 8 characters.");
         }
-        if (!validateFields(pass1)) {
+        if (!validatePass(pass2)) {
             error = true;
-            mRegisterPassword1.setError("Enter a password.");
+            mRegisterPassword1.setError("Password must have at least 8 characters.");
         }
-        if (!validateFields(pass2)) {
+        if (!validatePasswords(pass1, pass2)) {
             error = true;
-            mRegisterPassword1.setError("Enter a password.");
-        }
-/*        if (!validatePasswords(pass1, pass2)) {
-            error = true;
-            mRegisterPassword1.setError("Passwords must match.");
             mRegisterPassword2.setError("Passwords must match.");
-        }*/
+        }
         if (!error) {
-            User user = new User(name, email);
+            User user = new User(name);
             user.setPassword(pass1);
             registerProcess(user);
         } else {
@@ -129,21 +126,21 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     * Validates the name field.
-     * @param field
-     * @return true if not empty and less than 50 characters.
+     * Check to make sure the name entered is not empty and in valid form.
+     * @param string
+     * @return True if name is not empty and between 3 and 50 characters.
      */
-    private boolean validateFields(String field){
-        return !(TextUtils.isEmpty(field) || field.length() > 50);
+    private boolean validateName(String string) {
+        return (!TextUtils.isEmpty(string) || string.length() > 3 || string.length() > 50);
     }
 
     /**
-     * Validates the email field.
-     * @param email
-     * @return true if not empty, matches email pattern, and less than 50 characters.
+     * Validates the name field.
+     * @param pass
+     * @return true if not empty and less than 50 characters.
      */
-    private boolean validateEmail(String email) {
-        return !(TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.length() > 50);
+    private boolean validatePass(String pass){
+        return !(TextUtils.isEmpty(pass) || pass.length() > 50 || pass.length() < 8);
     }
 
     /**
@@ -164,7 +161,7 @@ public class RegisterFragment extends Fragment {
     private void registerProcess(User user) {
 
         AsyncTask<String, Void, String> task = new RegisterTask();
-        task.execute(REGISTER_URL, user.getName(), user.getEmail(), user.getPassword());
+        task.execute(REGISTER_URL, user.getName(), user.getPassword());
     }
 
     /**
@@ -210,8 +207,8 @@ public class RegisterFragment extends Fragment {
          */
         @Override
         protected String doInBackground(String... strings) {
-            if (strings.length != 4) {
-                throw new IllegalArgumentException("Base URL, name, email, and password required.");
+            if (strings.length != 3) {
+                throw new IllegalArgumentException("Base URL, name, and password required.");
             }
             String response = "";
             HttpURLConnection urlConnection = null;
@@ -226,8 +223,7 @@ public class RegisterFragment extends Fragment {
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
                 ArrayList<Pair> params = new ArrayList<Pair>();
                 params.add(new Pair("name", strings[1]));
-                params.add(new Pair("email", strings[2]));
-                params.add(new Pair("password", strings[3]));
+                params.add(new Pair("password", strings[2]));
                 wr.write(getQuery(params));
                 wr.flush();
                 InputStream content = urlConnection.getInputStream();
@@ -279,10 +275,11 @@ public class RegisterFragment extends Fragment {
             } else {
                 try {
                     JSONObject jsonUser = response.getJSONObject("user");
+                    mPrefs.edit().putString(getString(R.string.LOGGED_USER), (String) jsonUser.get("name")).apply();
+                    mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), true).apply();
                     Intent intent = new Intent(getActivity(), ProfileActivity.class);
                     ArrayList<String> userInfo =  new ArrayList<String>();
                     userInfo.add((String) jsonUser.get("name"));
-                    userInfo.add((String) jsonUser.get("email"));
                     intent.putExtra("userInfo", userInfo);
                     startActivity(intent);
                 } catch (JSONException e) {
