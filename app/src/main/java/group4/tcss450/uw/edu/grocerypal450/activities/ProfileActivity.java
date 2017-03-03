@@ -28,8 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
-import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;
-import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
+import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ProfileFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch;
 import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;

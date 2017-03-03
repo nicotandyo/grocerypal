@@ -82,6 +82,7 @@ public class ProfileFragment extends Fragment {
                 goToShoppingList();
             }
         });
+
         Button buttonInven = (Button) v.findViewById(R.id.goToInventory);
         buttonInven.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +90,7 @@ public class ProfileFragment extends Fragment {
                 goToInventory();
             }
         });
+
         return v;
     }
 
@@ -112,6 +114,7 @@ public class ProfileFragment extends Fragment {
         ft.replace(R.id.fragmentContainer, fragment, RecipeSearch.TAG);
         ft.addToBackStack(RecipeSearch.TAG).commit();
     }
+
     /**
      * Replace this fragment with the Inventory fragment.
      */
@@ -122,6 +125,7 @@ public class ProfileFragment extends Fragment {
         ft.replace(R.id.fragmentContainer, fragment, InventoryFragment.TAG);
         ft.addToBackStack(InventoryFragment.TAG).commit();
     }
+
 
     /**
      * Replace this fragment with the ShoppingList fragment.

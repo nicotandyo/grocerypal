@@ -26,6 +26,7 @@
     <string name="search">Search Recipes</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>
+
     <string name="btn_inventory">Inventory</string>
     <string name="inventory">Inventory</string>
     <string name="text_add">Add</string>
@@ -206,7 +207,6 @@
         <item>chia seed</item>
         <item>chicken</item>
         <item>chicken bone</item>
-        <item>chicken breast</item>
         <item>chicken breast</item>
         <item>chicken broth</item>
         <item>chicken sausage</item>
@@ -654,6 +654,7 @@
     <string name="DROP_RECIPES_SQL">
      DROP TABLE IF EXISTS Recipes
     </string>
+
 
     <string name="logout_txt">Logout</string>
 

@@ -40,3 +40,4 @@ public class Ingredient implements Serializable {
     }
 
 }
+

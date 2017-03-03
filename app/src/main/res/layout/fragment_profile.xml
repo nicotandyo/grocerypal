@@ -49,6 +49,7 @@
             android:text="@string/search"
             android:textColor="@color/black" />
         <Button
+
             android:id="@+id/goToInventory"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

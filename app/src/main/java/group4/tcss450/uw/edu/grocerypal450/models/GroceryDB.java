@@ -147,6 +147,7 @@ public class GroceryDB {
     }
 
     /**
+
      * Move item from the shopping list to the inventory.
      * @param ingredient
      * @return
@@ -179,6 +180,7 @@ public class GroceryDB {
     }
 
     /**
+
      * Delete all item in the shopping list.
      */
     public void deleteAllShoplist() {

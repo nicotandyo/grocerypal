@@ -1,4 +1,5 @@
 
+
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.Activity;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.concurrent.RunnableFuture;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
@@ -36,6 +38,7 @@ import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 /**
  * This class handles the shopping list fragment.
  */
+
 public class ShoppingListFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
@@ -44,6 +47,7 @@ public class ShoppingListFragment extends Fragment {
     /** The list of what is in the shopping list. */
     private List<Ingredient> mList = new ArrayList<Ingredient>();
     /** The TextView that holds the shopping list. */
+
     //private TextView mTextViewList;
     private ListView mListView;
 
@@ -53,6 +57,7 @@ public class ShoppingListFragment extends Fragment {
     static final int DELTA = 50;
     enum Direction {LEFT, RIGHT;}
     float historicX = Float.NaN, historicY = Float.NaN;
+
 
     /**
      * The constructor for the ShoppingListFragment.
@@ -75,6 +80,7 @@ public class ShoppingListFragment extends Fragment {
             }
         }
     }
+
 
 
     /**
@@ -139,6 +145,7 @@ public class ShoppingListFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
+
                 boolean b;
                 String ingredient = text.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
@@ -166,6 +173,7 @@ public class ShoppingListFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
+
                 boolean b;
                 String ingredient = text.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
@@ -224,6 +232,7 @@ public class ShoppingListFragment extends Fragment {
 
             }
         });
+
         //inventory button
         Button i = (Button) v.findViewById(R.id.shopListBtnInven);
         i.setOnClickListener(new View.OnClickListener() {
@@ -234,6 +243,7 @@ public class ShoppingListFragment extends Fragment {
                 updateTheList();
             }
         });
+
         return v;
     }
     /**
@@ -255,7 +265,9 @@ public class ShoppingListFragment extends Fragment {
 
     /**
      * Remove ingredient from the list.
+
      * @param ingredient is the ingredient
+
      * @return true if ingredient is removed, false otherwise
      */
     private boolean removeFromList(String ingredient) {
@@ -274,6 +286,7 @@ public class ShoppingListFragment extends Fragment {
     }
 
     /**
+
      * Send the item to the inventory.
      * @param ingredient
      * @return
@@ -290,13 +303,16 @@ public class ShoppingListFragment extends Fragment {
     }
 
     /**
+
      * Remove ingredient from the list.
      */
     private void clearAll() {
         mList.clear();
         mShoplistDB.deleteAllShoplist();
+
         mListView.setAdapter(null);
         //mTextViewList.setText("");
+
     }
 
     /**
@@ -304,6 +320,7 @@ public class ShoppingListFragment extends Fragment {
      */
     private void updateTheList() {
         mList.clear();
+
         //mTextViewList.setText("");
         mListView.setAdapter(null);
 
@@ -314,6 +331,7 @@ public class ShoppingListFragment extends Fragment {
                 mList.add(i);
             }
         }
+
         List<String> stringList = new ArrayList<String>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
@@ -363,4 +381,5 @@ public class ShoppingListFragment extends Fragment {
 //        }
 //
 //    }
+
 }
