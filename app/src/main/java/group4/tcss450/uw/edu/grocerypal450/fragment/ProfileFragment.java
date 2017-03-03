@@ -35,8 +35,6 @@ public class ProfileFragment extends Fragment {
     private ArrayList<String> mNameEmail;
 
     private TextView mShowName;
-    private TextView mShowEmail;
-
     /**
      * Construct for ProfileFragment.
      */
@@ -67,8 +65,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         mShowName = (TextView) v.findViewById(R.id.showName);
-        mShowEmail = (TextView) v.findViewById(R.id.showEmail);
-        updateContent(mNameEmail.get(0), mNameEmail.get(1));
+        updateContent(mNameEmail.get(0));
         Button b = (Button) v.findViewById(R.id.goToSearch);
         b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -95,13 +92,11 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Set the text views to display the user's name and email.
+     * Set the text views to display the user's name.
      * @param name Name to be shown
-     * @param email Email to be shown
      */
-    public void updateContent(String name, String email) {
+    public void updateContent(String name) {
         mShowName.setText(name);
-        mShowEmail.setText(email);
     }
 
     /**

@@ -1,7 +1,9 @@
 
 <resources>
 
-
+    <string name="SHARED_PREFS">edu.uw.tcss450.group4.PREFS</string>
+    <string name="IS_LOGGED_IN">loggedInStatus</string>
+    <string name="LOGGED_USER">loggedInUsername</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
