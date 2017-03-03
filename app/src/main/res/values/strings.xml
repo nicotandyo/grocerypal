@@ -1,3 +1,4 @@
+
 <resources>
 
 
@@ -653,6 +654,8 @@
     <string name="DROP_RECIPES_SQL">
      DROP TABLE IF EXISTS Recipes
     </string>
+
     <string name="logout_txt">Logout</string>
 
 </resources>
+

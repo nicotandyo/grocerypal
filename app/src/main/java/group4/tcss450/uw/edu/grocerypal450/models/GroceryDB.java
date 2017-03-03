@@ -1,3 +1,4 @@
+
 package group4.tcss450.uw.edu.grocerypal450.models;
 
 import android.content.ContentValues;
@@ -339,3 +340,4 @@ public class GroceryDB {
     }
 
 }
+
