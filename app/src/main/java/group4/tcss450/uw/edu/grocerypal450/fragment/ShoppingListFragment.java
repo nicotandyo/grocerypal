@@ -6,8 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,7 +41,7 @@ import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
  * This class handles the shopping list fragment.
  */
 
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment extends Fragment{
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
@@ -51,12 +53,14 @@ public class ShoppingListFragment extends Fragment {
     //private TextView mTextViewList;
     private ListView mListView;
 
+    private MyCustomAdapter mAdapter;
+
+    private AutoCompleteTextView mAutoTextView;
+
 
     private GroceryDB mShoplistDB;
 
-    static final int DELTA = 50;
-    enum Direction {LEFT, RIGHT;}
-    float historicX = Float.NaN, historicY = Float.NaN;
+
 
 
     /**
@@ -99,40 +103,29 @@ public class ShoppingListFragment extends Fragment {
                 new ArrayAdapter<String>(getActivity().getBaseContext(),
                         android.R.layout.simple_dropdown_item_1line,
                         ingredients);
-        final AutoCompleteTextView text = (AutoCompleteTextView) v.findViewById(R.id.shopListEditTextSearch);
-        text.setAdapter(adapter);
-        //mTextViewList = (TextView) v.findViewById(R.id.shopListTextView);
-        //mTextViewList.setMovementMethod(new ScrollingMovementMethod());
+        mAutoTextView = (AutoCompleteTextView) v.findViewById(R.id.shopListEditTextSearch);
+        mAutoTextView.setAdapter(adapter);
         List<String> stringList = new ArrayList<String>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
         }
 
-
-
-
-
-
         mListView = (ListView) v.findViewById(R.id.shopListListView);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, stringList);
-        mListView.setAdapter(adapter1);
-//        LstViewAdapter adapter1 = new LstViewAdapter(getActivity().getApplicationContext()
-//                , R.layout.item_list_shoplist,R.id.txt, stringList);
-//        mListView.setAdapter(adapter1);
+        mAdapter = new MyCustomAdapter(stringList, getActivity().getApplicationContext());
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = mListView.getItemAtPosition(position).toString();
-
-                text.postDelayed(new Runnable() {
+                Log.d("RUNNING", "V");
+                mAutoTextView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        text.showDropDown();
+                        mAutoTextView.showDropDown();
                     }
                 },500);
-                text.setText(item.substring(0, item.length()-5));
-                text.setSelection(text.getText().length());
+                mAutoTextView.setText(item.substring(0, item.length()-5));
+                mAutoTextView.setSelection(mAutoTextView.getText().length());
             }
         });
         updateTheList();
@@ -147,7 +140,7 @@ public class ShoppingListFragment extends Fragment {
             public void onClick(View v) {
 
                 boolean b;
-                String ingredient = text.getText().toString().trim().toLowerCase();
+                String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
                 }
@@ -175,7 +168,7 @@ public class ShoppingListFragment extends Fragment {
             public void onClick(View v) {
 
                 boolean b;
-                String ingredient = text.getText().toString().trim().toLowerCase();
+                String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
                 }
@@ -232,18 +225,6 @@ public class ShoppingListFragment extends Fragment {
 
             }
         });
-
-        //inventory button
-        Button i = (Button) v.findViewById(R.id.shopListBtnInven);
-        i.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ingredient = text.getText().toString().trim().toLowerCase();
-                sendToInven(ingredient);
-                updateTheList();
-            }
-        });
-
         return v;
     }
     /**
@@ -336,50 +317,115 @@ public class ShoppingListFragment extends Fragment {
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, stringList);
-        mListView.setAdapter(adapter1);
+        mAdapter = new MyCustomAdapter(stringList, getActivity().getApplicationContext());
+        mListView.setAdapter(mAdapter);
     }
 
-//    public class LstViewAdapter extends ArrayAdapter<String> {
-//        int groupid;
-//        List<String> item_list;
-//        ArrayList<String> desc;
-//        Context context;
-//        public LstViewAdapter(Context context, int vg, int id, List<String> item_list){
-//            super(context,vg, id, item_list);
-//            this.context=context;
-//            groupid=vg;
-//            this.item_list=item_list;
-//
-//        }
-//        // Hold views of the ListView to improve its scrolling performance
-//        public class ViewHolder {
-//            public TextView textview;
-//            public Button button;
-//
-//        }
-//
-//        public View getView(int position, View convertView, ViewGroup parent) {
-//
-//            View rowView = convertView;
-//            // Inflate the list_item.xml file if convertView is null
-//            if(rowView==null){
-//                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                rowView= inflater.inflate(groupid, parent, false);
-//                ViewHolder viewHolder = new ViewHolder();
-//                viewHolder.textview= (TextView) rowView.findViewById(R.id.txt);
-//                viewHolder.button= (Button) rowView.findViewById(R.id.bt);
-//                rowView.setTag(viewHolder);
-//
-//            }
-//            // Set text to each TextView of ListView item
-//            ViewHolder holder = (ViewHolder) rowView.getTag();
-//            holder.textview.setText(item_list.get(position));
-//            holder.button.setText(item_list.get(position));
-//            return rowView;
-//        }
-//
-//    }
 
+    /**
+     * CUSTOM ADAPTER
+     */
+    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
+        private List<String> list = new ArrayList<String>();
+        private Context context;
+
+
+
+        public MyCustomAdapter(List<String> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int pos) {
+            return list.get(pos);
+        }
+
+        @Override
+        public long getItemId(int pos) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.custom_shoplist_item, null);
+            }
+
+
+
+            //Handle TextView and display string from your list
+            TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
+            listItemText.setText(list.get(position));
+
+            //Handle buttons and add onClickListeners
+            Button decrement = (Button)view.findViewById(R.id.decrement_btn);
+            Button increment = (Button)view.findViewById(R.id.increment_btn);
+            Button moveInven = (Button)view.findViewById(R.id.saveToInven_btn);
+
+            decrement.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("DECREMENT", "ITEM");
+                    boolean b;
+                    String ingredient = mList.get(position).getIngredient();
+                    if(ingredient.length() < 1) {
+                        return;
+                    }
+                    b = removeFromList(ingredient);
+                    if(!b) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "unable to remove: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTheList();
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "item removed: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+            increment.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("INCREMENT", "ITEM");
+                    boolean b;
+                    String ingredient = mList.get(position).getIngredient();
+                    if(ingredient.length() < 1) {
+                        return;
+                    }
+                    b = addToList(ingredient);
+                    if(!b) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "unable to add: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTheList();
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "item added: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            moveInven.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("MOVE TO INVEN", "ITEM");
+                    String ingredient = mList.get(position).getIngredient();
+                    sendToInven(ingredient);
+                    updateTheList();
+                }
+            });
+
+            return view;
+        }
+    }
 }
