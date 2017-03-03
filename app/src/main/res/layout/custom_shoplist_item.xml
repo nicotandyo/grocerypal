@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:weightSum="1"
+    android:descendantFocusability="blocksDescendants">
+
+    <TextView
+        android:id="@+id/list_item_string"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:layout_weight="0.86" />
+
+    <Button
+        android:id="@+id/decrement_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/minusred"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05"/>
+
+    <Button
+        android:id="@+id/increment_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/plusgreen"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.05" />
+
+    <Button
+        android:id="@+id/saveToInven_btn"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/inventory"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
