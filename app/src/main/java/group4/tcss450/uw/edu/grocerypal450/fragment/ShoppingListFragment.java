@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -40,7 +41,7 @@ import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
  * This class handles the shopping list fragment.
  */
 
-public class ShoppingListFragment extends Fragment implements AdapterView.OnItemClickListener{
+public class ShoppingListFragment extends Fragment{
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";
 
@@ -59,26 +60,7 @@ public class ShoppingListFragment extends Fragment implements AdapterView.OnItem
 
     private GroceryDB mShoplistDB;
 
-    private int mSelected = -1;
 
-    static final int DELTA = 50;
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Button bInc = (Button)view.findViewById(R.id.increment_btn);
-        bInc.setVisibility(View.VISIBLE);
-        bInc.setEnabled(true);
-
-        Button bDec = (Button)view.findViewById(R.id.decrement_btn);
-        bDec.setVisibility(View.VISIBLE);
-        bDec.setEnabled(true);
-
-        mSelected = position;
-        mAdapter.notifyDataSetChanged();
-    }
-
-    enum Direction {LEFT, RIGHT;}
-    float historicX = Float.NaN, historicY = Float.NaN;
 
 
     /**
@@ -376,6 +358,8 @@ public class ShoppingListFragment extends Fragment implements AdapterView.OnItem
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.custom_shoplist_item, null);
             }
+
+
 
             //Handle TextView and display string from your list
             TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);

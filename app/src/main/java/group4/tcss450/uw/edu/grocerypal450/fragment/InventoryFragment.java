@@ -2,15 +2,19 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.widget.AdapterView;
@@ -38,6 +42,10 @@ public class InventoryFragment extends Fragment {
 
     //private TextView mTextViewList;
     private ListView mListViewInven;
+
+    private MyInvenAdapter mAdapter;
+
+    private AutoCompleteTextView mAutoTextView;
 
     private GroceryDB mInventoryDB;
 
@@ -79,8 +87,8 @@ public class InventoryFragment extends Fragment {
                 new ArrayAdapter<String>(getActivity().getBaseContext(),
                         android.R.layout.simple_dropdown_item_1line,
                         ingredients);
-        final AutoCompleteTextView text = (AutoCompleteTextView) v.findViewById(R.id.inventoryEditText);
-        text.setAdapter(adapter);
+        mAutoTextView = (AutoCompleteTextView) v.findViewById(R.id.inventoryEditText);
+        mAutoTextView.setAdapter(adapter);
 
         //mTextViewList = (TextView) v.findViewById(R.id.inventoryTextView);
        // mTextViewList.setMovementMethod(new ScrollingMovementMethod());
@@ -89,22 +97,21 @@ public class InventoryFragment extends Fragment {
             stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
         }
         mListViewInven = (ListView) v.findViewById(R.id.inventoryListView);
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, stringList);
-        mListViewInven.setAdapter(adapter1);
+        mAdapter = new MyInvenAdapter(stringList, getActivity().getApplicationContext());
+        mListViewInven.setAdapter(mAdapter);
         mListViewInven.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String item = mListViewInven.getItemAtPosition(position).toString();
 
-                text.postDelayed(new Runnable() {
+                mAutoTextView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        text.showDropDown();
+                        mAutoTextView.showDropDown();
                     }
                 },500);
-                text.setText(item.substring(0, item.length()-5));
-                text.setSelection(text.getText().length());
+                mAutoTextView.setText(item.substring(0, item.length()-5));
+                mAutoTextView.setSelection(mAutoTextView.getText().length());
             }
         });
 
@@ -119,7 +126,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 boolean b = false;
-                String ingredient = text.getText().toString().trim().toLowerCase();
+                String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
                 }
@@ -146,7 +153,7 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 boolean b = false;
-                String ingredient = text.getText().toString().trim().toLowerCase();
+                String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
                 }
@@ -173,17 +180,6 @@ public class InventoryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 clearAll();
-                updateTheList();
-            }
-        });
-
-        //move button
-        Button m = (Button) v.findViewById(R.id.invenMove);
-        m.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ingredient = text.getText().toString().trim().toLowerCase();
-                sendToShoplist(ingredient);
                 updateTheList();
             }
         });
@@ -274,9 +270,115 @@ public class InventoryFragment extends Fragment {
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, stringList);
-        mListViewInven.setAdapter(adapter1);
+        mAdapter = new MyInvenAdapter(stringList, getActivity().getApplicationContext());
+        mListViewInven.setAdapter(mAdapter);
 
+    }
+
+    /**
+     * CUSTOM ADAPTER
+     */
+    public class MyInvenAdapter extends BaseAdapter implements ListAdapter {
+        private List<String> list = new ArrayList<String>();
+        private Context context;
+
+
+
+        public MyInvenAdapter(List<String> list, Context context) {
+            this.list = list;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public Object getItem(int pos) {
+            return list.get(pos);
+        }
+
+        @Override
+        public long getItemId(int pos) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.custom_inventory_item, null);
+            }
+
+
+
+            //Handle TextView and display string from your list
+            TextView listItemText = (TextView)view.findViewById(R.id.list_item_inven_string);
+            listItemText.setText(list.get(position));
+
+            //Handle buttons and add onClickListeners
+            Button decrement = (Button)view.findViewById(R.id.decrementInven_btn);
+            Button increment = (Button)view.findViewById(R.id.incrementInven_btn);
+            Button moveInven = (Button)view.findViewById(R.id.saveToShop_btn);
+
+            decrement.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("DECREMENT", "ITEM");
+                    boolean b;
+                    String ingredient = mList.get(position).getIngredient();
+                    if(ingredient.length() < 1) {
+                        return;
+                    }
+                    b = removeFromList(ingredient);
+                    if(!b) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "unable to remove: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTheList();
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "item removed: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+            increment.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("INCREMENT", "ITEM");
+                    boolean b;
+                    String ingredient = mList.get(position).getIngredient();
+                    if(ingredient.length() < 1) {
+                        return;
+                    }
+                    b = addToList(ingredient);
+                    if(!b) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "unable to add: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        updateTheList();
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "item added: " + ingredient,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            moveInven.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Log.d("MOVE TO INVEN", "ITEM");
+                    String ingredient = mList.get(position).getIngredient();
+                    sendToShoplist(ingredient);
+                    updateTheList();
+                }
+            });
+
+            return view;
+        }
     }
 }

@@ -153,13 +153,39 @@ public class GroceryDB {
      * @return
      */
     public boolean moveItemShoplistToInven(Ingredient ingredient) {
+        int numRow = 0;
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 1);
-        Log.d("MOVE TO INVEN ", "WORKS");
-        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
-                + ingredient.getIngredient().toLowerCase() + "' AND quantity = " +
-                ingredient.getQuantity(),
-                null);
+
+        String query = "SELECT quantity FROM Ingredients WHERE ingredient = '" + ingredient.getIngredient()
+                + "' AND isInventory = 1";
+        Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
+        if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
+            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+                            + ingredient.getIngredient().toLowerCase() + "' AND quantity = " + ingredient.getQuantity(),
+                    null);
+
+        } else {
+            cursor.moveToFirst();
+            //Log.d("Q", cursor.getInt(0) + "");
+            //Log.d("Qi", ingredient.getQuantity() + "");
+            int quantityc = cursor.getInt(0);
+            int quantity = ingredient.getQuantity();
+            int quantityt = quantityc + quantity;
+
+            ContentValues cv1 = new ContentValues();
+            Log.d("Q", quantityt + "");
+            cv1.put("quantity", quantityt);
+            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv1, "ingredient = '"
+                            + ingredient.getIngredient().toLowerCase() + "' AND isInventory = 1",
+                    null);
+            deleteItemShoplist(ingredient.getIngredient());
+        }
+
+
+
+
+
         return numRow > 0;
     }
 
@@ -169,13 +195,34 @@ public class GroceryDB {
      * @return
      */
     public boolean moveItemInvenToShoplist(Ingredient ingredient) {
+        int numRow = 0;
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 0);
-        Log.d("MOVE TO SHOPLIST ", "WORKS");
-        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
-                        + ingredient.getIngredient().toLowerCase() + "' AND quantity = " +
-                        ingredient.getQuantity(),
-                null);
+
+        String query = "SELECT quantity FROM Ingredients WHERE ingredient = '" + ingredient.getIngredient()
+                + "' AND isInventory = 0";
+        Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
+        if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
+            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+                            + ingredient.getIngredient().toLowerCase() + "' AND quantity = " + ingredient.getQuantity(),
+                    null);
+
+        } else {
+            cursor.moveToFirst();
+            //Log.d("Q", cursor.getInt(0) + "");
+            //Log.d("Qi", ingredient.getQuantity() + "");
+            int quantityc = cursor.getInt(0);
+            int quantity = ingredient.getQuantity();
+            int quantityt = quantityc + quantity;
+
+            ContentValues cv1 = new ContentValues();
+            Log.d("Q", quantityt + "");
+            cv1.put("quantity", quantityt);
+            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv1, "ingredient = '"
+                            + ingredient.getIngredient().toLowerCase() + "' AND isInventory = 0",
+                    null);
+            deleteItemInventory(ingredient.getIngredient());
+        }
         return numRow > 0;
     }
 
