@@ -16,15 +16,19 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults;
+import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder> {
     private List<Recipe> mRecipeSearchResults;
     private Context mContext;
+    private GroceryDB mDB;
 
     public RecyclerViewAdapter(Context context, List<Recipe> theList) {
+        mDB = ((ProfileActivity)context).getDB();
         mRecipeSearchResults = theList;
         mContext = context;
     }

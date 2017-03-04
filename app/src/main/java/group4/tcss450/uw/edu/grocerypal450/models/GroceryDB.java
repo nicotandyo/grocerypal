@@ -16,7 +16,7 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 
 public class GroceryDB {
 
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 3;
     private final String DB_NAME;
     private final String INGREDIENT_TABLE;
     private final String RECIPE_TABLE;
@@ -24,9 +24,9 @@ public class GroceryDB {
     private final String[] RECIPE_COLUMN_NAMES;
     private String mUsername;
 
-    private IngredientDBHelper mIngredientDBHelper;
-    private RecipeDBHelper mRecipeDBHelper;
-    private SQLiteDatabase mSQLiteDatabase;
+    //private IngredientDBHelper mIngredientDBHelper;
+    private GroceryDBHelper mDBHelper;
+    private SQLiteDatabase mDB;
 
     public GroceryDB(Context context, final String user) {
 
@@ -36,16 +36,16 @@ public class GroceryDB {
 
         DB_NAME = mUsername + "_" + context.getString(R.string.DB_NAME);
 
-        INGREDIENT_TABLE = user + "_" + context.getString(R.string.INGREDIENT_TABLE);
-        RECIPE_TABLE = user + "_" + context.getString(R.string.RECIPE_TABLE);
+        INGREDIENT_TABLE = mUsername + "_" + context.getString(R.string.INGREDIENT_TABLE);
+        RECIPE_TABLE = mUsername + "_" + context.getString(R.string.RECIPE_TABLE);
 
-        mIngredientDBHelper = new IngredientDBHelper(
+        mDBHelper = new GroceryDBHelper(
                 context, DB_NAME, null, DB_VERSION, mUsername);
-        mSQLiteDatabase = mIngredientDBHelper.getWritableDatabase();
+        mDB = mDBHelper.getWritableDatabase();
 
-        mRecipeDBHelper = new RecipeDBHelper(
-                context, DB_NAME, null, DB_VERSION, mUsername);
-        mSQLiteDatabase = mRecipeDBHelper.getWritableDatabase();
+//        mRecipeDBHelper = new RecipeDBHelper(
+//                context, DB_NAME, null, DB_VERSION, mUsername);
+//        mRecipeDB = mRecipeDBHelper.getWritableDatabase();
     }
 
     public boolean insertIngredient(String ingredient, int quantity, int isInventory) {
@@ -56,7 +56,7 @@ public class GroceryDB {
         contentValues.put(INGREDIENT_COLUMN_NAMES[2], isInventory);
         Log.d("CREATE ITEM", "WORKS");
 
-        long rowId = mSQLiteDatabase.insert(INGREDIENT_TABLE, null, contentValues);
+        long rowId = mDB.insert(INGREDIENT_TABLE, null, contentValues);
         return rowId != -1;
     }
 
@@ -77,14 +77,14 @@ public class GroceryDB {
         contentValues.put(RECIPE_COLUMN_NAMES[9], recipe.getDate().toString());
         Log.d("CREATE RECIPE", "WORKS");
 
-        long rowId = mSQLiteDatabase.insert(RECIPE_TABLE, null, contentValues);
+        long rowId = mDB.insert(RECIPE_TABLE, null, contentValues);
         return rowId != -1;
     }
 
 
 
     public void closeDB() {
-        mSQLiteDatabase.close();
+        mDB.close();
     }
 
 
@@ -102,7 +102,7 @@ public class GroceryDB {
         cv.put("quantity", ingredient.getQuantity() + 1);
         System.out.println("Increment: " + ingredient.getQuantity());
         //Log.d("INCREMENT", "WORKS");
-        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '" + ingredient.getIngredient().toLowerCase() + "' AND isInventory = " + type,
+        int numRow = mDB.update(INGREDIENT_TABLE, cv, "ingredient = '" + ingredient.getIngredient().toLowerCase() + "' AND isInventory = " + type,
                 null);
         return numRow > 0;
 
@@ -121,7 +121,7 @@ public class GroceryDB {
             type = 1;
         }
         //Log.d("DECREMENT 1", "WORKS");
-        int numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '" + ingredient.getIngredient().toLowerCase() + "' AND isInventory = " + type,
+        int numRow = mDB.update(INGREDIENT_TABLE, cv, "ingredient = '" + ingredient.getIngredient().toLowerCase() + "' AND isInventory = " + type,
                 null);
         return numRow > 0;
     }
@@ -133,7 +133,7 @@ public class GroceryDB {
      */
     public boolean deleteItemShoplist(String ingredient) {
         Log.d("DELETE ITEM", "WORKS");
-        return mSQLiteDatabase.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 0 ",
+        return mDB.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 0 ",
                 new String[] {String.valueOf(ingredient)}) > 0;
     }
 
@@ -144,7 +144,7 @@ public class GroceryDB {
      */
     public boolean deleteItemInventory(String ingredient) {
         Log.d("DELETE ITEM", "WORKS");
-        return mSQLiteDatabase.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 1 ",
+        return mDB.delete(INGREDIENT_TABLE, "ingredient = ? AND isInventory = 1 ",
                 new String[] {String.valueOf(ingredient)}) > 0;
     }
 
@@ -161,9 +161,9 @@ public class GroceryDB {
 
         String query = "SELECT quantity FROM " + mUsername +"_Ingredients WHERE ingredient = '" + ingredient.getIngredient()
                 + "' AND isInventory = 1";
-        Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
+        Cursor  cursor = mDB.rawQuery(query,null);
         if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
-            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+            numRow = mDB.update(INGREDIENT_TABLE, cv, "ingredient = '"
                             + ingredient.getIngredient().toLowerCase() + "' AND quantity = " + ingredient.getQuantity(),
                     null);
 
@@ -178,7 +178,7 @@ public class GroceryDB {
             ContentValues cv1 = new ContentValues();
             Log.d("Q", quantityt + "");
             cv1.put("quantity", quantityt);
-            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv1, "ingredient = '"
+            numRow = mDB.update(INGREDIENT_TABLE, cv1, "ingredient = '"
                             + ingredient.getIngredient().toLowerCase() + "' AND isInventory = 1",
                     null);
             deleteItemShoplist(ingredient.getIngredient());
@@ -203,9 +203,9 @@ public class GroceryDB {
 
         String query = "SELECT quantity FROM " + mUsername + "_Ingredients WHERE ingredient = '" + ingredient.getIngredient()
                 + "' AND isInventory = 0";
-        Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
+        Cursor  cursor = mDB.rawQuery(query,null);
         if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
-            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv, "ingredient = '"
+            numRow = mDB.update(INGREDIENT_TABLE, cv, "ingredient = '"
                             + ingredient.getIngredient().toLowerCase() + "' AND quantity = " + ingredient.getQuantity(),
                     null);
 
@@ -220,7 +220,7 @@ public class GroceryDB {
             ContentValues cv1 = new ContentValues();
             Log.d("Q", quantityt + "");
             cv1.put("quantity", quantityt);
-            numRow = mSQLiteDatabase.update(INGREDIENT_TABLE, cv1, "ingredient = '"
+            numRow = mDB.update(INGREDIENT_TABLE, cv1, "ingredient = '"
                             + ingredient.getIngredient().toLowerCase() + "' AND isInventory = 0",
                     null);
             deleteItemInventory(ingredient.getIngredient());
@@ -234,7 +234,7 @@ public class GroceryDB {
      */
     public void deleteAllShoplist() {
         Log.d("CLEAR ALL", "WORKS");
-        mSQLiteDatabase.delete(INGREDIENT_TABLE, "isInventory = 0 ", null);
+        mDB.delete(INGREDIENT_TABLE, "isInventory = 0 ", null);
     }
 
     /**
@@ -242,7 +242,7 @@ public class GroceryDB {
      */
     public void deleteAllInventory() {
         Log.d("CLEAR ALL", "WORKS");
-        mSQLiteDatabase.delete(INGREDIENT_TABLE, "isInventory = 1 ", null);
+        mDB.delete(INGREDIENT_TABLE, "isInventory = 1 ", null);
     }
 
     /**
@@ -252,7 +252,7 @@ public class GroceryDB {
     public List<Ingredient> getIngredients() {
 
 
-        Cursor c = mSQLiteDatabase.query(
+        Cursor c = mDB.query(
                 INGREDIENT_TABLE,  // The table to query
                 INGREDIENT_COLUMN_NAMES,                               // The INGREDIENT_COLUMN_NAMES to return
                 null,                                // The INGREDIENT_COLUMN_NAMES for the WHERE clause
@@ -277,7 +277,7 @@ public class GroceryDB {
     public List<Recipe> getRecipes() {
 
 
-        Cursor c = mSQLiteDatabase.query(
+        Cursor c = mDB.query(
                 RECIPE_TABLE,  // The table to query
                 RECIPE_COLUMN_NAMES,                      // The RECIPE_COLUMN_NAMES to return
                 null,                                // The RECIPE_COLUMN_NAMES for the WHERE clause
@@ -328,7 +328,7 @@ public class GroceryDB {
         ContentValues cv = new ContentValues();
         int isFavorite = recipe.getIsFav() ? 1 : 0;
         cv.put("isFavorite", isFavorite);
-        int numRow = mSQLiteDatabase.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
+        int numRow = mDB.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
         return numRow > 0;
     }
 
@@ -336,43 +336,24 @@ public class GroceryDB {
         ContentValues cv = new ContentValues();
         String date = recipe.getDate().toString();
         cv.put("date", date);
-        int numRow = mSQLiteDatabase.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
+        int numRow = mDB.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
         return numRow > 0;
     }
 
-    class IngredientDBHelper extends SQLiteOpenHelper {
+    class GroceryDBHelper extends SQLiteOpenHelper {
 
         private final String CREATE_INGREDIENTS_SQL;
 
         private final String DROP_INGREDIENTS_SQL;
 
-        public IngredientDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
-            super(context, name, factory, version);
-            CREATE_INGREDIENTS_SQL = String.format(context.getString(R.string.CREATE_INGREDIENTS_SQL), user);
-            DROP_INGREDIENTS_SQL = String.format(context.getString(R.string.DROP_INGREDIENTS_SQL), user);
-
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            sqLiteDatabase.execSQL(CREATE_INGREDIENTS_SQL);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-            sqLiteDatabase.execSQL(DROP_INGREDIENTS_SQL);
-            onCreate(sqLiteDatabase);
-        }
-    }
-
-    class RecipeDBHelper extends SQLiteOpenHelper {
-
         private final String CREATE_RECIPES_SQL;
 
         private final String DROP_RECIPES_SQL;
 
-        public RecipeDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
+        public GroceryDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
             super(context, name, factory, version);
+            CREATE_INGREDIENTS_SQL = String.format(context.getString(R.string.CREATE_INGREDIENTS_SQL), user);
+            DROP_INGREDIENTS_SQL = String.format(context.getString(R.string.DROP_INGREDIENTS_SQL), user);
             CREATE_RECIPES_SQL = String.format(context.getString(R.string.CREATE_RECIPES_SQL), user);
             DROP_RECIPES_SQL = String.format(context.getString(R.string.DROP_RECIPES_SQL), user);
 
@@ -380,15 +361,16 @@ public class GroceryDB {
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
+            sqLiteDatabase.execSQL(CREATE_INGREDIENTS_SQL);
             sqLiteDatabase.execSQL(CREATE_RECIPES_SQL);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+            sqLiteDatabase.execSQL(DROP_INGREDIENTS_SQL);
             sqLiteDatabase.execSQL(DROP_RECIPES_SQL);
             onCreate(sqLiteDatabase);
         }
     }
-
 }
 

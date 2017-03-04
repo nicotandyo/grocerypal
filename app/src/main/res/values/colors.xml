@@ -8,4 +8,9 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#A6A6A6</color>
+    <color name="invenBg">#C6FE5C</color>
+    <color name="invenBtn">#56B100</color>
+    <color name="shoplistBg">#626EB9</color>
+    <color name="shoplistBtn">#1B1A59</color>
+    <color name="shoplistBdr">#B5FB00</color>
 </resources>
