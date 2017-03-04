@@ -2,7 +2,7 @@ package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,8 @@ import group4.tcss450.uw.edu.grocerypal450.R;
  */
 public class PlannerFragment extends Fragment {
 
+    /** The TAG for the ShoppingListFragment. */
+    public static final String TAG = "PlannerFragment";
     /**
      * This is the constructor.
      */
