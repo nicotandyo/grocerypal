@@ -16,7 +16,7 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 
 public class GroceryDB {
 
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 4;
     private final String DB_NAME;
     private final String INGREDIENT_TABLE;
     private final String RECIPE_TABLE;
@@ -36,8 +36,8 @@ public class GroceryDB {
 
         DB_NAME = mUsername + "_" + context.getString(R.string.DB_NAME);
 
-        INGREDIENT_TABLE = user + "_" + context.getString(R.string.INGREDIENT_TABLE);
-        RECIPE_TABLE = user + "_" + context.getString(R.string.RECIPE_TABLE);
+        INGREDIENT_TABLE = mUsername + "_" + context.getString(R.string.INGREDIENT_TABLE);
+        RECIPE_TABLE = mUsername + "_" + context.getString(R.string.RECIPE_TABLE);
 
         mIngredientDBHelper = new IngredientDBHelper(
                 context, DB_NAME, null, DB_VERSION, mUsername);
