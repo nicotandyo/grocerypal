@@ -90,6 +90,14 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        Button buttonPlanner = (Button) v.findViewById(R.id.goToPlanner);
+        buttonPlanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToMealPlanner();
+            }
+        });
+
         return v;
     }
 
@@ -147,5 +155,16 @@ public class ProfileFragment extends Fragment {
         ShoppingListFragment fragment = new ShoppingListFragment();
         ft.replace(R.id.fragmentContainer, fragment, ShoppingListFragment.TAG);
         ft.addToBackStack(ShoppingListFragment.TAG).commit();
+    }
+
+    /**
+     * Replace this fragment with the meal planner fragment.
+     */
+    private void goToMealPlanner(){
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        PlannerFragment fragment = new PlannerFragment();
+        ft.replace(R.id.fragmentContainer, fragment, PlannerFragment.TAG);
+        ft.addToBackStack(PlannerFragment.TAG).commit();
     }
 }
