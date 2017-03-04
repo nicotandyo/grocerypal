@@ -26,7 +26,7 @@ public class PlannerFragment extends Fragment {
 
     private GroceryDB mDB;
 
-    private List<Recipe> mPlanner = new ArrayList<Recipe>();
+    private List<Recipe> mPlanner;
 
     private TextView mPlaceholder;
     /**
@@ -39,7 +39,7 @@ public class PlannerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPlaceholder = (TextView) getActivity().findViewById(R.id.planner_placeholder);
+        mPlanner = new ArrayList<Recipe>();
         mDB = ((ProfileActivity)getActivity()).getDB();
         //get all favorites and add to list
         List<Recipe> allRecipes = mDB.getRecipes();
@@ -51,7 +51,6 @@ public class PlannerFragment extends Fragment {
                 System.out.println(r.toString());
             }
         }
-        mPlaceholder.setText(mPlanner.toString());
     }
 
     /**
@@ -65,7 +64,10 @@ public class PlannerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_planner, container, false);
+        View v =  inflater.inflate(R.layout.fragment_planner, container, false);
+        mPlaceholder = (TextView) getActivity().findViewById(R.id.planner_placeholder);
+        mPlaceholder.setText("Planner goes here.");
+        return v;
     }
 
 }
