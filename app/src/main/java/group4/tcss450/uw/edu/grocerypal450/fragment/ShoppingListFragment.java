@@ -2,17 +2,12 @@
 
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,17 +15,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.concurrent.RunnableFuture;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
@@ -48,17 +39,14 @@ public class ShoppingListFragment extends Fragment{
 
 
     /** The list of what is in the shopping list. */
-    private List<Ingredient> mList = new ArrayList<Ingredient>();
-    /** The TextView that holds the shopping list. */
-
-    //private TextView mTextViewList;
+    private List<Ingredient> mList = new ArrayList<>();
+    /** The ListView. */
     private ListView mListView;
-
-    private MyCustomAdapter mAdapter;
-
+    /** ShoppingListAdapter to handle the ListView. */
+    private ShoppingListAdapter mAdapter;
+    /** AutoCompleteTextView for the ingredients. */
     private AutoCompleteTextView mAutoTextView;
-
-
+    /** The database. */
     private GroceryDB mShoplistDB;
 
 
@@ -101,18 +89,18 @@ public class ShoppingListFragment extends Fragment{
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity().getBaseContext(),
+                new ArrayAdapter<>(getActivity().getBaseContext(),
                         android.R.layout.simple_dropdown_item_1line,
                         ingredients);
         mAutoTextView = (AutoCompleteTextView) v.findViewById(R.id.shopListEditTextSearch);
         mAutoTextView.setAdapter(adapter);
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
         }
 
         mListView = (ListView) v.findViewById(R.id.shopListListView);
-        mAdapter = new MyCustomAdapter(stringList, getActivity().getApplicationContext());
+        mAdapter = new ShoppingListAdapter(stringList, getActivity().getApplicationContext());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -270,8 +258,8 @@ public class ShoppingListFragment extends Fragment{
     /**
 
      * Send the item to the inventory.
-     * @param ingredient
-     * @return
+     * @param ingredient is the ingredient to send
+     * @return true or false
      */
     private boolean sendToInven(String ingredient) {
         boolean isSent = false;
@@ -302,56 +290,70 @@ public class ShoppingListFragment extends Fragment{
      */
     private void updateTheList() {
         mList.clear();
-
-        //mTextViewList.setText("");
         mListView.setAdapter(null);
 
         List<Ingredient> list = mShoplistDB.getIngredients();
-        //System.out.println(list.toString());
         for(Ingredient i: list) {
             if(!i.isInventory()) {
                 mList.add(i);
             }
         }
-
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        mAdapter = new MyCustomAdapter(stringList, getActivity().getApplicationContext());
+        mAdapter = new ShoppingListAdapter(stringList, getActivity().getApplicationContext());
         mListView.setAdapter(mAdapter);
     }
 
 
     /**
-     * CUSTOM ADAPTER
+     * The adapter to generate and handle the listview for the ShoppingListFragment class.
      */
-    public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
-        private List<String> list = new ArrayList<String>();
+    public class ShoppingListAdapter extends BaseAdapter implements ListAdapter {
+        private List<String> list = new ArrayList<>();
         private Context context;
-
-
-
-        public MyCustomAdapter(List<String> list, Context context) {
+        ShoppingListAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
 
+        /**
+         * Get the size of the list.
+         * @return size of the list
+         */
         @Override
         public int getCount() {
             return list.size();
         }
 
+        /**
+         * Get the item on certain position.
+         * @param pos is the position
+         * @return the item
+         */
         @Override
         public Object getItem(int pos) {
             return list.get(pos);
         }
 
+        /**
+         * Return 0.
+         * @param pos is the position
+         * @return 0
+         */
         @Override
         public long getItemId(int pos) {
             return 0;
         }
 
+        /**
+         * Get the view.
+         * @param position is the position
+         * @param convertView is the View
+         * @param parent is the ViewGroup
+         * @return the View
+         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;

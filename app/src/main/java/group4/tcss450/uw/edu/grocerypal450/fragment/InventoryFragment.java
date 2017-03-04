@@ -5,7 +5,6 @@ package group4.tcss450.uw.edu.grocerypal450.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.view.LayoutInflater;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,16 +36,14 @@ public class InventoryFragment extends Fragment {
 
 
     /** The list of what is in the shopping list. */
-    private List<Ingredient> mList = new ArrayList<Ingredient>();
-    /** The TextView that holds the shopping list. */
-
-    //private TextView mTextViewList;
+    private List<Ingredient> mList = new ArrayList<>();
+    /** The ListView. */
     private ListView mListViewInven;
-
-    private MyInvenAdapter mAdapter;
-
+    /** The adapter than handles the listView. */
+    private InventoryListAdapter mAdapter;
+    /** The AutoCompleteTextView to enter the ingredients. */
     private AutoCompleteTextView mAutoTextView;
-
+    /** The database. */
     private GroceryDB mInventoryDB;
 
     /**
@@ -57,6 +53,10 @@ public class InventoryFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,20 +85,18 @@ public class InventoryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_inventory, container, false);
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity().getBaseContext(),
+                new ArrayAdapter<>(getActivity().getBaseContext(),
                         android.R.layout.simple_dropdown_item_1line,
                         ingredients);
         mAutoTextView = (AutoCompleteTextView) v.findViewById(R.id.inventoryEditText);
         mAutoTextView.setAdapter(adapter);
 
-        //mTextViewList = (TextView) v.findViewById(R.id.inventoryTextView);
-       // mTextViewList.setMovementMethod(new ScrollingMovementMethod());
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + "(x"+mList.get(i).getQuantity()+")");
         }
         mListViewInven = (ListView) v.findViewById(R.id.inventoryListView);
-        mAdapter = new MyInvenAdapter(stringList, getActivity().getApplicationContext());
+        mAdapter = new InventoryListAdapter(stringList, getActivity().getApplicationContext());
         mListViewInven.setAdapter(mAdapter);
         mListViewInven.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,7 +124,7 @@ public class InventoryFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
-                boolean b = false;
+                boolean b;
                 String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
@@ -153,7 +151,7 @@ public class InventoryFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
-                boolean b = false;
+                boolean b;
                 String ingredient = mAutoTextView.getText().toString().trim().toLowerCase();
                 if(ingredient.length() < 1) {
                     return;
@@ -206,7 +204,7 @@ public class InventoryFragment extends Fragment {
 
     /**
      * Remove ingredient from the list.
-     * @param ingredient
+     * @param ingredient is the ingredient to remove
      * @return true if ingredient is removed, false otherwise
      */
     private boolean removeFromList(String ingredient) {
@@ -236,8 +234,8 @@ public class InventoryFragment extends Fragment {
 
     /**
      * Send the item to the shopping list
-     * @param ingredient
-     * @return
+     * @param ingredient is the send to shopping list
+     * @return true or false
      */
     private boolean sendToShoplist(String ingredient) {
         boolean isSent = false;
@@ -267,44 +265,69 @@ public class InventoryFragment extends Fragment {
             }
         }
 
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for(int i=0; i<mList.size(); i++) {
             stringList.add(mList.get(i).getIngredient() + " (x"+mList.get(i).getQuantity()+")");
         }
-        mAdapter = new MyInvenAdapter(stringList, getActivity().getApplicationContext());
+        mAdapter = new InventoryListAdapter(stringList, getActivity().getApplicationContext());
         mListViewInven.setAdapter(mAdapter);
 
     }
 
     /**
-     * CUSTOM ADAPTER
+     * The adapter to generate and handle the listview for the InventoryFragment class.
      */
-    public class MyInvenAdapter extends BaseAdapter implements ListAdapter {
-        private List<String> list = new ArrayList<String>();
+    public class InventoryListAdapter extends BaseAdapter implements ListAdapter {
+        private List<String> list = new ArrayList<>();
         private Context context;
 
 
-
-        public MyInvenAdapter(List<String> list, Context context) {
+        /**
+         * Constructor for the InventoryListAdapter.
+         * @param list is the list
+         * @param context is the application context
+         */
+        InventoryListAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
 
+        /**
+         * Get the size of the list.
+         * @return the size of the list
+         */
         @Override
         public int getCount() {
             return list.size();
         }
 
+        /**
+         * Get the item in certain position.
+         * @param pos is the position
+         * @return the item in that position
+         */
         @Override
         public Object getItem(int pos) {
             return list.get(pos);
         }
 
+        /**
+         * Return 0
+         * @param pos is the position
+         * @return 0
+         */
         @Override
         public long getItemId(int pos) {
             return 0;
         }
 
+        /**
+         * Get the view.
+         * @param position is the position
+         * @param convertView is the View
+         * @param parent is the ViewGroup parent
+         * @return the modified view
+         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
@@ -319,7 +342,7 @@ public class InventoryFragment extends Fragment {
             TextView listItemText = (TextView)view.findViewById(R.id.list_item_inven_string);
             listItemText.setText(list.get(position));
 
-            //Handle buttons and add onClickListeners
+            //Handle buttons and the onClickListeners
             Button decrement = (Button)view.findViewById(R.id.decrementInven_btn);
             Button increment = (Button)view.findViewById(R.id.incrementInven_btn);
             Button moveInven = (Button)view.findViewById(R.id.saveToShop_btn);
