@@ -2,9 +2,6 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,7 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
-import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 
 /**
  * This fragment display's the user's name and email and offers
@@ -35,8 +31,9 @@ public class ProfileFragment extends Fragment {
      * ArrayList containing the arguments passed from MainActivity.
      */
     private ArrayList<String> mNameEmail;
-
+    /** TextView to show the name. */
     private TextView mShowName;
+    
     /**
      * Construct for ProfileFragment.
      */
@@ -44,6 +41,10 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
