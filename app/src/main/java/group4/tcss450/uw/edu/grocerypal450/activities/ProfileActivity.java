@@ -1,12 +1,15 @@
 
 package group4.tcss450.uw.edu.grocerypal450.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,11 +31,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.ArrayList;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
-import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
+import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;
+import group4.tcss450.uw.edu.grocerypal450.fragment.LoginFragment;
+import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ProfileFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch;
 import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
+import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 
 
 public class ProfileActivity extends AppCompatActivity {
@@ -46,6 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     /** Displays the current activity that you are in. */
     private String mActivityTitle;
+    /** DB for use by ProfileActivity's fragments */
+    private GroceryDB mDB;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -80,6 +88,10 @@ public class ProfileActivity extends AppCompatActivity {
         Intent sourceIntent = getIntent();
         ArrayList<String> userStuff = sourceIntent.getStringArrayListExtra("userInfo");
         args.putStringArrayList("userInfo", userStuff);
+        if(mDB == null) {
+            mDB = new GroceryDB(getApplicationContext(), userStuff.get(0));
+        }
+
         mProfileFragment.setArguments(args);
 
 
@@ -132,6 +144,9 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
                     case "Settings":
                         Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
+                        break;
+                    case "Log Out":
+                        goToLogin();
                         break;
                 }
 /*                FragmentTransaction transaction = getFragmentManager()
@@ -220,6 +235,7 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         }
 
+
         // Activate the navigation drawer toggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -269,10 +285,56 @@ public class ProfileActivity extends AppCompatActivity {
         client.disconnect();
     }
 
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (mProfileFragment != null && mProfileFragment.isVisible()) {
+            if (doubleBackToExitPressedOnce) {
+                //super.onBackPressed();
+                Log.d("BACK", "DONE");
+                moveTaskToBack(true);
+                finish();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(getApplicationContext(), "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /*
     @Override
     public void onFragmentInteraction(int color) {
 
     }
     */
+
+    public GroceryDB getDB() {
+        return mDB;
+    }
+
+    /**
+     * Replace this fragment with the Login fragment.
+     */
+    public void goToLogin(){
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        LoginFragment fragment = new LoginFragment();
+        SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
+        mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
+        mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
+        ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG);
+        ft.addToBackStack(LoginFragment.TAG).commit();
+    }
 }

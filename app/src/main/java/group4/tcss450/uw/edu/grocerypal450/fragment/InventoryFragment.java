@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
@@ -60,7 +61,7 @@ public class InventoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(mInventoryDB == null) {
-            mInventoryDB = new GroceryDB(getActivity().getApplicationContext());
+            mInventoryDB = ((ProfileActivity) getActivity()).getDB();
         }
         List<Ingredient> list = mInventoryDB.getIngredients();
         //System.out.println(list.toString());
