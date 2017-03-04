@@ -19,6 +19,11 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 public class RecipeResults extends Fragment {
 
     /**
+     * Base url of the web service which calls the Yummly API to get recipe results.
+     */
+    private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
+
+    /**
      * TextView to show the results.
      */
     private TextView mResults;

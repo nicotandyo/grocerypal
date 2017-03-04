@@ -16,33 +16,35 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 
 public class GroceryDB {
 
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
     private final String DB_NAME;
     private final String INGREDIENT_TABLE;
     private final String RECIPE_TABLE;
     private final String[] INGREDIENT_COLUMN_NAMES;
     private final String[] RECIPE_COLUMN_NAMES;
+    private String mUsername;
 
     private IngredientDBHelper mIngredientDBHelper;
     private RecipeDBHelper mRecipeDBHelper;
     private SQLiteDatabase mSQLiteDatabase;
 
-    public GroceryDB(Context context) {
+    public GroceryDB(Context context, final String user) {
 
         INGREDIENT_COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_INGREDIENT_NAMES);
         RECIPE_COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_RECIPE_NAMES);
+        mUsername = user;
 
-        DB_NAME = context.getString(R.string.DB_NAME);
+        DB_NAME = mUsername + "_" + context.getString(R.string.DB_NAME);
 
-        INGREDIENT_TABLE = context.getString(R.string.INGREDIENT_TABLE);
-        RECIPE_TABLE = context.getString(R.string.RECIPE_TABLE);
+        INGREDIENT_TABLE = user + "_" + context.getString(R.string.INGREDIENT_TABLE);
+        RECIPE_TABLE = user + "_" + context.getString(R.string.RECIPE_TABLE);
 
         mIngredientDBHelper = new IngredientDBHelper(
-                context, DB_NAME, null, DB_VERSION);
+                context, DB_NAME, null, DB_VERSION, mUsername);
         mSQLiteDatabase = mIngredientDBHelper.getWritableDatabase();
 
         mRecipeDBHelper = new RecipeDBHelper(
-                context, DB_NAME, null, DB_VERSION);
+                context, DB_NAME, null, DB_VERSION, mUsername);
         mSQLiteDatabase = mRecipeDBHelper.getWritableDatabase();
     }
 
@@ -157,7 +159,7 @@ public class GroceryDB {
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 1);
 
-        String query = "SELECT quantity FROM Ingredients WHERE ingredient = '" + ingredient.getIngredient()
+        String query = "SELECT quantity FROM " + mUsername +"_Ingredients WHERE ingredient = '" + ingredient.getIngredient()
                 + "' AND isInventory = 1";
         Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
         if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
@@ -199,7 +201,7 @@ public class GroceryDB {
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 0);
 
-        String query = "SELECT quantity FROM Ingredients WHERE ingredient = '" + ingredient.getIngredient()
+        String query = "SELECT quantity FROM " + mUsername + "_Ingredients WHERE ingredient = '" + ingredient.getIngredient()
                 + "' AND isInventory = 0";
         Cursor  cursor = mSQLiteDatabase.rawQuery(query,null);
         if(!(cursor.moveToFirst()) || cursor.getCount() ==0) {
@@ -344,10 +346,10 @@ public class GroceryDB {
 
         private final String DROP_INGREDIENTS_SQL;
 
-        public IngredientDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        public IngredientDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
             super(context, name, factory, version);
-            CREATE_INGREDIENTS_SQL = context.getString(R.string.CREATE_INGREDIENTS_SQL);
-            DROP_INGREDIENTS_SQL = context.getString(R.string.DROP_INGREDIENTS_SQL);
+            CREATE_INGREDIENTS_SQL = String.format(context.getString(R.string.CREATE_INGREDIENTS_SQL), user);
+            DROP_INGREDIENTS_SQL = String.format(context.getString(R.string.DROP_INGREDIENTS_SQL), user);
 
         }
 
@@ -369,10 +371,10 @@ public class GroceryDB {
 
         private final String DROP_RECIPES_SQL;
 
-        public RecipeDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        public RecipeDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
             super(context, name, factory, version);
-            CREATE_RECIPES_SQL = context.getString(R.string.CREATE_RECIPES_SQL);
-            DROP_RECIPES_SQL = context.getString(R.string.DROP_RECIPES_SQL);
+            CREATE_RECIPES_SQL = String.format(context.getString(R.string.CREATE_RECIPES_SQL), user);
+            DROP_RECIPES_SQL = String.format(context.getString(R.string.DROP_RECIPES_SQL), user);
 
         }
 
