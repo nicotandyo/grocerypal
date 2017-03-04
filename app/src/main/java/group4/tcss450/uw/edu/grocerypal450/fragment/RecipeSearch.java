@@ -363,6 +363,7 @@ public class RecipeSearch extends Fragment {
                 }
                 newRecipe.setIngredients(recipeIngredients);
                 recipeList.add(newRecipe);
+                System.out.println(newRecipe);
 
             }
 

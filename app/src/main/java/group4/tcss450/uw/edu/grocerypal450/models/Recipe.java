@@ -1,6 +1,7 @@
 
 package group4.tcss450.uw.edu.grocerypal450.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,7 +9,7 @@ import java.util.Date;
  * This class will be used to model a recipe returned as JSON
  * from a Yummly API call to a Java object for handling within the app.
  */
-public class Recipe {
+public class Recipe implements Serializable {
 
     /**
      * Name of the recipe.
@@ -156,6 +157,11 @@ public class Recipe {
 
     public float getRating() {
         return mRating;
+    }
+
+    @Override
+    public String toString() {
+        return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
     }
 
 }

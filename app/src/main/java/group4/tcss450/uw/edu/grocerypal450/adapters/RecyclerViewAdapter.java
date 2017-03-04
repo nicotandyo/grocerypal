@@ -1,6 +1,9 @@
 package group4.tcss450.uw.edu.grocerypal450.adapters;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
 
@@ -34,13 +38,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
-        Recipe tempRecipe = mRecipeSearchResults.get(i);
+        final Recipe tempRecipe = mRecipeSearchResults.get(i);
 
         //Render image using Picasso library
             Picasso.with(mContext).load(tempRecipe.getImgUrl())
                     .into(customViewHolder.imageView);
 
-
+        customViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction ft = ((FragmentActivity)mContext).getFragmentManager().beginTransaction();
+                RecipeResults fragment = new RecipeResults();
+                Bundle args = new Bundle();
+                args.putSerializable("RECIPE", tempRecipe);
+                fragment.setArguments(args);
+                ft.replace(R.id.fragmentContainer, fragment, RecipeResults.TAG);
+                ft.addToBackStack(RecipeResults.TAG).commit();
+            }
+        });
         customViewHolder.rightButton.setId(i);
         customViewHolder.rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
