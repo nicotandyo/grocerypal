@@ -5,6 +5,9 @@
     tools:context="group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch"
     >
 
-
+    <TextView
+        android:id="@+id/planner_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
