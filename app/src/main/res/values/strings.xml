@@ -29,7 +29,6 @@
     <string name="mealPlanner">Meal Planner</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>
-
     <string name="btn_inventory">Inventory</string>
     <string name="inventory">Inventory</string>
     <string name="text_add">Add</string>
@@ -323,7 +322,6 @@
         <item>green lentil</item>
         <item>green onion</item>
         <item>green pepper</item>
-        <item>ground beef</item>
         <item>ground beef</item>
         <item>ground black pepper</item>
         <item>ground chicken</item>
