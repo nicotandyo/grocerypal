@@ -219,7 +219,11 @@ public class ProfileActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.logout_settings) {
+            mProfileFragment.goToLogin();
+            return true;
         }
+
 
         // Activate the navigation drawer toggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -274,7 +278,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mProfileFragment != null) {
+        if (mProfileFragment != null && mProfileFragment.isVisible()) {
             if (doubleBackToExitPressedOnce) {
                 //super.onBackPressed();
                 Log.d("BACK", "DONE");

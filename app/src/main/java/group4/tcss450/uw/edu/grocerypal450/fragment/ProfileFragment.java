@@ -2,6 +2,8 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -119,6 +121,20 @@ public class ProfileFragment extends Fragment {
         InventoryFragment fragment = new InventoryFragment();
         ft.replace(R.id.fragmentContainer, fragment, InventoryFragment.TAG);
         ft.addToBackStack(InventoryFragment.TAG).commit();
+    }
+
+    /**
+     * Replace this fragment with the Login fragment.
+     */
+    public void goToLogin(){
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        LoginFragment fragment = new LoginFragment();
+        SharedPreferences mPrefs = getActivity().getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
+        mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
+        mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
+        ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG);
+        ft.addToBackStack(LoginFragment.TAG).commit();
     }
 
 
