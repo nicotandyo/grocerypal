@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.RunnableFuture;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
@@ -74,7 +75,7 @@ public class ShoppingListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(mShoplistDB == null) {
-            mShoplistDB = new GroceryDB(getActivity().getApplicationContext());
+            mShoplistDB = ((ProfileActivity) getActivity()).getDB();
         }
         List<Ingredient> list = mShoplistDB.getIngredients();
         //System.out.println(list.toString());

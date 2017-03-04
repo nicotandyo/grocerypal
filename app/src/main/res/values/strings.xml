@@ -14,6 +14,7 @@
         <item>Ingredient Inventory</item>
         <item>Shopping List</item>
         <item>Settings</item>
+        <item>Log Out</item>
     </string-array>
 
     <string name="app_name">GroceryPal</string>
@@ -640,22 +641,22 @@
     </string-array>
 
     <string name="CREATE_INGREDIENTS_SQL">
-     CREATE TABLE IF NOT EXISTS Ingredients
+     CREATE TABLE IF NOT EXISTS %1$s_Ingredients
      (id INTEGER PRIMARY KEY, ingredient VARCHAR(127) NOT NULL,
      quantity INTEGER NOT NULL, isInventory TINYINT NOT NULL DEFAULT 0)
     </string>
     <string name="DROP_INGREDIENTS_SQL">
-     DROP TABLE IF EXISTS Ingredients
+     DROP TABLE IF EXISTS %1$s_Ingredients
     </string>
 
     <string name="CREATE_RECIPES_SQL">
-     CREATE TABLE IF NOT EXISTS Recipes
+     CREATE TABLE IF NOT EXISTS %1$s_Recipes
      (id INTEGER PRIMARY KEY, name VARCHAR(127) NOT NULL, recipeId VARCHAR(127) NOT NULL, ingredients VARCHAR(511),
      image VARCHAR(127), numServings INTEGER, totalTime INTEGER, cuisine VARCHAR(127),
         ,rating FLOAT, isFavorite TINYINT NOT NULL DEFAULT 0, date VARCHAR(127))
     </string>
     <string name="DROP_RECIPES_SQL">
-     DROP TABLE IF EXISTS Recipes
+     DROP TABLE IF EXISTS %1$s_Recipes
     </string>
 
 
