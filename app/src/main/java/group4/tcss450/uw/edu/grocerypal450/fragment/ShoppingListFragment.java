@@ -359,7 +359,7 @@ public class ShoppingListFragment extends Fragment{
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.custom_shoplist_item, null);
+                view = inflater.inflate(R.layout.custom_shoplist_item, parent, false);
             }
 
 

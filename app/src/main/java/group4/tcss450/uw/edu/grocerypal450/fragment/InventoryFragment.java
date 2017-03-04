@@ -333,7 +333,7 @@ public class InventoryFragment extends Fragment {
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.custom_inventory_item, null);
+                view = inflater.inflate(R.layout.custom_inventory_item, parent, false);
             }
 
 
