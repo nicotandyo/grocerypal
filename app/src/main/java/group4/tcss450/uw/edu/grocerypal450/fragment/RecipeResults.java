@@ -53,8 +53,8 @@ public class RecipeResults extends Fragment {
     /**
      * Base url of the web service which calls the Yummly API to get recipe results.
      */
-    //private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
-    private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
+    private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
+    //private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
 
     /**
      * TextView to show the results.
@@ -182,6 +182,7 @@ public class RecipeResults extends Fragment {
         args.putString("RECIPE_URL", mRecipe.getRecipeUrl());
         fragment.setArguments(args);
         ft.replace(R.id.fragmentContainer, fragment, WebPage.TAG);
+        ft.addToBackStack(null);
         ft.commit();
     }
 
