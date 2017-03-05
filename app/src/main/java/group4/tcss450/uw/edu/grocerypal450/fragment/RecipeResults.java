@@ -1,13 +1,18 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -19,6 +24,17 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +54,14 @@ public class RecipeResults extends Fragment {
      * Base url of the web service which calls the Yummly API to get recipe results.
      */
     private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
+    //private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
 
     /**
      * TextView to show the results.
      */
     private Recipe mRecipe;
     private TextView mName;
+    private TextView mInfo;
     private ImageView mImage;
     private ListView mListView;
     private List<Ingredient> mIngredientList;
@@ -56,6 +74,23 @@ public class RecipeResults extends Fragment {
      */
     public RecipeResults() {
         // Required empty public constructor
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mRecipe = new Recipe();
+        if(getArguments() != null) {
+            mRecipe = (Recipe) getArguments().getSerializable("RECIPE");
+        }
+        System.out.println("Recipe result:" + mRecipe.toString());
+        mDB = ((ProfileActivity)getActivity()).getDB();
+        AsyncTask<String, Void, String> task = new GetRecipeTask();
+        task.execute(API_ENDPOINT, mRecipe.getRecipeId());
     }
 
 
@@ -71,22 +106,25 @@ public class RecipeResults extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recipe_results, container, false);
-        mRecipe = new Recipe();
-        if(getArguments() != null) {
-            mRecipe = (Recipe) getArguments().getSerializable("RECIPE");
-        }
-        System.out.println("Recipe result:" + mRecipe.toString());
-        //Render image using Picasso library
         mName = (TextView) v.findViewById(R.id.resultName);
         mImage = (ImageView) v.findViewById(R.id.resultImage);
         mListView = (ListView) v.findViewById(R.id.resultIngredients);
-        mDB = ((ProfileActivity)getActivity()).getDB();
+        mInfo = (TextView) v.findViewById(R.id.resultInfo);
+        mInfo.setText("Total time: " + mRecipe.getTotalTime()/60 + "\n"
+                    +"Number of Servings: " + mRecipe.getNumServings() + "\n"
+                    +"Rating: " + mRecipe.getRating());
         updateTheList();
 
         mName.setText(mRecipe.getRecipeName());
         //Render image using Picasso library
         Picasso.with(getActivity()).load(mRecipe.getImgUrl())
                 .into(mImage);
+        Button directions = (Button) v.findViewById(R.id.resultDirectionsBtn);
+        directions.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showDirections();
+            }
+        });
 
         return v;
     }
@@ -135,6 +173,17 @@ public class RecipeResults extends Fragment {
 
         mAdapter = new IngredientAdapter(mNewIngredients, getActivity().getApplicationContext());
         mListView.setAdapter(mAdapter);
+    }
+
+    private void showDirections() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        WebPage fragment = new WebPage();
+        Bundle args = new Bundle();
+        args.putString("RECIPE_URL", mRecipe.getRecipeUrl());
+        fragment.setArguments(args);
+        ft.replace(R.id.fragmentContainer, fragment, WebPage.TAG);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
 
@@ -235,5 +284,117 @@ public class RecipeResults extends Fragment {
 
             return view;
         }
+    }
+
+    private class GetRecipeTask extends AsyncTask<String, Void, String> {
+        private ProgressDialog dialog = new ProgressDialog(getActivity());
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Loading...");
+            this.dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            if (strings.length != 2) {
+                throw new IllegalArgumentException("Get recipe requires endpoint url and recipe ID.");
+            }
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            String url = strings[0];
+            try {
+                URL urlObject = new URL(url);
+                urlConnection = (HttpURLConnection) urlObject.openConnection();
+                urlConnection.setReadTimeout(10000);
+                urlConnection.setConnectTimeout(15000);
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
+                ArrayList<Pair> params = new ArrayList<Pair>();
+                params.add(new Pair("getRecipe", strings[1]));
+                wr.write(getQuery(params));
+                wr.flush();
+                InputStream content = urlConnection.getInputStream();
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                String s = "";
+                while ((s = buffer.readLine()) != null) {
+                    response += s;
+                }
+            } catch (Exception e) {
+                response = "Unable to connect, Reason: "
+                        + e.getMessage();
+            } finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            String mJsonString = result;
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            boolean error = false;
+            JSONObject response = null;
+            try {
+                response = new JSONObject(result);
+            } catch (JSONException e) {
+                System.out.println("JSONObject response error: " + e.getMessage());
+            }
+            if (result.startsWith("Unable to")) {
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG)
+                        .show();
+                return;
+            } else if (error) {
+                try {
+                    String errorResponse = response.getString("error_msg");
+                    Toast.makeText(getActivity(), errorResponse, Toast.LENGTH_LONG)
+                            .show();
+                    return;
+                } catch (JSONException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println(mJsonString);
+                parseJsonResult(result);
+
+
+            }
+        }
+    }
+
+    private void parseJsonResult(String result) {
+        try {
+            JSONObject recipe = new JSONObject(result);
+            JSONObject source = recipe.getJSONObject("source");
+            mRecipe.setRecipeUrl(source.getString("sourceRecipeUrl"));
+            mRecipe.setTotalTime(recipe.getInt("totalTimeInSeconds"));
+            mRecipe.setRating(((float)recipe.getDouble("rating")));
+            mRecipe.setNumServings(recipe.getInt("numberOfServings"));
+            mInfo.setText("Total time: " + mRecipe.getTotalTime()/60 + "\n"
+                    +"Number of Servings: " + mRecipe.getNumServings() + "\n"
+                    +"Rating: " + mRecipe.getRating());
+        } catch (JSONException e) {
+            System.err.println("Error parsing get recipe: " + e.getMessage());
+        }
+    }
+
+    private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+
+        for (Pair pair : params) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+            result.append(URLEncoder.encode((String) pair.first, "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode((String) pair.second, "UTF-8"));
+        }
+        return result.toString();
     }
 }
