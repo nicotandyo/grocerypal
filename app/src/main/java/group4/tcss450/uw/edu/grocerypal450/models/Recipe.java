@@ -41,6 +41,8 @@ public class Recipe implements Serializable {
 
     public float mRating;
 
+    public String mRecipeUrl;
+
 
 
     /**
@@ -159,13 +161,18 @@ public class Recipe implements Serializable {
         return mRating;
     }
 
+    public void setRecipeUrl(String url) {
+        mRecipeUrl = url;
+    }
+
+    public String getRecipeUrl() {
+        return mRecipeUrl;
+    }
+
     @Override
     public String toString() {
-        if(mIngredients != null) {
-            return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
-        } else {
-            return mRecipeName + " ID:" + mRecipeId;
-        }
+        return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
+
     }
 
 }
