@@ -177,7 +177,7 @@ public class RecipeResults extends Fragment {
                     if(i.isInventory()) {
                         view.setBackgroundColor(Color.parseColor("#C6FE5C"));
                     } else {
-                        view.setBackgroundColor(Color.parseColor("#626EB9"));
+                        view.setBackgroundColor(Color.parseColor("#929cdd"));
                     }
                 }
             }
