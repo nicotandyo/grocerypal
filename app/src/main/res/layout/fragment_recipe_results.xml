@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorPrimaryLight"
     tools:context="group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults"
     android:weightSum="1">
 
@@ -68,9 +69,11 @@
             android:id="@+id/resultInfo"/>
 
         <Button
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Directions"
+            android:text="View Recipe"
             android:id="@+id/resultDirectionsBtn"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
