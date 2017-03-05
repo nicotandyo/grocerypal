@@ -161,7 +161,11 @@ public class Recipe implements Serializable {
 
     @Override
     public String toString() {
-        return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
+        if(mIngredients != null) {
+            return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
+        } else {
+            return mRecipeName + " ID:" + mRecipeId;
+        }
     }
 
 }

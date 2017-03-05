@@ -1,13 +1,55 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_inventory"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults">
+    android:orientation="vertical"
+    tools:context="group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults"
+    android:weightSum="1">
 
-    <TextView
-        android:id="@+id/resultsPlaceholder"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Placeholder result text" />
+        android:layout_height="200dp"
+        android:id="@+id/resultImage"
+        android:layout_marginBottom="5dp"
+        android:scaleType="centerCrop"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/resultName"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="24sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Recipe" />
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Ingredients:"
+            android:layout_marginBottom="5dp"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="313dp"
+        android:id="@+id/resultIngredients"
+        android:layout_weight="0.74"
+        android:layout_marginBottom="10dp"/>
+
+
+</LinearLayout>
