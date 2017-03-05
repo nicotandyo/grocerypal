@@ -172,62 +172,66 @@ public class RecipeResults extends Fragment {
                 view = inflater.inflate(R.layout.custom_result_item, null);
             }
 
+            //Handle buttons and add onClickListeners
+            Button addInventory = (Button)view.findViewById(R.id.resultAddToInven);
+            Button addShopping = (Button)view.findViewById(R.id.resultAddToList);
+
             for(Ingredient i: mIngredientList) {
                 if(i.getIngredient().toLowerCase().equals(list.get(position))) {
+                    //addInventory.setBackgroundResource(0);
+                    //addShopping.setBackgroundResource(0);
                     if(i.isInventory()) {
+                        addShopping.setBackgroundResource(0);
                         view.setBackgroundColor(Color.parseColor("#C6FE5C"));
                     } else {
+                        addInventory.setBackgroundResource(0);
                         view.setBackgroundColor(Color.parseColor("#929cdd"));
                     }
+                } else {
+                    addInventory.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            boolean b;
+                            String ingredient = mNewIngredients.get(position);
+                            b = addToInventory(ingredient);
+                            if(!b) {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "unable to add: " + ingredient,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                updateTheList();
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "added to inventory: " + ingredient,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+                    addShopping.setOnClickListener(new View.OnClickListener(){
+                        @Override
+                        public void onClick(View v) {
+                            boolean b;
+                            String ingredient = mNewIngredients.get(position);
+                            b = addToList(ingredient);
+                            if(!b) {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "unable to add: " + ingredient,
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                updateTheList();
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                        "added to shopping: " + ingredient,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
                 }
             }
             //Handle TextView and display string from your list
             TextView listItemText = (TextView)view.findViewById(R.id.result_item_string);
             listItemText.setText(list.get(position));
-
-            //Handle buttons and add onClickListeners
-            Button addInventory = (Button)view.findViewById(R.id.resultAddToInven);
-            Button addShopping = (Button)view.findViewById(R.id.resultAddToList);
-
-            addInventory.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    boolean b;
-                    String ingredient = mNewIngredients.get(position);
-                    b = addToInventory(ingredient);
-                    if(!b) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "unable to add: " + ingredient,
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        updateTheList();
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "added to inventory: " + ingredient,
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
-
-            addShopping.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    boolean b;
-                    String ingredient = mNewIngredients.get(position);
-                    b = addToList(ingredient);
-                    if(!b) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "unable to add: " + ingredient,
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        updateTheList();
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "added to shopping: " + ingredient,
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
 
             return view;
         }
