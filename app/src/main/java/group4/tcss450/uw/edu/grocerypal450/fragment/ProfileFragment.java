@@ -33,7 +33,7 @@ public class ProfileFragment extends Fragment {
     private ArrayList<String> mNameEmail;
     /** TextView to show the name. */
     private TextView mShowName;
-    
+
     /**
      * Construct for ProfileFragment.
      */
