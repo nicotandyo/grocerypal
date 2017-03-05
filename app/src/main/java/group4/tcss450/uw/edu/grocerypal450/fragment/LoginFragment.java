@@ -105,11 +105,7 @@ public class LoginFragment extends Fragment {
             }
         });
         b = (Button) v.findViewById(R.id.goRegisterBtn);
-        b.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                goToRegister();
-            }
-        });
+
         return v;
     }
 
@@ -150,8 +146,7 @@ public class LoginFragment extends Fragment {
 
     private void loginProcess(String name, String password) {
 
-        AsyncTask<String, Void, String> task = new LoginTask();
-        task.execute(LOGIN_URL, name, password);
+
     }
 
     /**
