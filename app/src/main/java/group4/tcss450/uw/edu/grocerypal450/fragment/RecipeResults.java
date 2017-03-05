@@ -181,7 +181,7 @@ public class RecipeResults extends Fragment {
         Bundle args = new Bundle();
         args.putString("RECIPE_URL", mRecipe.getRecipeUrl());
         fragment.setArguments(args);
-        ft.replace(R.id.fragmentContainer, fragment, WebPage.TAG);
+        ft.add(R.id.fragmentContainer, fragment, WebPage.TAG);
         ft.addToBackStack(null);
         ft.commit();
     }
