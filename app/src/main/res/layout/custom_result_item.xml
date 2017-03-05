@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:weightSum="1"
+    android:descendantFocusability="blocksDescendants">
+
+    <TextView
+        android:layout_marginLeft="5dp"
+        android:id="@+id/result_item_string"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:layout_weight="0.86" />
+
+    <Button
+        android:id="@+id/resultAddToInven"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/inventory"/>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.075"/>
+
+    <Button
+        android:id="@+id/resultAddToList"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/shoppingcarticon"/>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"/>
+
+</LinearLayout>
