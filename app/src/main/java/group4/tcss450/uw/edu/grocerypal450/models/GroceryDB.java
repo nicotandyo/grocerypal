@@ -13,21 +13,34 @@ import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
 
-
+/**
+ * The class for the Ingredient and Recipe table.
+ */
 public class GroceryDB {
-
+    /** The version of the DB. */
     public static final int DB_VERSION = 3;
+    /** The database name. */
     private final String DB_NAME;
+    /** The ingredient table name. */
     private final String INGREDIENT_TABLE;
+    /** The recipe table name. */
     private final String RECIPE_TABLE;
+    /** The ingredient column names. */
     private final String[] INGREDIENT_COLUMN_NAMES;
+    /** The recipe column names. */
     private final String[] RECIPE_COLUMN_NAMES;
+    /** The username. */
     private String mUsername;
-
-    //private IngredientDBHelper mIngredientDBHelper;
+    /** Helper for GroceryDB. */
     private GroceryDBHelper mDBHelper;
+    /** The SQLiteDatabase. */
     private SQLiteDatabase mDB;
 
+    /**
+     * The constructor for the GroceryDB class.
+     * @param context is the contexy
+     * @param user is the user
+     */
     public GroceryDB(Context context, final String user) {
 
         INGREDIENT_COLUMN_NAMES = context.getResources().getStringArray(R.array.DB_INGREDIENT_NAMES);
@@ -42,12 +55,15 @@ public class GroceryDB {
         mDBHelper = new GroceryDBHelper(
                 context, DB_NAME, null, DB_VERSION, mUsername);
         mDB = mDBHelper.getWritableDatabase();
-
-//        mRecipeDBHelper = new RecipeDBHelper(
-//                context, DB_NAME, null, DB_VERSION, mUsername);
-//        mRecipeDB = mRecipeDBHelper.getWritableDatabase();
     }
 
+    /**
+     * Insert new ingredient to the ingredient table.
+     * @param ingredient is the ingredient
+     * @param quantity is the quantity
+     * @param isInventory is the inventory
+     * @return true or false
+     */
     public boolean insertIngredient(String ingredient, int quantity, int isInventory) {
         ContentValues contentValues = new ContentValues();
 
@@ -60,6 +76,11 @@ public class GroceryDB {
         return rowId != -1;
     }
 
+    /**
+     * Insert new recipe to the recipe table.
+     * @param recipe is the recipe
+     * @return true or false
+     */
     public boolean insertRecipe(Recipe recipe) {
         ContentValues contentValues = new ContentValues();
         int isFavorite = recipe.getIsFav() ? 1 : 0;
@@ -82,7 +103,9 @@ public class GroceryDB {
     }
 
 
-
+    /**
+     * Close the database.
+     */
     public void closeDB() {
         mDB.close();
     }
@@ -90,7 +113,7 @@ public class GroceryDB {
 
     /**
      * Increment item quantity by 1.
-     * @param ingredient
+     * @param ingredient is the ingredient
      * @return true if incremented
      */
     public boolean incrementIngredient(Ingredient ingredient) {
@@ -110,7 +133,7 @@ public class GroceryDB {
 
     /**
      * Decrement quantity by 1.
-     * @param ingredient
+     * @param ingredient is the ingredient
      * @return true if decremented
      */
     public boolean decrementIngredient(Ingredient ingredient) {
@@ -128,8 +151,8 @@ public class GroceryDB {
 
     /**
      * Delete item in the shopping list.
-     * @param ingredient
-     * @return
+     * @param ingredient is the ingredient
+     * @return true or false
      */
     public boolean deleteItemShoplist(String ingredient) {
         Log.d("DELETE ITEM", "WORKS");
@@ -139,8 +162,8 @@ public class GroceryDB {
 
     /**
      * Delete item in the inventory list.
-     * @param  ingredient
-     * @return true if item deleted
+     * @param  ingredient is the ingredient
+     * @return true if item deleted, false otherwise
      */
     public boolean deleteItemInventory(String ingredient) {
         Log.d("DELETE ITEM", "WORKS");
@@ -151,11 +174,11 @@ public class GroceryDB {
     /**
 
      * Move item from the shopping list to the inventory.
-     * @param ingredient
-     * @return
+     * @param ingredient is the ingredient
+     * @return true or false
      */
     public boolean moveItemShoplistToInven(Ingredient ingredient) {
-        int numRow = 0;
+        int numRow;
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 1);
 
@@ -169,8 +192,6 @@ public class GroceryDB {
 
         } else {
             cursor.moveToFirst();
-            //Log.d("Q", cursor.getInt(0) + "");
-            //Log.d("Qi", ingredient.getQuantity() + "");
             int quantityc = cursor.getInt(0);
             int quantity = ingredient.getQuantity();
             int quantityt = quantityc + quantity;
@@ -183,6 +204,7 @@ public class GroceryDB {
                     null);
             deleteItemShoplist(ingredient.getIngredient());
         }
+        cursor.close();
 
 
 
@@ -193,11 +215,11 @@ public class GroceryDB {
 
     /**
      * Move the item from the inventory to the shopping list.
-     * @param ingredient
-     * @return
+     * @param ingredient is the ingredient
+     * @return true or false
      */
     public boolean moveItemInvenToShoplist(Ingredient ingredient) {
-        int numRow = 0;
+        int numRow;
         ContentValues cv = new ContentValues();
         cv.put("isInventory", 0);
 
@@ -211,8 +233,6 @@ public class GroceryDB {
 
         } else {
             cursor.moveToFirst();
-            //Log.d("Q", cursor.getInt(0) + "");
-            //Log.d("Qi", ingredient.getQuantity() + "");
             int quantityc = cursor.getInt(0);
             int quantity = ingredient.getQuantity();
             int quantityt = quantityc + quantity;
@@ -225,11 +245,11 @@ public class GroceryDB {
                     null);
             deleteItemInventory(ingredient.getIngredient());
         }
+        cursor.close();
         return numRow > 0;
     }
 
     /**
-
      * Delete all item in the shopping list.
      */
     public void deleteAllShoplist() {
@@ -289,13 +309,6 @@ public class GroceryDB {
         c.moveToFirst();
         List<Recipe> list = new ArrayList<Recipe>();
         for (int i=0; i<c.getCount(); i++) {
-//            String name = c.getString(0);
-//            String recipeId = c.getString(1);
-//            String ingredients = c.getString(2);
-//            String img = c.getString(3);
-//            int isFav = c.getInt(4);
-//            String date = c.getString(5);
-
             Recipe recipe = new Recipe();
             recipe.setRecipeName(c.getString(0));
             recipe.setRecipeId(c.getString(1));
@@ -314,7 +327,11 @@ public class GroceryDB {
         return list;
     }
 
-    //helper method to convert CSV ingredients to ArrayList
+    /**
+     * helper method to convert CSV ingredients to ArrayList
+     * @param input is the string input
+     * @return the result
+     */
     private static ArrayList<String> stringToList(final String input) {
         String[] elements = input.substring(1, input.length() - 1).split(",");
         ArrayList<String> result = new ArrayList<String>(elements.length);
@@ -324,6 +341,11 @@ public class GroceryDB {
         return result;
     }
 
+    /**
+     * Update the favorite.
+     * @param recipe is the recipe
+     * @return true or false
+     */
     public boolean updateFavorite(Recipe recipe) {
         ContentValues cv = new ContentValues();
         int isFavorite = recipe.getIsFav() ? 1 : 0;
@@ -332,6 +354,11 @@ public class GroceryDB {
         return numRow > 0;
     }
 
+    /**
+     * Update the date.
+     * @param recipe is the recipe
+     * @return true or false
+     */
     public boolean updateDate(Recipe recipe) {
         ContentValues cv = new ContentValues();
         String date = recipe.getDate().toString();
@@ -340,17 +367,28 @@ public class GroceryDB {
         return numRow > 0;
     }
 
+    /**
+     * Helper class for the GroceryDB.
+     */
     class GroceryDBHelper extends SQLiteOpenHelper {
-
+        /** Create ingredients table. */
         private final String CREATE_INGREDIENTS_SQL;
-
+        /** Drop ingredients table. */
         private final String DROP_INGREDIENTS_SQL;
-
+        /** Create recipes table. */
         private final String CREATE_RECIPES_SQL;
-
+        /** Drop recipes table. */
         private final String DROP_RECIPES_SQL;
 
-        public GroceryDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
+        /**
+         * Constructor for the GroceryDBHelper.
+         * @param context is the app context
+         * @param name is the name
+         * @param factory is the CursorFactory
+         * @param version is the version
+         * @param user is the user
+         */
+       public GroceryDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String user) {
             super(context, name, factory, version);
             CREATE_INGREDIENTS_SQL = String.format(context.getString(R.string.CREATE_INGREDIENTS_SQL), user);
             DROP_INGREDIENTS_SQL = String.format(context.getString(R.string.DROP_INGREDIENTS_SQL), user);
@@ -359,12 +397,22 @@ public class GroceryDB {
 
         }
 
+        /**
+         * {@inheritDoc}
+         * @param sqLiteDatabase
+         */
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL(CREATE_INGREDIENTS_SQL);
             sqLiteDatabase.execSQL(CREATE_RECIPES_SQL);
         }
 
+        /**
+         * {@inheritDoc}
+         * @param sqLiteDatabase
+         * @param i
+         * @param i1
+         */
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
             sqLiteDatabase.execSQL(DROP_INGREDIENTS_SQL);
