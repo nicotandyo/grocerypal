@@ -26,6 +26,9 @@
     <string name="welcome">Welcome</string>
     <string name="searchHint">search by ingredient or recipe name</string>
     <string name="search">Search Recipes</string>
+    <string name="radioPlanner">Meal Planner</string>
+    <string name="radioSearch">Search Recipes</string>
+    <string name="radioFav">Favorites</string>
     <string name="mealPlanner">Meal Planner</string>
     <string name="add_ingredient">Add Ingredient</string>
     <string name="btn_shoppingList">Shopping List</string>

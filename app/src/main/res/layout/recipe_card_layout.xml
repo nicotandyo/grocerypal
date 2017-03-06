@@ -20,51 +20,60 @@
         android:id="@+id/recipe_card_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
-        android:paddingTop="36dp">
+        android:background="@color/colorPrimaryDark">
 
         <ImageView
             android:id="@+id/recipe_imageView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:scaleType="centerCrop" />
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY" />
 
         <LinearLayout
             android:id="@+id/recipe_image_overlay"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recipe_imageView"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:background="@color/colorAccent">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/add_planner_button"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:textColor="@color/black"
-                android:src="@android:drawable/ic_input_add"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true" />
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|left"
+                android:layout_weight="1"
+                android:layout_marginBottom="10dp"
+                android:background="#00ffffff"/>
 
             <TextView
                 android:id="@+id/recipe_name_textView"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_gravity="top|center"
                 android:textColor="@color/white"
-                android:textSize="10pt"
+                android:textSize="8pt"
+                android:maxLines="2"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:layout_toRightOf="@+id/add_planner_button"/>
 
             <ImageButton
                 android:id="@+id/add_favorite_button"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:src="@android:drawable/btn_star"
-                android:onClick="toggleFavorite"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|right"
+                android:layout_weight="1"
+                android:layout_marginBottom="10dp"
                 android:background="#00ffffff" /> //Needed to remove the button background
 
         </LinearLayout>
+
+
+
+
 
     </RelativeLayout>
 

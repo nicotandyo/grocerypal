@@ -49,7 +49,6 @@ public class Recipe implements Serializable {
      * Construct empty Recipe object.
      */
     public Recipe () {
-
     }
 
     /**
@@ -117,9 +116,7 @@ public class Recipe implements Serializable {
         mImage = imageUrl;
     }
 
-    public void setIsFav(boolean tf) {
-        isFavorite = tf;
-    }
+    public void setIsFav(boolean tf) { isFavorite = tf; }
 
     public void setDate(Date date) {
         mDate = date;
@@ -174,6 +171,8 @@ public class Recipe implements Serializable {
         return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
 
     }
+
+
 
 }
 
