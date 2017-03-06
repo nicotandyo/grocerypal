@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import java.util.List;
+
+import group4.tcss450.uw.edu.grocerypal450.Interface.MyCustomInterface;
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults;
@@ -26,11 +29,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Recipe> mRecipeSearchResults;
     private Context mContext;
     private GroceryDB mDB;
+    private MyCustomInterface mCustomInterface;
 
-    public RecyclerViewAdapter(Context context, List<Recipe> theList) {
+    public RecyclerViewAdapter(Context context, List<Recipe> theList, MyCustomInterface theInterface) {
         mDB = ((ProfileActivity)context).getDB();
         mRecipeSearchResults = theList;
         mContext = context;
+        mCustomInterface = theInterface;
     }
 
     @Override
@@ -41,9 +46,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
+    public void onBindViewHolder(final CustomViewHolder customViewHolder, int i) {
         final Recipe tempRecipe = mRecipeSearchResults.get(i);
 
+        Log.d("Recipe DATE = ", String.valueOf(tempRecipe.getDate()));
         //Render image using Picasso library
             Picasso.with(mContext).load(tempRecipe.getImgUrl())
                     .into(customViewHolder.imageView);
@@ -60,12 +66,39 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 ft.addToBackStack(RecipeResults.TAG).commit();
             }
         });
-        customViewHolder.rightButton.setId(i);
-        customViewHolder.rightButton.setOnClickListener(new View.OnClickListener() {
+
+        // Set appropriate icon depending on status of DATE value.
+
+        if(tempRecipe.getDate() != null) {
+            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_delete);
+        }
+        else {
+            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
+        }
+
+        // onClickListenr for planner button
+        customViewHolder.plannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int tempIndex = v.getId();
+                int position = customViewHolder.getLayoutPosition();
+                mCustomInterface.onPlannerClicked(position);
+            }
+        });
 
+        // Set appropriate icon depending on status of isFav value.
+        if(tempRecipe.getIsFav()) {
+            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_full);
+        }
+        else {
+            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_transparent);
+        }
+        // onClickListener for fav button.
+        customViewHolder.favButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = customViewHolder.getLayoutPosition();
+                Log.d("IsFave = ", String.valueOf(tempRecipe.getIsFav()));
+                mCustomInterface.onFavClicked(position);
             }
         });
         //Setting text view title
@@ -79,15 +112,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     class CustomViewHolder extends RecyclerView.ViewHolder {
         protected ImageView imageView;
-        protected ImageView leftButton;
-        protected ImageButton rightButton;
+        protected ImageButton plannerButton;
+        protected ImageButton favButton;
         protected TextView textView;
 
         public CustomViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.recipe_imageView);
-            leftButton = (ImageView) view.findViewById(R.id.add_planner_button);
-            rightButton = (ImageButton) view.findViewById(R.id.add_favorite_button);
+            plannerButton = (ImageButton) view.findViewById(R.id.add_planner_button);
+            favButton = (ImageButton) view.findViewById(R.id.add_favorite_button);
             textView = (TextView) view.findViewById(R.id.recipe_name_textView);
         }
     }
