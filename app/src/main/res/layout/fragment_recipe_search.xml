@@ -24,7 +24,6 @@
             android:hint="@string/searchHint"
             android:inputType="text"
             android:maxLines='1'
-            android:inputType="text"
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
 
@@ -65,59 +64,25 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/radioPlanner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:text="@string/radioPlanner"/>
 
-            <RadioButton
-                android:id="@+id/radioPlanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/radioPlanner" />
-        </LinearLayout>
-
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/radioSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:text="@string/radioSearch"/>
 
-            <RadioButton
-                android:id="@+id/radioSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/radioSearch" />
-        </LinearLayout>
-
-        <LinearLayout
+        <RadioButton
+            android:id="@+id/radioFav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:text="@string/radioFav"
+            />
 
-            <RadioButton
-                android:id="@+id/radioFav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/radioFav" />
-        </LinearLayout>
     </RadioGroup>
 
     <LinearLayout
