@@ -14,7 +14,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
+import java.util.Calendar;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.Interface.MyCustomInterface;
@@ -32,7 +35,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private MyCustomInterface mCustomInterface;
 
     public RecyclerViewAdapter(Context context, List<Recipe> theList, MyCustomInterface theInterface) {
-        mDB = ((ProfileActivity)context).getDB();
+        mDB = ((ProfileActivity) context).getDB();
         mRecipeSearchResults = theList;
         mContext = context;
         mCustomInterface = theInterface;
@@ -49,15 +52,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(final CustomViewHolder customViewHolder, int i) {
         final Recipe tempRecipe = mRecipeSearchResults.get(i);
 
-        Log.d("Recipe DATE = ", String.valueOf(tempRecipe.getDate()));
+        Log.d("Recipe DATE = ", String.valueOf(tempRecipe.mDate.get(Calendar.MONTH)));
         //Render image using Picasso library
-            Picasso.with(mContext).load(tempRecipe.getImgUrl())
-                    .into(customViewHolder.imageView);
+        Picasso.with(mContext).load(tempRecipe.getImgUrl())
+                .into(customViewHolder.imageView);
 
         customViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction ft = ((FragmentActivity)mContext).getFragmentManager().beginTransaction();
+                FragmentTransaction ft = ((FragmentActivity) mContext).getFragmentManager().beginTransaction();
                 RecipeResults fragment = new RecipeResults();
                 Bundle args = new Bundle();
                 args.putSerializable("RECIPE", tempRecipe);
@@ -69,11 +72,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // Set appropriate icon depending on status of DATE value.
 
-        if(tempRecipe.getDate() != null) {
-            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_delete);
-        }
-        else {
+        Log.d("date = ", String.valueOf(tempRecipe.mDate.get(Calendar.MONTH)));
+        if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
+
             customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
+        } else {
+            Log.d("else set delete", "");
+            int year = tempRecipe.mDate.get(Calendar.YEAR);
+            int month = tempRecipe.mDate.get(Calendar.MONTH);
+            int day = tempRecipe.mDate.get(Calendar.DAY_OF_MONTH);
+            StringBuilder str = new StringBuilder();
+            str.append(month + "-" + day + "-" + year);
+            customViewHolder.dateText.setText(str);
+            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_delete);
         }
 
         // onClickListenr for planner button
@@ -81,15 +92,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 int position = customViewHolder.getLayoutPosition();
+                Log.d("planner clicked ", "inside adapter");
                 mCustomInterface.onPlannerClicked(position);
             }
         });
 
         // Set appropriate icon depending on status of isFav value.
-        if(tempRecipe.getIsFav()) {
+        if (tempRecipe.getIsFav()) {
             customViewHolder.favButton.setImageResource(R.drawable.ic_heart_full);
-        }
-        else {
+        } else {
             customViewHolder.favButton.setImageResource(R.drawable.ic_heart_transparent);
         }
         // onClickListener for fav button.
@@ -115,6 +126,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         protected ImageButton plannerButton;
         protected ImageButton favButton;
         protected TextView textView;
+        protected TextView dateText;
 
         public CustomViewHolder(View view) {
             super(view);
@@ -122,6 +134,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             plannerButton = (ImageButton) view.findViewById(R.id.add_planner_button);
             favButton = (ImageButton) view.findViewById(R.id.add_favorite_button);
             textView = (TextView) view.findViewById(R.id.recipe_name_textView);
+            dateText = (TextView) view.findViewById(R.id.planner_date);
         }
     }
 }

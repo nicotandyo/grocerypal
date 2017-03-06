@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
@@ -85,6 +86,12 @@ public class GroceryDB {
         ContentValues contentValues = new ContentValues();
         int isFavorite = recipe.getIsFav() ? 1 : 0;
 
+        int year = recipe.mDate.get(Calendar.YEAR);
+        int month = recipe.mDate.get(Calendar.MONTH);
+        int day = recipe.mDate.get(Calendar.DAY_OF_MONTH);
+        StringBuilder str = new StringBuilder();
+        str.append(year + "-" + month + "-" + day);
+
         contentValues.put(RECIPE_COLUMN_NAMES[0], recipe.getRecipeName());
         contentValues.put(RECIPE_COLUMN_NAMES[1], recipe.getRecipeId());
         //store ingredients as CSV
@@ -95,7 +102,7 @@ public class GroceryDB {
         contentValues.put(RECIPE_COLUMN_NAMES[6], recipe.getCuisine());
         contentValues.put(RECIPE_COLUMN_NAMES[7], recipe.getRating());
         contentValues.put(RECIPE_COLUMN_NAMES[8], isFavorite);
-        contentValues.put(RECIPE_COLUMN_NAMES[9], recipe.getDate().toString());
+        contentValues.put(RECIPE_COLUMN_NAMES[9], str.toString());
         Log.d("CREATE RECIPE", "WORKS");
 
         long rowId = mDB.insert(RECIPE_TABLE, null, contentValues);
@@ -361,8 +368,13 @@ public class GroceryDB {
      */
     public boolean updateDate(Recipe recipe) {
         ContentValues cv = new ContentValues();
-        String date = recipe.getDate().toString();
-        cv.put("date", date);
+
+        int year = recipe.mDate.get(Calendar.YEAR);
+        int month = recipe.mDate.get(Calendar.MONTH);
+        int day = recipe.mDate.get(Calendar.DAY_OF_MONTH);
+        StringBuilder str = new StringBuilder();
+        str.append(year + "-" + month + "-" + day);
+        cv.put("date", str.toString());
         int numRow = mDB.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
         return numRow > 0;
     }
