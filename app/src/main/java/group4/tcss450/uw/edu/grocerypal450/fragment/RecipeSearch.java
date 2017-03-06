@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -174,17 +175,19 @@ public class RecipeSearch extends Fragment {
                 vp.setVisibility(v.VISIBLE);
             }
         });
-        mEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    addIngredientFromText();
-                    return true;
-                }
-                return false;
-            }
-        });
+//        mEditText.onEditorAction(new TextView.OnEditorActionListener() {
+//            public boolean onEditorAction(View v, int keyCode, KeyEvent event) {
+//                System.out.println(event.toString());
+//                // If the event is a key-down event on the "enter" button
+//                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+//                    addIngredientFromText();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
+
         //jump to list position on text typed.
         mEditText.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

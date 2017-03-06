@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,7 +64,7 @@ public class RecipeResults extends Fragment {
     private TextView mName;
     private TextView mInfo;
     private ImageView mImage;
-    private ListView mListView;
+    private LinearLayout mList;
     private List<Ingredient> mIngredientList;
     private List<String> mNewIngredients;
     private GroceryDB mDB;
@@ -108,7 +109,7 @@ public class RecipeResults extends Fragment {
         View v = inflater.inflate(R.layout.fragment_recipe_results, container, false);
         mName = (TextView) v.findViewById(R.id.resultName);
         mImage = (ImageView) v.findViewById(R.id.resultImage);
-        mListView = (ListView) v.findViewById(R.id.resultIngredients);
+        mList = (LinearLayout) v.findViewById(R.id.resultIngredients);
         mInfo = (TextView) v.findViewById(R.id.resultInfo);
         mInfo.setText("Total time: " + mRecipe.getTotalTime()/60 + "\n"
                     +"Number of Servings: " + mRecipe.getNumServings() + "\n"
@@ -166,13 +167,14 @@ public class RecipeResults extends Fragment {
      * Update the the value on the TextView.
      */
     private void updateTheList() {
-        mListView.setAdapter(null);
+        mList.removeAllViews();
 
         mIngredientList = mDB.getIngredients();
         mNewIngredients = mRecipe.getIngredients();
 
         mAdapter = new IngredientAdapter(mNewIngredients, getActivity().getApplicationContext());
-        mListView.setAdapter(mAdapter);
+        for(int i = 0 ; i < mAdapter.getCount(); i++)
+            mList.addView(mAdapter.getView(i, null, mList));
     }
 
     private void showDirections() {
@@ -215,6 +217,7 @@ public class RecipeResults extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+            System.out.println("CALLING GET VIEW");
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -224,11 +227,12 @@ public class RecipeResults extends Fragment {
             //Handle buttons and add onClickListeners
             Button addInventory = (Button)view.findViewById(R.id.resultAddToInven);
             Button addShopping = (Button)view.findViewById(R.id.resultAddToList);
+            //addShopping.setBackgroundResource(0);
+            //addInventory.setBackgroundResource(0);
+
 
             for(Ingredient i: mIngredientList) {
                 if(i.getIngredient().toLowerCase().equals(list.get(position))) {
-                    //addInventory.setBackgroundResource(0);
-                    //addShopping.setBackgroundResource(0);
                     if(i.isInventory()) {
                         addShopping.setBackgroundResource(0);
                         view.setBackgroundColor(Color.parseColor("#C6FE5C"));

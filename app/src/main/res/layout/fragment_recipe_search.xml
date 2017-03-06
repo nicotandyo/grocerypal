@@ -24,6 +24,7 @@
             android:completionThreshold="1"
             android:hint="@string/searchHint"
             android:maxLines='1'
+            android:inputType="text"
             android:textColor="@color/black"
             android:textColorHint="@color/grey" />
 
