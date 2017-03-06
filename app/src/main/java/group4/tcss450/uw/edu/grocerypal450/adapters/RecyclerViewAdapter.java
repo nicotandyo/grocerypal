@@ -56,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 Bundle args = new Bundle();
                 args.putSerializable("RECIPE", tempRecipe);
                 fragment.setArguments(args);
-                ft.replace(R.id.fragmentContainer, fragment, RecipeResults.TAG);
+                ft.add(R.id.fragmentContainer, fragment, RecipeResults.TAG);
                 ft.addToBackStack(RecipeResults.TAG).commit();
             }
         });
