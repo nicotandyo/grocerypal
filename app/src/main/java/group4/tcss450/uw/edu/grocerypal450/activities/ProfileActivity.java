@@ -40,7 +40,12 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 
-
+/**
+ * This class handles all of the activity after user login to the application.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
+ */
 public class ProfileActivity extends AppCompatActivity {
     /** mDrawerList populates the navigation drawer. */
     private ListView mDrawerList;
@@ -65,6 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ProfileFragment mProfileFragment;
 
     /**
+     * {@inheritDoc}
      * Creates the drawer on creation.
      * @param savedInstanceState
      */

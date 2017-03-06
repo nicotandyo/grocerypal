@@ -8,18 +8,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.util.Pair;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +43,9 @@ import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
 /**
  * This class will handle the result from the RecipeSearch class.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class RecipeResults extends Fragment {
 

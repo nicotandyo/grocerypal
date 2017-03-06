@@ -17,6 +17,9 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 /**
  * This fragment display's the user's name and email and offers
  * navigation options to the other fragments in the application.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class ProfileFragment extends Fragment {
     /**

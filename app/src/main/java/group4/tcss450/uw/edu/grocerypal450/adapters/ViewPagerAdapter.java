@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import java.util.Vector;
 
 /**
- * Created by fitz on 2/25/2017.
+ * This is a custom adapter class.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
-
 public class ViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;

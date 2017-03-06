@@ -9,7 +9,6 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,18 +20,43 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeResults;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
-
+/**
+ * This is a custom adapter for the RecyclerView.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
+ */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.CustomViewHolder> {
+    /**
+     * A list of recipe search results.
+     */
     private List<Recipe> mRecipeSearchResults;
+    /**
+     * The application context.
+     */
     private Context mContext;
+    /**
+     * The grocery database.
+     */
     private GroceryDB mDB;
 
+    /**
+     * Constructor for the RecyclerViewAdapter.
+     * @param context is the application context
+     * @param theList is a list of recipe
+     */
     public RecyclerViewAdapter(Context context, List<Recipe> theList) {
         mDB = ((ProfileActivity)context).getDB();
         mRecipeSearchResults = theList;
         mContext = context;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param viewGroup
+     * @param i
+     * @return
+     */
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recipe_card_layout, null);
@@ -40,6 +64,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return viewHolder;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param customViewHolder
+     * @param i
+     */
     @Override
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
         final Recipe tempRecipe = mRecipeSearchResults.get(i);
@@ -72,17 +101,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         customViewHolder.textView.setText(Html.fromHtml(tempRecipe.getRecipeName()));
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getItemCount() {
         return (null != mRecipeSearchResults ? mRecipeSearchResults.size() : 0);
     }
 
+    /**
+     * Custom view holder for the RecyclerView.
+     */
     class CustomViewHolder extends RecyclerView.ViewHolder {
+        /** The image view. */
         protected ImageView imageView;
+        /** The left button. */
         protected ImageView leftButton;
+        /** The right button. */
         protected ImageButton rightButton;
+        /** The TextView. */
         protected TextView textView;
 
+        /**
+         * The constructor for the CustomViewHolder.
+         * @param view is the view
+         */
         public CustomViewHolder(View view) {
             super(view);
             imageView = (ImageView) view.findViewById(R.id.recipe_imageView);

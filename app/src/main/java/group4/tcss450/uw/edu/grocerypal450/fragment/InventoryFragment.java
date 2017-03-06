@@ -28,13 +28,14 @@ import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
 /**
- * A simple {@link Fragment} subclass.
+ * This class let the user add or remove ingredients from the inventory.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class InventoryFragment extends Fragment {
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "InventoryFragment";
-
-
     /** The list of what is in the shopping list. */
     private List<Ingredient> mList = new ArrayList<>();
     /** The ListView. */

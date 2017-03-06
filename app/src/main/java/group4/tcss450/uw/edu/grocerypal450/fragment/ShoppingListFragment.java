@@ -30,9 +30,12 @@ import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
 
 /**
- * This class handles the shopping list fragment.
+ * This class lets the user add or remove ingredients from the shopping list
+ * and let the user export the results via email based applications.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgeral.
  */
-
 public class ShoppingListFragment extends Fragment{
     /** The TAG for the ShoppingListFragment. */
     public static final String TAG = "ShoppingListFragment";

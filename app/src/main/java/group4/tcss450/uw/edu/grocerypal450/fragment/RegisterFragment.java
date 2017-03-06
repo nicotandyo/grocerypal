@@ -38,6 +38,9 @@ import group4.tcss450.uw.edu.grocerypal450.models.User;
 
 /**
  * This class will let the user to register to the system.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class RegisterFragment extends Fragment {
     /** TAG for the RegisterFragment. */
@@ -127,7 +130,7 @@ public class RegisterFragment extends Fragment {
 
     /**
      * Check to make sure the name entered is not empty and in valid form.
-     * @param string
+     * @param string is the username
      * @return True if name is not empty and between 3 and 50 characters.
      */
     private boolean validateName(String string) {
@@ -136,8 +139,8 @@ public class RegisterFragment extends Fragment {
 
     /**
      * Validates the name field.
-     * @param pass
-     * @return true if not empty and less than 50 characters.
+     * @param pass is the password
+     * @return true if not empty and less than 50 characters
      */
     private boolean validatePass(String pass){
         return !(TextUtils.isEmpty(pass) || pass.length() > 50 || pass.length() < 8);
@@ -147,7 +150,7 @@ public class RegisterFragment extends Fragment {
      * Validates the password fields and ensures they match.
      * @param pass1 the first password
      * @param pass2 the second password
-     * @return true if not empty and pass1 and pass2 match.
+     * @return true if not empty and pass1 and pass2 match
      */
     private boolean validatePasswords(String pass1, String pass2) {
         return (pass1.equals(pass2));
@@ -290,8 +293,8 @@ public class RegisterFragment extends Fragment {
 
         /**
          * Get the query.
-         * @param params
-         * @return the string value of the result.
+         * @param params is the parameter
+         * @return the string value of the result
          * @throws UnsupportedEncodingException
          */
         private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
