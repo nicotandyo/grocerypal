@@ -1,15 +1,12 @@
 
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.renderscript.Sampler;
-import android.support.annotation.StringRes;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,24 +14,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -54,7 +45,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
 
 import group4.tcss450.uw.edu.grocerypal450.Interface.MyCustomInterface;
@@ -64,7 +54,8 @@ import group4.tcss450.uw.edu.grocerypal450.adapters.RecyclerViewAdapter;
 import group4.tcss450.uw.edu.grocerypal450.adapters.ViewPagerAdapter;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
-import group4.tcss450.uw.edu.grocerypal450.models.mDateSetListener;
+import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
+
 
 /**
  * This class allows the user to enter a search query
@@ -101,6 +92,8 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
     private RecyclerViewAdapter mAdapter;
 
+    private ArrayAdapter<String> mUserInventoryAdapter;
+
     private ArrayAdapter<String> mSuggestedAdapter;
 
     private ArrayAdapter<String> mSearchAdapter;
@@ -113,15 +106,19 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
     private List<Recipe> mUserRecipes;
 
+    private ListView mUserIngredientsListView;
+
     private ListView mSuggestedList;
 
     private ListView mSearchList;
 
     private List<String> tempStorage;
 
-    private List<String> mIngredientsToSearch;
+    private List<Ingredient> mUserIngredientsFromDB;
 
-    private List<String> mIngredientResourceList;
+    private List<String> mUserInventory;
+
+    private List<String> mIngredientsToSearch;
 
     private List<String> mSuggestedIngredients;
 
@@ -171,6 +168,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             mRecipeDB = ((ProfileActivity) getActivity()).getDB();
         }
         mUserRecipes = mRecipeDB.getRecipes();
+        mUserIngredientsFromDB = mRecipeDB.getIngredients();
         mDisplayList = new ArrayList<Recipe>();
         initViews();
 
@@ -245,9 +243,20 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         //sort suggested ingredients alphabetically.
         Collections.sort(mSuggestedIngredients);
 
+        mUserIngredientsListView = new ListView(v.getContext());
         mSuggestedList = new ListView(v.getContext());
         mSearchList = new ListView(v.getContext());
 
+        mUserInventoryAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+                R.layout.suggested_ingredient_list_item, mUserInventory);
+        mUserIngredientsListView.setAdapter(mUserInventoryAdapter);
+        mUserIngredientsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                int position, long id) {
+                //add from inventory to search list.
+            }
+        });
         // set the suggested ingredient list adapter
         mSuggestedAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
                 R.layout.suggested_ingredient_list_item, mSuggestedIngredients);
@@ -281,6 +290,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         });
 
         Vector<View> mPages = new Vector<View>();
+        mPages.add(mUserIngredientsListView);
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
         vp = (ViewPager) v.findViewById(R.id.view_pager);
@@ -442,7 +452,10 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         int mDay = c.get(Calendar.DAY_OF_MONTH);
         System.out.println("the selected " + mDay);
         Dialog mDialog = new Dialog(v.getContext());
+        //mDialog.setContentView(R.layout.custom_dialog);
         mDialog.show();
+
+
 
     }
 
@@ -508,6 +521,12 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
         mAdapter = new RecyclerViewAdapter(v.getContext(), recipes, this);
         mRecipeList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
     }
 
     /**
