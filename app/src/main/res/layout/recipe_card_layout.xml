@@ -16,45 +16,46 @@
         cardView:cardElevation="10dp"
         cardView:cardPreventCornerOverlap="false">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/recipe_card_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:background="@color/colorPrimaryDark">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_above="@id/recipe_imageView"
                 android:background="@color/colorAccent"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/planner_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:textSize="10pt" />
+                    android:textSize="8pt" />
 
             </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/recipe_imageView"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_centerInParent="true"
                 android:scaleType="fitXY" />
+
 
             <LinearLayout
                 android:id="@+id/recipe_image_overlay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_below="@id/recipe_imageView"
                 android:layout_centerHorizontal="true"
                 android:background="@color/colorAccent"
                 android:orientation="horizontal">
@@ -93,7 +94,7 @@
             </LinearLayout>
 
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
