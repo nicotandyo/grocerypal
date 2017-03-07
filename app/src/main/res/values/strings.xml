@@ -9,10 +9,8 @@
 
     <string-array name="nav_drawer_items">
         <item>Recipe Search</item>
-        <item>Meal Planner</item>
         <item>Ingredient Inventory</item>
         <item>Shopping List</item>
-        <item>Settings</item>
         <item>Log Out</item>
     </string-array>
 
@@ -661,7 +659,5 @@
     </string>
     <string name="logout_txt">Logout</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 
