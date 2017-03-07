@@ -13,18 +13,31 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 /**
  * This class is used to display web pages
  * for the recipe directions.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class WebPage extends Fragment {
-
+    /**
+     * The TAG for the WebPage fragment.
+     */
     public static final String TAG = "WebPage";
-
+    /**
+     * The URL for the web page.
+     */
     private String mUrl;
 
+    /**
+     * Constructor for the WebPage.
+     */
     public WebPage() {
         // Required empty public constructor
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +46,13 @@ public class WebPage extends Fragment {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

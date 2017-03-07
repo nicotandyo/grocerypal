@@ -10,13 +10,18 @@ import group4.tcss450.uw.edu.grocerypal450.fragment.LoginFragment;
 /**
  * This class serves as the entry point for the application,
  * handling the login and registration fragments.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class MainActivity extends AppCompatActivity {
-    /** mLoginFragment is the login fragment. */
+    /**
+     * mLoginFragment is the login fragment.
+     */
     private LoginFragment mLoginFragment;
 
     /**
-     * Displays the initial fragment to user on creation.
+     * {@inheritDoc}
      * @param savedInstanceState
      */
     @Override
