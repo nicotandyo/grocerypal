@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity" >
+    tools:context="group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity"
+    android:background="@color/colorPrimaryLight">
 
     <LinearLayout
         android:layout_width="wrap_content"
