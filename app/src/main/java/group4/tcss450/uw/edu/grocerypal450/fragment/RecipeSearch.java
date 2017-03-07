@@ -2,12 +2,12 @@
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Vector;
@@ -75,20 +74,14 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * Tag for RecipeSearch fragment.
      */
     public static final String TAG = "RecipeSearch";
-
-    private static final String DIALOG_DATE = "this.DateDialog";
     /**
      * Base url of the web service which calls the Yummly API to get recipe results.
      */
     private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
     /**
-     * Editext containing the user's search input.
+     * EditText containing the user's search input.
      */
-    private EditText mSearch;
-
     private EditText mEditText;
-
-
     /**
      * LinearLayout that contains a set of buttons used to display the returned recipes from the search.
      */
@@ -97,61 +90,106 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * String representing a JSON response for the user's API call.
      */
     private String mJsonString;
-
-    private View v;
-
+    /**
+     * View for this fragment.
+     */
+    private View mView;
+    /**
+     * RecyclerViewAdapter for the recipe search.
+     */
     private RecyclerViewAdapter mAdapter;
-
+    /**
+     * ViewPagerAdapter for the recipe search.
+     */
     private ViewPagerAdapter mPagerAdapter;
-
+    /**
+     * ArrayAdapter for the user inventory.
+     */
     private ArrayAdapter<String> mUserInventoryAdapter;
-
+    /**
+     * ArrayAdapter for the suggested recipe.
+     */
     private ArrayAdapter<String> mSuggestedAdapter;
-
+    /**
+     * ArrayAdapter for the search recipe.
+     */
     private ArrayAdapter<String> mSearchAdapter;
 
-    // The List holding the content currently being fed to the recycler view.
+    /**
+     * The List holding the content currently being fed to the recycler view.
+     */
     private List<Recipe> mDisplayList;
-
-    // The list
+    /**
+     * List to hold the results from the search recipe.
+     */
     private List<Recipe> mSearchResults;
-
+    /**
+     * List to hold the user's recipes.
+     */
     private List<Recipe> mUserRecipes;
-
+    /**
+     * ListView for the ingredients.
+     */
     private ListView mUserIngredientsListView;
-
+    /**
+     * ListView for the suggested recipe.
+     */
     private ListView mSuggestedList;
-
+    /**
+     * ListView for the search recipe.
+     */
     private ListView mSearchList;
-
-    private List<String> tempStorage;
-
-    private List<String> tempStorage2;
-
+    /**
+     * List of String for temporary storage.
+     */
+    private List<String> mTempStorage;
+    /**
+     * List of String for another temporary storage.
+     */
+    private List<String> mTempStorage2;
+    /**
+     * List of ingredients from the database.
+     */
     private List<Ingredient> mUserIngredientsFromDB;
-
+    /**
+     * List of user inventory.
+     */
     private List<String> mUserInventory;
-
+    /**
+     * List of ingredients to search.
+     */
     private List<String> mIngredientsToSearch;
-
+    /**
+     * List of suggested ingredients.
+     */
     private List<String> mSuggestedIngredients;
-
+    /**
+     * String array of ingredients.
+     */
     private String[] mIngredientArrayResource;
-
-    private ListView mListView;
-
-    private ViewPager vp;
-
-    private String searchParam;
-
+    /**
+     * ViewPager for the recipe research.
+     */
+    private ViewPager mViewPager;
+    /**
+     * String for the search parameter.
+     */
+    private String mSearchParameter;
+    /**
+     * Recipe database.
+     */
     private GroceryDB mRecipeDB;
-
+    /**
+     * Vector view for the page.
+     */
     private Vector<View> mPages;
-
-    private RadioButton srch;
+    /**
+     * RadioButton for the meal planner, favorites, and search.
+     */
+    private RadioButton mRadioButton;
 
     /**
-     * Construct a new RecipeSearch fragment.
+     * Constructor for the RecipeSearch fragment.
      */
     public RecipeSearch() {
         // Required empty public constructor
@@ -173,7 +211,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         mUserRecipes = mRecipeDB.getRecipes();
         mUserIngredientsFromDB = mRecipeDB.getIngredients();
         Log.d("# ingredients from db: ", String.valueOf(mUserIngredientsFromDB.size()));
-        mUserInventory = new ArrayList<String>();
+        mUserInventory = new ArrayList<>();
         Log.d("user ing from db = ", String.valueOf(mUserIngredientsFromDB.size()));
 
     }
@@ -191,44 +229,67 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
+        mView = inflater.inflate(R.layout.fragment_recipe_search, container, false);
 
 
-        mDisplayList = new ArrayList<Recipe>();
+        mDisplayList = new ArrayList<>();
         initViews();
 
         if (mUserIngredientsFromDB.size() > 0) {
             userInventoryList(mUserIngredientsFromDB);
         }
-        return v;
+        return mView;
     }
 
     /**
      * This method creates views and sets adapters where required.
      */
     private void initViews() {
-        tempStorage = new ArrayList();
-        tempStorage2 = new ArrayList();
+        mTempStorage = new ArrayList<>();
+        mTempStorage2 = new ArrayList<>();
         mIngredientArrayResource = getResources().getStringArray(R.array.auto_complete_ingredients);
-        mSuggestedIngredients = new ArrayList<String>(Arrays.asList(mIngredientArrayResource));
-        mIngredientsToSearch = new ArrayList();
+        mSuggestedIngredients = new ArrayList<>(Arrays.asList(mIngredientArrayResource));
+        mIngredientsToSearch = new ArrayList<>();
 
-        mEditText = (EditText) v.findViewById(R.id.recipeSearch);
-        //show listviews when editText clicked.
+        mEditText = (EditText) mView.findViewById(R.id.recipeSearch);
+        //show the ListView when the EditText is clicked.
         mEditText.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Set the visibility of the ViewPager.
+             * @param v is the view.
+             */
             @Override
             public void onClick(View v) {
-                vp.setVisibility(v.VISIBLE);
+                mViewPager.setVisibility(View.VISIBLE);
             }
         });
+
         //jump to list position on text typed.
         mEditText.addTextChangedListener(new TextWatcher() {
+            /**
+             * {@inheritDoc}
+             * @param s
+             * @param start
+             * @param count
+             * @param after
+             */
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            /**
+             * {@inheritDoc}
+             * @param s
+             * @param start
+             * @param before
+             * @param count
+             */
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
+            /**
+             * Jump to the list position after text changed.
+             * @param s is the text
+             */
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
@@ -236,20 +297,25 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
         });
 
-        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup);
-        srch = (RadioButton) v.findViewById(R.id.radioSearch);
-        srch.setVisibility(View.INVISIBLE);
+        final RadioGroup rg = (RadioGroup) mView.findViewById(R.id.radioGroup);
+        mRadioButton = (RadioButton) mView.findViewById(R.id.radioSearch);
+        mRadioButton.setVisibility(View.INVISIBLE);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            /**
+             * Respond to each RadioButton click.
+             * @param radioGroup is the RadioButton group
+             * @param i is the position
+             */
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 int id = rg.getCheckedRadioButtonId();
                 switch (id) {
-                    case (R.id.radioPlanner):
+                    case (R.id.radioPlanner): // meal planner
                         mDisplayList.clear();
-                        srch.setVisibility(View.VISIBLE);
+                        mRadioButton.setVisibility(View.VISIBLE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             Recipe tempRecipe = mUserRecipes.get(k);
-                            int year = mUserRecipes.get(k).mDate.get(Calendar.YEAR);
+                            int year = tempRecipe.mDate.get(Calendar.YEAR);
                             if (year != 1900) {
                                 mDisplayList.add(mUserRecipes.get(k));
                             }
@@ -257,15 +323,15 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                         populateList(mDisplayList);
                         break;
 
-                    case (R.id.radioSearch):
+                    case (R.id.radioSearch): // search
                         mDisplayList.clear();
                         mDisplayList.addAll(mSearchResults);
                         populateList(mDisplayList);
                         break;
-                    case (R.id.radioFav):
+                    case (R.id.radioFav): // favorites
                         Log.d("radioFav clicked", "");
                         mDisplayList.clear();
-                        srch.setVisibility(View.VISIBLE);
+                        mRadioButton.setVisibility(View.VISIBLE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             if (mUserRecipes.get(k).getIsFav()) {
                                 mDisplayList.add(mUserRecipes.get(k));
@@ -286,16 +352,24 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         Collections.sort(mSuggestedIngredients);
 
 
-        mSuggestedList = new ListView(v.getContext());
-        mSearchList = new ListView(v.getContext());
+        mSuggestedList = new ListView(mView.getContext());
+        mSearchList = new ListView(mView.getContext());
 
 
         // set the suggested ingredient list adapter
-        mSuggestedAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+        mSuggestedAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 R.layout.suggested_ingredient_list_item, mSuggestedIngredients);
         mSuggestedList.setAdapter(mSuggestedAdapter);
         // add ingredient to search list on item clicked.
         mSuggestedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param parent
+             * @param view
+             * @param position
+             * @param id
+             */
+            @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 addIngredientFromList(position);
@@ -303,6 +377,12 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         });
         // Close soft keyboard on list touched.
         mSuggestedList.setOnTouchListener(new View.OnTouchListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             * @param event
+             * @return
+             */
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // Close soft keyboard on list touched.
@@ -312,41 +392,59 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
         });
 
-        mSearchAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+        mSearchAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 R.layout.search_ingredient_list_item, mIngredientsToSearch);
         mSearchList.setAdapter(mSearchAdapter);
         mSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param parent
+             * @param view
+             * @param position
+             * @param id
+             */
+            @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 removeIngredient(position);
             }
         });
 
-        mPages = new Vector<View>();
+        mPages = new Vector<>();
 
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
-        vp = (ViewPager) v.findViewById(R.id.view_pager);
-        mPagerAdapter = new ViewPagerAdapter(v.getContext(), mPages);
-        vp.setAdapter(mPagerAdapter);
+        mViewPager = (ViewPager) mView.findViewById(R.id.view_pager);
+        mPagerAdapter = new ViewPagerAdapter(mView.getContext(), mPages);
+        mViewPager.setAdapter(mPagerAdapter);
 
-        ImageView i = (ImageView) v.findViewById(R.id.addIngredient);
+        ImageView i = (ImageView) mView.findViewById(R.id.addIngredient);
         i.setOnClickListener(new View.OnClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             */
+            @Override
             public void onClick(View v) {
                 addIngredientFromText();
             }
         });
 
 
-        Button b = (Button) v.findViewById(R.id.searchBtn);
+        Button b = (Button) mView.findViewById(R.id.searchBtn);
         b.setOnClickListener(new View.OnClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             */
+            @Override
             public void onClick(View v) {
                 search();
             }
         });
 
-        mRecipeList = (RecyclerView) v.findViewById(R.id.dynamic_recipeList);
-        LinearLayoutManager llm = new LinearLayoutManager(v.getContext());
+        mRecipeList = (RecyclerView) mView.findViewById(R.id.dynamic_recipeList);
+        LinearLayoutManager llm = new LinearLayoutManager(mView.getContext());
         mRecipeList.setLayoutManager(llm);
         mRecipeList.setHasFixedSize(true);
     }
@@ -357,11 +455,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      */
     private void addIngredientFromList(int position) {
         mEditText.getText().clear();
-        searchParam = mSuggestedList.getItemAtPosition(position).toString().toLowerCase();
-        mIngredientsToSearch.add(searchParam);
-        tempStorage.add(searchParam);
+        mSearchParameter = mSuggestedList.getItemAtPosition(position).toString().toLowerCase();
+        mIngredientsToSearch.add(mSearchParameter);
+        mTempStorage.add(mSearchParameter);
         Collections.sort(mIngredientsToSearch);
-        mSuggestedIngredients.remove(searchParam);
+        mSuggestedIngredients.remove(mSearchParameter);
         //mSuggestedAdapter.remove(mSuggestedAdapter.getItem(position));
         mSuggestedAdapter.notifyDataSetChanged();
         mSearchAdapter.notifyDataSetChanged();
@@ -373,19 +471,22 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      */
     private void addIngredientFromInventory(int position) {
         mEditText.getText().clear();
-        searchParam = mUserIngredientsListView.getItemAtPosition(position).toString().toLowerCase();
-        mIngredientsToSearch.add(searchParam);
-        mUserInventory.remove(searchParam);
-        tempStorage2.add(searchParam);
+        mSearchParameter = mUserIngredientsListView.getItemAtPosition(position).toString().toLowerCase();
+        mIngredientsToSearch.add(mSearchParameter);
+        mUserInventory.remove(mSearchParameter);
+        mTempStorage2.add(mSearchParameter);
         Collections.sort(mIngredientsToSearch);
         mUserInventoryAdapter.notifyDataSetChanged();
         mSearchAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Add ingredient from the text.
+     */
     private void addIngredientFromText() {
         if (mEditText.getText().toString().length() != 0) {
-            searchParam = mEditText.getText().toString().toLowerCase();
-            mIngredientsToSearch.add(searchParam);
+            mSearchParameter = mEditText.getText().toString().toLowerCase();
+            mIngredientsToSearch.add(mSearchParameter);
             mEditText.getText().clear();
             mSearchAdapter.notifyDataSetChanged();
         }
@@ -395,16 +496,16 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * This method removes an ingredient from the list of ingredients to search
      * and adds it back to the suggested ingredient list.
      *
-     * @param position
+     * @param position is the ingredient position
      */
     private void removeIngredient(int position) {
-        searchParam = mSearchList.getItemAtPosition(position).toString().toLowerCase();
-        mIngredientsToSearch.remove(searchParam);
-        if (tempStorage.contains(searchParam)) {
-            mSuggestedIngredients.add(searchParam);
+        mSearchParameter = mSearchList.getItemAtPosition(position).toString().toLowerCase();
+        mIngredientsToSearch.remove(mSearchParameter);
+        if (mTempStorage.contains(mSearchParameter)) {
+            mSuggestedIngredients.add(mSearchParameter);
         }
-        if (tempStorage2.contains(searchParam)) {
-            mUserInventory.add(searchParam);
+        if (mTempStorage2.contains(mSearchParameter)) {
+            mUserInventory.add(mSearchParameter);
         }
         Collections.sort(mSuggestedIngredients);
         Collections.sort(mUserInventory);
@@ -417,17 +518,18 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * Take the user input string from the edittext and send to the web service.
      */
     private void search() {
-        mSuggestedIngredients.addAll(tempStorage);
+        mSuggestedIngredients.addAll(mTempStorage);
         Collections.sort(mSuggestedIngredients);
         mDisplayList.clear();
         addIngredientFromText();
-        vp.setVisibility(v.GONE);
+        mViewPager.setVisibility(View.GONE);
         String encodedIngredient = "";
         for (int i = 0; i < mIngredientsToSearch.size(); i++) {
             encodedIngredient += "&allowedIngredient[]=" + mIngredientsToSearch.get(i).replace(" ", "+");
         }
         // Close soft keyboard on search button pressed.
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity().
+                getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
 
         Log.d("Search String = ", encodedIngredient);
@@ -441,7 +543,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * This meathod jumps to the position in a listview of the
      * first letter in the passed string.
      *
-     * @param theString
+     * @param theString is the name of the ingredients
      */
     private void jumpToPosition(String theString) {
         if (theString.length() != 0) {
@@ -454,6 +556,10 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param position
+     */
     @Override
     public void onFavClicked(int position) {
         Recipe tempRecipe = mDisplayList.get(position);
@@ -462,7 +568,9 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         }
 
         // Setting isFav from false to true
+
         if (!tempRecipe.getIsFav()) {
+            tempRecipe = mDisplayList.get(position);
             mDisplayList.get(position).setIsFav(true);
 
             // mUserRecipe list is empty then add favorite.
@@ -487,13 +595,15 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                         mUserRecipes.get(k).setIsFav(true);
                     }
                 }
-                if (add == true) {
+                if (add) {
                     mUserRecipes.add(tempRecipe);
                 }
             }
 
             Log.d("1 mUserRecipes size = ", String.valueOf(mUserRecipes.size()));
+
         } else if (tempRecipe.getIsFav()) {
+
             mDisplayList.get(position).setIsFav(false);
             tempRecipe = mDisplayList.get(position);
             Log.d("true to false set", "");
@@ -509,11 +619,12 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         mAdapter.notifyDataSetChanged();
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @param position
+     */
     @Override
     public void onPlannerClicked(final int position) {
-
-
         Recipe tempRecipe = mDisplayList.get(position);
         if(!mRecipeDB.isRecipeExist(tempRecipe)) {
             mRecipeDB.insertRecipe(tempRecipe);
@@ -527,9 +638,15 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             int day = curCal.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+                /**
+                 * {@inheritDoc}
+                 * @param view
+                 * @param year
+                 * @param month
+                 * @param day
+                 */
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int day) {
-
                     Recipe tempRecipe = mDisplayList.get(position);
                     tempRecipe.mDate.set(year, month + 1, day);
                 }
@@ -541,61 +658,80 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
             //if user list contains recipes
             if (mUserRecipes.size() > 0) {
-
                 //cycle thru user recipe list
                 for (int k = 0; k < mUserRecipes.size(); k++) {
                     // Recipe already in user list but date not set
                     if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
                             Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) == 1900) {
-                        mUserRecipes.get(k).mDate.set(Calendar.YEAR, tempRecipe.mDate.get(Calendar.YEAR));
-                        mUserRecipes.get(k).mDate.set(Calendar.MONTH, tempRecipe.mDate.get(Calendar.MONTH));
-                        mUserRecipes.get(k).mDate.set(Calendar.DAY_OF_MONTH, tempRecipe.mDate.get(Calendar.DAY_OF_MONTH));
+                        mUserRecipes.get(k).mDate.set(Calendar.YEAR, tempRecipe.mDate.
+                                get(Calendar.YEAR));
+                        mUserRecipes.get(k).mDate.set(Calendar.MONTH, tempRecipe.mDate.
+                                get(Calendar.MONTH));
+                        mUserRecipes.get(k).mDate.set(Calendar.DAY_OF_MONTH, tempRecipe.mDate.
+                                get(Calendar.DAY_OF_MONTH));
                         add = false;
                     }
                     // recipe already in user list with date set, make sure its not same date.
                     if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
                             Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) != 1900) {
-
                         // if same recipe trying to set for same day
-                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                        if (mUserRecipes.get(k).mDate.
+                                get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
+                                mUserRecipes.get(k).mDate.
+                                        get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.
+                                        get(Calendar.DAY_OF_MONTH) &&
+                                mUserRecipes.get(k).mDate.
+                                        get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
                             add = false;
                         }
                         // if some recipe already set on a specific date
-                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.
+                                get(Calendar.MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) ==
+                                        tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) ==
+                                        tempRecipe.mDate.get(Calendar.YEAR)) {
                             add = false;
-                            Toast.makeText(getActivity(), "You already have a recipe set on this date.",
+                            Toast.makeText(getActivity(),
+                                    "You already have a recipe set on this date.",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
                 }
             }
-            if (add = true) {
+            if (add) {
                 mUserRecipes.add(tempRecipe);
                 mAdapter.notifyDataSetChanged();
             }
-            //mRecipeDB.updateDate(tempRecipe);
-            DatePickerDialog hi = new DatePickerDialog(v.getContext(), dateListener, year, month, day);
+
+            DatePickerDialog hi = new DatePickerDialog(mView.getContext(), dateListener, year, month, day);
+
             hi.show();
         }
     }
 
-
+    /**
+     * Setup the user inventory list.
+     * @param theList is the ingredient list
+     */
     private void userInventoryList(List<Ingredient> theList) {
-        List<Ingredient> tempList = theList;
-        for (int z = 0; z < tempList.size(); z++) {
-            mUserInventory.add(tempList.get(z).getIngredient());
+        for (int z = 0; z < theList.size(); z++) {
+            mUserInventory.add(theList.get(z).getIngredient());
         }
         Log.d("mUserInventory size ", String.valueOf(mUserInventory.size()));
-        mUserIngredientsListView = new ListView(v.getContext());
-        mUserInventoryAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+        mUserIngredientsListView = new ListView(mView.getContext());
+        mUserInventoryAdapter = new ArrayAdapter<>(getActivity().getBaseContext(),
                 R.layout.suggested_ingredient_list_item, mUserInventory);
         mUserIngredientsListView.setAdapter(mUserInventoryAdapter);
         mPages.add(mUserIngredientsListView);
         mUserIngredientsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param parent
+             * @param view
+             * @param position
+             * @param id
+             */
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -606,13 +742,13 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     }
 
     /**
-     * Generate an ArrayList of Recipe objects based on the returned information in the JSON response from the Yummly API.
-     *
-     * @param stringResult
-     * @return
+     * Generate an ArrayList of Recipe objects based on the returned information in the JSON
+     * response from the Yummly API.
+     * @param stringResult is the result
+     * @return a list of recipe
      */
     private List<Recipe> parseResults(String stringResult) {
-        List<Recipe> recipeList = new ArrayList<Recipe>();
+        List<Recipe> recipeList = new ArrayList<>();
         try {
             //take the string response from the server and construct a JSONObject
             JSONObject jsonResult = new JSONObject(stringResult);
@@ -624,12 +760,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             //for the number of recipes in the response, create new Recipe Java Objects
             for (int i = 0; i < jsonRecipes.length(); i++) {
                 newRecipe = new Recipe();
-                ArrayList<String> recipeIngredients = new ArrayList<String>();
+                ArrayList<String> recipeIngredients = new ArrayList<>();
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 newRecipe.setRecipeId(jsonRecipe.getString("id"));
                 newRecipe.setRecipeName(jsonRecipe.getString("recipeName"));
-                newRecipe.mDate.set(1900, 01, 01);
-                //newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
+                newRecipe.mDate.set(1900, 1, 1);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
 
                 String small_image = jsonRecipe.getJSONObject("imageUrlsBySize").getString("90");
@@ -640,14 +775,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 for (int j = 0; j < jsonIngredients.length(); j++) {
                     String ingredient = jsonIngredients.getString(j);
                     recipeIngredients.add(ingredient);
-
                 }
                 newRecipe.setIngredients(recipeIngredients);
                 recipeList.add(newRecipe);
                 System.out.println(newRecipe);
-
             }
-
         } catch (JSONException e) {
             System.err.println("Exception parsing results: " + e.getMessage());
         }
@@ -657,8 +789,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     /**
      * Populate the LinearLayout in the RecipeSearch fragment to show the user the recipes that
      * were returned from their search.
-     *
-     * @param recipes
+     * @param recipes is the list of recipes
      */
     private void populateList(List<Recipe> recipes) {
         Log.d("populateList() called", "");
@@ -667,10 +798,13 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         //Remove previous search results from view if present.
         mRecipeList.removeAllViews();
 
-        mAdapter = new RecyclerViewAdapter(v.getContext(), recipes, this);
+        mAdapter = new RecyclerViewAdapter(mView.getContext(), recipes, this);
         mRecipeList.setAdapter(mAdapter);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -707,6 +841,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
          * @param strings
          * @return
          */
+        @SuppressWarnings("unchecked")
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length < 2) {
@@ -723,13 +858,14 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                ArrayList<Pair> params = new ArrayList<Pair>();
+                ArrayList<Pair> params = new ArrayList<>();
+
                 params.add(new Pair("search", strings[1]));
                 wr.write(getQuery(params));
                 wr.flush();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s = "";
+                String s;
                 while ((s = buffer.readLine()) != null) {
                     response += s;
                 }
@@ -749,7 +885,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
          */
         @Override
         protected void onPostExecute(String result) {
-            mSearchResults = new ArrayList<Recipe>();
+            mSearchResults = new ArrayList<>();
             mJsonString = result;
             if (dialog.isShowing()) {
                 dialog.dismiss();
@@ -764,19 +900,16 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG)
                         .show();
-                return;
-            } else if (error) {
+            } else if(error) {
                 try {
                     String errorResponse = response.getString("error_msg");
                     Toast.makeText(getActivity(), errorResponse, Toast.LENGTH_LONG)
                             .show();
-                    return;
                 } catch (JSONException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
                 System.out.println(mJsonString);
-                //mResults.setText(mJsonString);
                 mSearchResults = parseResults(mJsonString);
                 mDisplayList.addAll(mSearchResults);
                 populateList(mDisplayList);
@@ -791,6 +924,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * @return
      * @throws UnsupportedEncodingException
      */
+    @NonNull
     private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
