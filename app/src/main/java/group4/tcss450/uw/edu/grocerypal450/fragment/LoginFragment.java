@@ -166,6 +166,7 @@ public class LoginFragment extends Fragment {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RegisterFragment fragment = new RegisterFragment();
         ft.add(R.id.MainActivity_Frame, fragment, RegisterFragment.TAG);
+        ft.addToBackStack(null);
         ft.commit();
     }
 

@@ -142,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
                         ft.addToBackStack(ShoppingListFragment.TAG).commit();
                         break;
                     case "Log Out":
-                        goToLogin();
+                        goToLogout();
                         break;
                 }
                 mDrawerLayout.closeDrawer(mDrawerList);
@@ -293,7 +293,6 @@ public class ProfileActivity extends AppCompatActivity {
      * Replace this fragment with the Login fragment.
      */
     public void goToLogin(){
-
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         LoginFragment fragment = new LoginFragment();
         SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
@@ -301,5 +300,14 @@ public class ProfileActivity extends AppCompatActivity {
         mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
         ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG);
         ft.addToBackStack(LoginFragment.TAG).commit();
+
+
+    }
+    public void goToLogout() {
+        SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
+        mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
+        mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
+        Intent k = new Intent(this, MainActivity.class);
+        startActivity(k);
     }
 }
