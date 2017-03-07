@@ -1,13 +1,13 @@
 
 package group4.tcss450.uw.edu.grocerypal450.fragment;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.renderscript.Sampler;
-import android.support.annotation.StringRes;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,21 +15,20 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -46,15 +45,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
 
+import group4.tcss450.uw.edu.grocerypal450.Interface.MyCustomInterface;
 import group4.tcss450.uw.edu.grocerypal450.R;
+import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.adapters.RecyclerViewAdapter;
 import group4.tcss450.uw.edu.grocerypal450.adapters.ViewPagerAdapter;
+import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
+import group4.tcss450.uw.edu.grocerypal450.models.Ingredient;
 
 
 /**
@@ -65,11 +70,13 @@ import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
  * @author Nico Tandyo
  * @author Patrick Fitzgerald
  */
-public class RecipeSearch extends Fragment {
+public class RecipeSearch extends Fragment implements MyCustomInterface {
     /**
      * Tag for RecipeSearch fragment.
      */
     public static final String TAG = "RecipeSearch";
+
+    private static final String DIALOG_DATE = "this.DateDialog";
     /**
      * Base url of the web service which calls the Yummly API to get recipe results.
      */
@@ -95,13 +102,23 @@ public class RecipeSearch extends Fragment {
 
     private RecyclerViewAdapter mAdapter;
 
+    private ViewPagerAdapter mPagerAdapter;
+
+    private ArrayAdapter<String> mUserInventoryAdapter;
+
     private ArrayAdapter<String> mSuggestedAdapter;
 
     private ArrayAdapter<String> mSearchAdapter;
 
-    private ArrayAdapter<String> tempAdapter;
+    // The List holding the content currently being fed to the recycler view.
+    private List<Recipe> mDisplayList;
 
-    ArrayAdapter<String> itemsAdapter;
+    // The list
+    private List<Recipe> mSearchResults;
+
+    private List<Recipe> mUserRecipes;
+
+    private ListView mUserIngredientsListView;
 
     private ListView mSuggestedList;
 
@@ -109,9 +126,13 @@ public class RecipeSearch extends Fragment {
 
     private List<String> tempStorage;
 
-    private List<String> mIngredientsToSearch;
+    private List<String> tempStorage2;
 
-    private List<String> mIngredientResourceList;
+    private List<Ingredient> mUserIngredientsFromDB;
+
+    private List<String> mUserInventory;
+
+    private List<String> mIngredientsToSearch;
 
     private List<String> mSuggestedIngredients;
 
@@ -121,7 +142,13 @@ public class RecipeSearch extends Fragment {
 
     private ViewPager vp;
 
-    String searchParam;
+    private String searchParam;
+
+    private GroceryDB mRecipeDB;
+
+    private Vector<View> mPages;
+
+    private RadioButton srch;
 
     /**
      * Construct a new RecipeSearch fragment.
@@ -138,6 +165,17 @@ public class RecipeSearch extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //get db info and build appropriate views.
+        if (mRecipeDB == null) {
+            mRecipeDB = ((ProfileActivity) getActivity()).getDB();
+        }
+        mUserRecipes = mRecipeDB.getRecipes();
+        mUserIngredientsFromDB = mRecipeDB.getIngredients();
+        Log.d("# ingredients from db: ", String.valueOf(mUserIngredientsFromDB.size()));
+        mUserInventory = new ArrayList<String>();
+        Log.d("user ing from db = ", String.valueOf(mUserIngredientsFromDB.size()));
+
     }
 
     /**
@@ -155,8 +193,13 @@ public class RecipeSearch extends Fragment {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_recipe_search, container, false);
 
+
+        mDisplayList = new ArrayList<Recipe>();
         initViews();
 
+        if (mUserIngredientsFromDB.size() > 0) {
+            userInventoryList(mUserIngredientsFromDB);
+        }
         return v;
     }
 
@@ -165,10 +208,10 @@ public class RecipeSearch extends Fragment {
      */
     private void initViews() {
         tempStorage = new ArrayList();
+        tempStorage2 = new ArrayList();
         mIngredientArrayResource = getResources().getStringArray(R.array.auto_complete_ingredients);
         mSuggestedIngredients = new ArrayList<String>(Arrays.asList(mIngredientArrayResource));
         mIngredientsToSearch = new ArrayList();
-        final TextView mTextView = (TextView) v.findViewById(R.id.list_label);
 
         mEditText = (EditText) v.findViewById(R.id.recipeSearch);
         //show listviews when editText clicked.
@@ -178,29 +221,62 @@ public class RecipeSearch extends Fragment {
                 vp.setVisibility(v.VISIBLE);
             }
         });
-//        mEditText.onEditorAction(new TextView.OnEditorActionListener() {
-//            public boolean onEditorAction(View v, int keyCode, KeyEvent event) {
-//                System.out.println(event.toString());
-//                // If the event is a key-down event on the "enter" button
-//                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-//                    addIngredientFromText();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-
         //jump to list position on text typed.
         mEditText.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 String search = s.toString();
                 jumpToPosition(search);
             }
         });
+
+        final RadioGroup rg = (RadioGroup) v.findViewById(R.id.radioGroup);
+        srch = (RadioButton) v.findViewById(R.id.radioSearch);
+        srch.setVisibility(View.INVISIBLE);
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                int id = rg.getCheckedRadioButtonId();
+                switch (id) {
+                    case (R.id.radioPlanner):
+                        mDisplayList.clear();
+                        srch.setVisibility(View.VISIBLE);
+                        for (int k = 0; k < mUserRecipes.size(); k++) {
+                            Recipe tempRecipe = mUserRecipes.get(k);
+                            int year = mUserRecipes.get(k).mDate.get(Calendar.YEAR);
+                            if (year != 1900) {
+                                mDisplayList.add(mUserRecipes.get(k));
+                            }
+                        }
+                        populateList(mDisplayList);
+                        break;
+
+                    case (R.id.radioSearch):
+                        mDisplayList.clear();
+                        mDisplayList.addAll(mSearchResults);
+                        populateList(mDisplayList);
+                        break;
+                    case (R.id.radioFav):
+                        Log.d("radioFav clicked", "");
+                        mDisplayList.clear();
+                        srch.setVisibility(View.VISIBLE);
+                        for (int k = 0; k < mUserRecipes.size(); k++) {
+                            if (mUserRecipes.get(k).getIsFav() == true) {
+                                mDisplayList.add(mUserRecipes.get(k));
+                            }
+                        }
+                        populateList(mDisplayList);
+                        break;
+                }
+            }
+        });
+
 
         //make sure all suggested ingredients are lowercase
         for (int i = 0; i < mSuggestedIngredients.size(); i++) {
@@ -209,8 +285,10 @@ public class RecipeSearch extends Fragment {
         //sort suggested ingredients alphabetically.
         Collections.sort(mSuggestedIngredients);
 
+
         mSuggestedList = new ListView(v.getContext());
         mSearchList = new ListView(v.getContext());
+
 
         // set the suggested ingredient list adapter
         mSuggestedAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
@@ -219,7 +297,9 @@ public class RecipeSearch extends Fragment {
         // add ingredient to search list on item clicked.
         mSuggestedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {addIngredientFromList(position);    }
+                                    int position, long id) {
+                addIngredientFromList(position);
+            }
         });
         // Close soft keyboard on list touched.
         mSuggestedList.setOnTouchListener(new View.OnTouchListener() {
@@ -237,19 +317,24 @@ public class RecipeSearch extends Fragment {
         mSearchList.setAdapter(mSearchAdapter);
         mSearchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {removeIngredient(position);    }
+                                    int position, long id) {
+                removeIngredient(position);
+            }
         });
 
-        Vector<View> mPages = new Vector<View>();
+        mPages = new Vector<View>();
+
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
         vp = (ViewPager) v.findViewById(R.id.view_pager);
-        ViewPagerAdapter mPagerAdapter = new ViewPagerAdapter(v.getContext(), mPages);
+        mPagerAdapter = new ViewPagerAdapter(v.getContext(), mPages);
         vp.setAdapter(mPagerAdapter);
 
         ImageView i = (ImageView) v.findViewById(R.id.addIngredient);
         i.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {addIngredientFromText();}
+            public void onClick(View v) {
+                addIngredientFromText();
+            }
         });
 
 
@@ -282,6 +367,21 @@ public class RecipeSearch extends Fragment {
         mSearchAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * This method removes an ingredient from the suggested list of ingredients
+     * and adds it to the list of ingredients to search.
+     */
+    private void addIngredientFromInventory(int position) {
+        mEditText.getText().clear();
+        searchParam = mUserIngredientsListView.getItemAtPosition(position).toString().toLowerCase();
+        mIngredientsToSearch.add(searchParam);
+        mUserInventory.remove(searchParam);
+        tempStorage2.add(searchParam);
+        Collections.sort(mIngredientsToSearch);
+        mUserInventoryAdapter.notifyDataSetChanged();
+        mSearchAdapter.notifyDataSetChanged();
+    }
+
     private void addIngredientFromText() {
         if (mEditText.getText().toString().length() != 0) {
             searchParam = mEditText.getText().toString().toLowerCase();
@@ -300,10 +400,15 @@ public class RecipeSearch extends Fragment {
     private void removeIngredient(int position) {
         searchParam = mSearchList.getItemAtPosition(position).toString().toLowerCase();
         mIngredientsToSearch.remove(searchParam);
-        if(tempStorage.contains(searchParam)) {
+        if (tempStorage.contains(searchParam)) {
             mSuggestedIngredients.add(searchParam);
         }
+        if (tempStorage2.contains(searchParam)) {
+            mUserInventory.add(searchParam);
+        }
         Collections.sort(mSuggestedIngredients);
+        Collections.sort(mUserInventory);
+        mUserInventoryAdapter.notifyDataSetChanged();
         mSuggestedAdapter.notifyDataSetChanged();
         mSearchAdapter.notifyDataSetChanged();
     }
@@ -312,6 +417,9 @@ public class RecipeSearch extends Fragment {
      * Take the user input string from the edittext and send to the web service.
      */
     private void search() {
+        mSuggestedIngredients.addAll(tempStorage);
+        Collections.sort(mSuggestedIngredients);
+        mDisplayList.clear();
         addIngredientFromText();
         vp.setVisibility(v.GONE);
         String encodedIngredient = "";
@@ -326,6 +434,7 @@ public class RecipeSearch extends Fragment {
         AsyncTask<String, Void, String> task = new RegisterTask();
         task.execute(API_ENDPOINT, encodedIngredient);
         Log.d("ATTN: ", API_ENDPOINT);
+        mIngredientsToSearch.clear();
     }
 
     /**
@@ -345,6 +454,150 @@ public class RecipeSearch extends Fragment {
         }
     }
 
+    @Override
+    public void onFavClicked(int position) {
+        Recipe tempRecipe;
+
+        // Setting isFav from false to true
+        if (mDisplayList.get(position).getIsFav() == false) {
+            tempRecipe = mDisplayList.get(position);
+            mDisplayList.get(position).setIsFav(true);
+
+            // mUserRecipe list is empty then add favorite.
+            if (mUserRecipes.size() == 0) {
+                mUserRecipes.add(tempRecipe);
+            }
+            // if mUserRecipe list contains recipes compare so as not to add duplicate.
+            if (mUserRecipes.size() > 0) {
+                boolean add = true;
+                for (int k = 0; k < mUserRecipes.size(); k++) {
+                    // Same ID and already favorite
+                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                            mUserRecipes.get(k).getIsFav() == tempRecipe.getIsFav()) {
+                        add = false;
+                        Toast.makeText(getActivity(), "This recipe is already one of your favorites.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                    // Same ID, but not yet favorite then set existing recipes boolean.
+                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                            mUserRecipes.get(k).getIsFav() != tempRecipe.getIsFav()) {
+                        add = false;
+                        mUserRecipes.get(k).setIsFav(true);
+                    }
+                }
+                if (add == true) {
+                    mUserRecipes.add(tempRecipe);
+                }
+            }
+
+            Log.d("1 mUserRecipes size = ", String.valueOf(mUserRecipes.size()));
+        } else if (mDisplayList.get(position).getIsFav() == true) {
+            mDisplayList.get(position).setIsFav(false);
+            tempRecipe = mDisplayList.get(position);
+            Log.d("true to false set", "");
+
+            for (int k = 0; k < mUserRecipes.size(); k++) {
+                if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId())) {
+                    mUserRecipes.get(k).setIsFav(false);
+                    Log.d("3 mUserRecipes size = ", String.valueOf(mUserRecipes.size()));
+                }
+            }
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onPlannerClicked(final int position) {
+
+
+        Recipe tempRecipe = mDisplayList.get(position);
+        // Calendar object can't be null so 1900 is what all recipes are set to when parsed from JSON.
+        // Calendar YEAR = 1900 indicates recipe not added to planner.
+        if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
+            Calendar curCal = new GregorianCalendar();
+            int year = curCal.get(Calendar.YEAR);
+            int month = curCal.get(Calendar.MONTH);
+            int day = curCal.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int day) {
+
+                    Recipe tempRecipe = mDisplayList.get(position);
+                    tempRecipe.mDate.set(year, month + 1, day);
+                }
+            };
+            boolean add = true;
+            // if user recipe list empty then add.
+            if (mUserRecipes.size() == 0) {
+                add = true;
+            }
+            //if user list contains recipes
+            if (mUserRecipes.size() > 0) {
+
+                //cycle thru user recipe list
+                for (int k = 0; k < mUserRecipes.size(); k++) {
+                    // Recipe already in user list but date not set
+                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                            Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) == 1900) {
+                        mUserRecipes.get(k).mDate.set(Calendar.YEAR, tempRecipe.mDate.get(Calendar.YEAR));
+                        mUserRecipes.get(k).mDate.set(Calendar.MONTH, tempRecipe.mDate.get(Calendar.MONTH));
+                        mUserRecipes.get(k).mDate.set(Calendar.DAY_OF_MONTH, tempRecipe.mDate.get(Calendar.DAY_OF_MONTH));
+                        add = false;
+                    }
+                    // recipe already in user list with date set, make sure its not same date.
+                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                            Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) != 1900) {
+
+                        // if same recipe trying to set for same day
+                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                            add = false;
+                        }
+                        // if some recipe already set on a specific date
+                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
+                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                            add = false;
+                            Toast.makeText(getActivity(), "You already have a recipe set on this date.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+            if (add = true) {
+                mUserRecipes.add(tempRecipe);
+                mAdapter.notifyDataSetChanged();
+            }
+            DatePickerDialog hi = new DatePickerDialog(v.getContext(), dateListener, year, month, day);
+            hi.show();
+        }
+    }
+
+
+    private void userInventoryList(List<Ingredient> theList) {
+        List<Ingredient> tempList = theList;
+        for (int z = 0; z < tempList.size(); z++) {
+            mUserInventory.add(tempList.get(z).getIngredient());
+        }
+        Log.d("mUserInventory size ", String.valueOf(mUserInventory.size()));
+        mUserIngredientsListView = new ListView(v.getContext());
+        mUserInventoryAdapter = new ArrayAdapter<String>(getActivity().getBaseContext(),
+                R.layout.suggested_ingredient_list_item, mUserInventory);
+        mUserIngredientsListView.setAdapter(mUserInventoryAdapter);
+        mPages.add(mUserIngredientsListView);
+        mUserIngredientsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                addIngredientFromInventory(position);
+            }
+        });
+        mPagerAdapter.notifyDataSetChanged();
+    }
+
     /**
      * Generate an ArrayList of Recipe objects based on the returned information in the JSON response from the Yummly API.
      *
@@ -360,6 +613,7 @@ public class RecipeSearch extends Fragment {
             JSONArray jsonRecipes = jsonResult.getJSONArray("matches");
             Recipe newRecipe;
 
+
             //for the number of recipes in the response, create new Recipe Java Objects
             for (int i = 0; i < jsonRecipes.length(); i++) {
                 newRecipe = new Recipe();
@@ -367,6 +621,7 @@ public class RecipeSearch extends Fragment {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 newRecipe.setRecipeId(jsonRecipe.getString("id"));
                 newRecipe.setRecipeName(jsonRecipe.getString("recipeName"));
+                newRecipe.mDate.set(1900, 01, 01);
                 //newRecipe.setImage(jsonRecipe.getString("smallImageUrls"));
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
 
@@ -399,13 +654,25 @@ public class RecipeSearch extends Fragment {
      * @param recipes
      */
     private void populateList(List<Recipe> recipes) {
+        Log.d("populateList() called", "");
         System.out.println("Number of recipes found:" + recipes.size());
 
         //Remove previous search results from view if present.
         mRecipeList.removeAllViews();
 
-        mAdapter = new RecyclerViewAdapter(v.getContext(), recipes);
+        mAdapter = new RecyclerViewAdapter(v.getContext(), recipes, this);
         mRecipeList.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Recipe tempRecipe;
+        for (int r = 0; r < mUserRecipes.size(); r++) {
+            tempRecipe = mUserRecipes.get(r);
+            mRecipeDB.updateDate(tempRecipe);
+        }
+
     }
 
     /**
@@ -474,6 +741,7 @@ public class RecipeSearch extends Fragment {
          */
         @Override
         protected void onPostExecute(String result) {
+            mSearchResults = new ArrayList<Recipe>();
             mJsonString = result;
             if (dialog.isShowing()) {
                 dialog.dismiss();
@@ -501,10 +769,12 @@ public class RecipeSearch extends Fragment {
             } else {
                 System.out.println(mJsonString);
                 //mResults.setText(mJsonString);
-                List<Recipe> recipes = parseResults(mJsonString);
-                populateList(recipes);
+                mSearchResults = parseResults(mJsonString);
+                mDisplayList.addAll(mSearchResults);
+                populateList(mDisplayList);
             }
         }
+
     }
 
     /**
