@@ -142,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
                         ft.addToBackStack(ShoppingListFragment.TAG).commit();
                         break;
                     case "Log Out":
-                        goToLogin();
+                        goToLogout();
                         break;
                 }
                 mDrawerLayout.closeDrawer(mDrawerList);
@@ -193,19 +193,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
     /**
      * {@inheritDoc}
      * @param item
@@ -216,16 +203,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-
         // Activate the navigation drawer toggle
-        return (mDrawerToggle.onOptionsItemSelected(item)) || super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     /**
@@ -268,9 +247,12 @@ public class ProfileActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
-
+    /** Double back button pressed. */
     boolean doubleBackToExitPressedOnce = false;
 
+    /**
+     * Handles the back button pressed.
+     */
     @Override
     public void onBackPressed() {
         if (mProfileFragment != null && mProfileFragment.isVisible()) {
@@ -312,12 +294,22 @@ public class ProfileActivity extends AppCompatActivity {
      * Replace this fragment with the Login fragment.
      */
     public void goToLogin(){
-
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         LoginFragment fragment = new LoginFragment();
         SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
         mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
         mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
         ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG).commit();
+    }
+
+    /**
+     * Handles to logout button.
+     */
+    public void goToLogout() {
+        SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
+        mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
+        mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
+        Intent k = new Intent(this, MainActivity.class);
+        startActivity(k);
     }
 }
