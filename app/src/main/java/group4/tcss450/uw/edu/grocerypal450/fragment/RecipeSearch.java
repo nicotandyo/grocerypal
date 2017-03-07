@@ -420,10 +420,38 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         });
 
         mPages = new Vector<>();
-
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
         mViewPager = (ViewPager) mView.findViewById(R.id.view_pager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                int page = mViewPager.getCurrentItem();
+                switch (page) {
+                    case (0): // meal planner
+                        getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
+                        break;
+
+                    case (1): // search
+                        getActivity().setTitle(getResources().getString(R.string.page_search_list));
+                        break;
+                    case (2): // favorites
+                        getActivity().setTitle(getResources().getString(R.string.page_inventory_list));
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mPagerAdapter = new ViewPagerAdapter(mView.getContext(), mPages);
         mViewPager.setAdapter(mPagerAdapter);
 

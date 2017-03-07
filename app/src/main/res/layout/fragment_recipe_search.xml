@@ -97,6 +97,20 @@
             android:layout_height="match_parent"
             android:padding="20dp" />
 
+        <ImageButton
+            android:id="@+id/left_nav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|left"
+            android:src="@drawable/leftchevron" />
+
+        <ImageButton
+            android:id="@+id/right_nav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/rightchevron" />
+
     </LinearLayout>
 
 

@@ -153,11 +153,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // Set appropriate icon depending on status of isFav value.
         if (tempRecipe.getIsFav()) {
-            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_full);
+            customViewHolder.favButton.setImageResource(R.drawable.heart_full);
         } else {
-            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_transparent);
+            customViewHolder.favButton.setImageResource(R.drawable.heart_transparent);
         }
         // onClickListener for fav button.
+
         customViewHolder.favButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
