@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mLoginFragment = new LoginFragment();
         getFragmentManager().beginTransaction()
-                .replace(R.id.MainActivity_Frame,mLoginFragment,LoginFragment.TAG).commit();
+                .add(R.id.MainActivity_Frame,mLoginFragment,LoginFragment.TAG)
+                .addToBackStack(null).commit();
     }
 
 
