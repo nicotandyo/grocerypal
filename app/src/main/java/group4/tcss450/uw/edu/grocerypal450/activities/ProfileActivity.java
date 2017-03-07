@@ -195,19 +195,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-    /**
-     * {@inheritDoc}
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
     /**
      * {@inheritDoc}
      * @param item
@@ -218,16 +205,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-
         // Activate the navigation drawer toggle
-        return (mDrawerToggle.onOptionsItemSelected(item)) || super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item);
     }
 
     /**
