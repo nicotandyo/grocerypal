@@ -419,6 +419,9 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
         });
 
+        final ImageView chevleft = (ImageView) mView.findViewById(R.id.left_nav);
+        final ImageView chevright = (ImageView) mView.findViewById(R.id.right_nav);
+
         mPages = new Vector<>();
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
@@ -429,13 +432,17 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 int page = mViewPager.getCurrentItem();
                 switch (page) {
                     case (0): // meal planner
+                        chevleft.setVisibility(mView.INVISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
                         break;
 
                     case (1): // search
+                        chevleft.setVisibility(mView.VISIBLE);
+                        chevright.setVisibility(mView.VISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_search_list));
                         break;
                     case (2): // favorites
+                        chevright.setVisibility(mView.INVISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_inventory_list));
                         break;
                 }
