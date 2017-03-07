@@ -17,25 +17,38 @@ import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
 
 /**
- * A simple {@link Fragment} subclass.
+ * This fragment displays the meal planner for the user.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class PlannerFragment extends Fragment {
 
-    /** The TAG for the ShoppingListFragment. */
+    /** The TAG for the PlannerFragment. */
     public static final String TAG = "PlannerFragment";
-
+    /**
+     * The database.
+     */
     private GroceryDB mDB;
-
+    /**
+     * List of recipes.
+     */
     private List<Recipe> mPlanner;
-
+    /**
+     * TextView for the placeholder.
+     */
     private TextView mPlaceholder;
     /**
-     * This is the constructor.
+     * Constructor for the PlannerFragment.
      */
     public PlannerFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +58,6 @@ public class PlannerFragment extends Fragment {
         List<Recipe> allRecipes = mDB.getRecipes();
         for(int i = 0; i < allRecipes.size(); i++) {
             Recipe r = allRecipes.get(i);
-            /*
-            if(r.getDate() != null) {
-                mPlanner.add(r);
-                //debug print
-                System.out.println(r.toString());
-            }
-            */
         }
     }
 
