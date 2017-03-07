@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import group4.tcss450.uw.edu.grocerypal450.R;
@@ -329,6 +330,8 @@ public class GroceryDB {
             recipe.setCuisine(c.getString(6));
             recipe.setRating(c.getFloat(7));
             recipe.setIsFav((c.getInt(8) == 1) ? true : false);
+            String[] date = c.getString(9).split("-");
+            recipe.setDate(new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2])));
             list.add(recipe);
 
             c.moveToNext();
@@ -336,6 +339,7 @@ public class GroceryDB {
         c.close();
         return list;
     }
+
 
     /**
      * helper method to convert CSV ingredients to ArrayList
@@ -380,6 +384,14 @@ public class GroceryDB {
         cv.put("date", str.toString());
         int numRow = mDB.update(RECIPE_TABLE, cv, "recipeId = '" + recipe.getRecipeId() + "'", null);
         return numRow > 0;
+    }
+
+    public boolean isRecipeExist(Recipe recipe) {
+        String query = "SELECT * FROM " + mUsername + "_Recipes WHERE recipeId = '" + recipe.getRecipeId() + "'";
+        Cursor  cursor = mDB.rawQuery(query,null);
+        boolean exist = cursor.moveToFirst();
+        cursor.close();
+        return exist;
     }
 
     /**

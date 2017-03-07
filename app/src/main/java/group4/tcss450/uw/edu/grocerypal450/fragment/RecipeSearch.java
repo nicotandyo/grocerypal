@@ -267,7 +267,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                         mDisplayList.clear();
                         srch.setVisibility(View.VISIBLE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
-                            if (mUserRecipes.get(k).getIsFav() == true) {
+                            if (mUserRecipes.get(k).getIsFav()) {
                                 mDisplayList.add(mUserRecipes.get(k));
                             }
                         }
@@ -456,11 +456,13 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
     @Override
     public void onFavClicked(int position) {
-        Recipe tempRecipe;
+        Recipe tempRecipe = mDisplayList.get(position);
+        if(!mRecipeDB.isRecipeExist(mDisplayList.get(position))) {
+            mRecipeDB.insertRecipe(mDisplayList.get(position));
+        }
 
         // Setting isFav from false to true
-        if (mDisplayList.get(position).getIsFav() == false) {
-            tempRecipe = mDisplayList.get(position);
+        if (!tempRecipe.getIsFav()) {
             mDisplayList.get(position).setIsFav(true);
 
             // mUserRecipe list is empty then add favorite.
@@ -491,7 +493,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
 
             Log.d("1 mUserRecipes size = ", String.valueOf(mUserRecipes.size()));
-        } else if (mDisplayList.get(position).getIsFav() == true) {
+        } else if (tempRecipe.getIsFav()) {
             mDisplayList.get(position).setIsFav(false);
             tempRecipe = mDisplayList.get(position);
             Log.d("true to false set", "");
@@ -503,6 +505,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 }
             }
         }
+        mRecipeDB.updateFavorite(tempRecipe);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -512,6 +515,9 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
 
         Recipe tempRecipe = mDisplayList.get(position);
+        if(!mRecipeDB.isRecipeExist(tempRecipe)) {
+            mRecipeDB.insertRecipe(tempRecipe);
+        }
         // Calendar object can't be null so 1900 is what all recipes are set to when parsed from JSON.
         // Calendar YEAR = 1900 indicates recipe not added to planner.
         if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
@@ -571,6 +577,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 mUserRecipes.add(tempRecipe);
                 mAdapter.notifyDataSetChanged();
             }
+            //mRecipeDB.updateDate(tempRecipe);
             DatePickerDialog hi = new DatePickerDialog(v.getContext(), dateListener, year, month, day);
             hi.show();
         }
@@ -671,6 +678,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         for (int r = 0; r < mUserRecipes.size(); r++) {
             tempRecipe = mUserRecipes.get(r);
             mRecipeDB.updateDate(tempRecipe);
+            mRecipeDB.updateFavorite(tempRecipe);
         }
 
     }
