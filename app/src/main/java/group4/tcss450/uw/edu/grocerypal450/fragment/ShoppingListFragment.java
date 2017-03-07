@@ -90,6 +90,7 @@ public class ShoppingListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        getActivity().setTitle(getResources().getString(R.string.shoppinglist_title));
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(getActivity().getBaseContext(),
