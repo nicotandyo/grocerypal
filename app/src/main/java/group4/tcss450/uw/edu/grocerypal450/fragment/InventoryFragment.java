@@ -84,6 +84,7 @@ public class InventoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_inventory, container, false);
+        getActivity().setTitle(getResources().getString(R.string.inventory_title));
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(getActivity().getBaseContext(),
