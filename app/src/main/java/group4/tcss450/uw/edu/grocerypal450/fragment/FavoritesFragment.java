@@ -15,18 +15,37 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
-
+/**
+ * This fragment displays the Favorites for the user.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
+ */
 public class FavoritesFragment extends Fragment {
-
+    /**
+     * The database.
+     */
     private GroceryDB mDB;
-    private List<Recipe> mFavorites = new ArrayList<Recipe>();
+    /**
+     * List of recipes for the favorites.
+     */
+    private List<Recipe> mFavorites = new ArrayList<>();
+    /**
+     * TextView for the placeholder.
+     */
     private TextView mPlaceholder;
 
-
+    /**
+     * Constructor for the FavoritesFragment.
+     */
     public FavoritesFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +64,13 @@ public class FavoritesFragment extends Fragment {
         mPlaceholder.setText(mFavorites.toString());
     }
 
+    /**
+     * {@inheritDoc}
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

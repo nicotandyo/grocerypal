@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,23 +55,45 @@ public class RecipeResults extends Fragment {
      * Base url of the web service which calls the Yummly API to get recipe results.
      */
     private static final String API_ENDPOINT = "https://limitless-chamber-51693.herokuapp.com/yummly.php";
-    //private static final String API_ENDPOINT = "http://10.0.2.2/grocerypal-php/yummly.php";
-
     /**
-     * TextView to show the results.
+     * Recipe from the API.
      */
     private Recipe mRecipe;
+    /**
+     * TextView for the recipe name.
+     */
     private TextView mName;
+    /**
+     * TextView for the recipe info.
+     */
     private TextView mInfo;
+    /**
+     * ImageView for the recipe image.
+     */
     private ImageView mImage;
+    /**
+     * LinearLayout for the ingredient results.
+     */
     private LinearLayout mList;
+    /**
+     * List of ingredients.
+     */
     private List<Ingredient> mIngredientList;
+    /**
+     * List of new ingredients.
+     */
     private List<String> mNewIngredients;
+    /**
+     * Ingredient database.
+     */
     private GroceryDB mDB;
+    /**
+     * Adapter for the ingredient.
+     */
     private IngredientAdapter mAdapter;
 
     /**
-     * This is the constructor.
+     * Constructor for the RecipeResults.
      */
     public RecipeResults() {
         // Required empty public constructor
@@ -121,6 +144,11 @@ public class RecipeResults extends Fragment {
                 .into(mImage);
         Button directions = (Button) v.findViewById(R.id.resultDirectionsBtn);
         directions.setOnClickListener(new View.OnClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             */
+            @Override
             public void onClick(View v) {
                 showDirections();
             }
@@ -176,6 +204,9 @@ public class RecipeResults extends Fragment {
             mList.addView(mAdapter.getView(i, null, mList));
     }
 
+    /**
+     * Show the directions for the recipe.
+     */
     private void showDirections() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         WebPage fragment = new WebPage();
@@ -187,49 +218,69 @@ public class RecipeResults extends Fragment {
         ft.commit();
     }
 
-
+    /**
+     * Custom ListAdapter for the ingredients.
+     */
     public class IngredientAdapter extends BaseAdapter implements ListAdapter {
-        private List<String> list = new ArrayList<String>();
+        private List<String> list = new ArrayList<>();
         private Context context;
 
-
-
+        /**
+         * Constructor for the IngredientAdapter.
+         * @param list is the list
+         * @param context is the application context
+         */
         public IngredientAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
 
+        /**
+         * Get the list size.
+         * @return list size
+         */
         @Override
         public int getCount() {
             return list.size();
         }
 
+        /**
+         * Get the item in certain position.
+         * @param pos is the position
+         * @return the item in that position
+         */
         @Override
         public Object getItem(int pos) {
             return list.get(pos);
         }
 
+        /**
+         * Get the item ID.
+         * @param pos position
+         * @return 0
+         */
         @Override
         public long getItemId(int pos) {
             return 0;
         }
 
+        /**
+         * {@inheritDoc}
+         * @param position
+         * @param convertView
+         * @param parent
+         * @return
+         */
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             System.out.println("CALLING GET VIEW");
             View view = convertView;
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.custom_result_item, null);
+                view = inflater.inflate(R.layout.custom_result_item, parent, false);
             }
-
-            //Handle buttons and add onClickListeners
             Button addInventory = (Button)view.findViewById(R.id.resultAddToInven);
             Button addShopping = (Button)view.findViewById(R.id.resultAddToList);
-            //addShopping.setBackgroundResource(0);
-            //addInventory.setBackgroundResource(0);
-
-
             for(Ingredient i: mIngredientList) {
                 if(i.getIngredient().toLowerCase().equals(list.get(position))) {
                     if(i.isInventory()) {
@@ -241,6 +292,10 @@ public class RecipeResults extends Fragment {
                     }
                 } else {
                     addInventory.setOnClickListener(new View.OnClickListener(){
+                        /**
+                         * {@inheritDoc}
+                         * @param v
+                         */
                         @Override
                         public void onClick(View v) {
                             boolean b;
@@ -261,6 +316,10 @@ public class RecipeResults extends Fragment {
                     });
 
                     addShopping.setOnClickListener(new View.OnClickListener(){
+                        /**
+                         * {@inheritDoc}
+                         * @param v
+                         */
                         @Override
                         public void onClick(View v) {
                             boolean b;
@@ -289,15 +348,29 @@ public class RecipeResults extends Fragment {
         }
     }
 
+    /**
+     * Inner class to get the recipe.
+     */
     private class GetRecipeTask extends AsyncTask<String, Void, String> {
+        /**
+         * Progress dialog for the get recipe.
+         */
         private ProgressDialog dialog = new ProgressDialog(getActivity());
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onPreExecute() {
             this.dialog.setMessage("Loading...");
             this.dialog.show();
         }
 
+        /**
+         * {@inheritDoc}
+         * @param strings
+         * @return
+         */
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length != 2) {
@@ -314,13 +387,13 @@ public class RecipeResults extends Fragment {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
-                ArrayList<Pair> params = new ArrayList<Pair>();
+                ArrayList<Pair> params = new ArrayList<>();
                 params.add(new Pair("getRecipe", strings[1]));
                 wr.write(getQuery(params));
                 wr.flush();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s = "";
+                String s;
                 while ((s = buffer.readLine()) != null) {
                     response += s;
                 }
@@ -334,9 +407,12 @@ public class RecipeResults extends Fragment {
             return response;
         }
 
+        /**
+         * {@inheritDoc}
+         * @param result
+         */
         @Override
         protected void onPostExecute(String result) {
-            String mJsonString = result;
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
@@ -350,18 +426,16 @@ public class RecipeResults extends Fragment {
             if (result.startsWith("Unable to")) {
                 Toast.makeText(getActivity(), result, Toast.LENGTH_LONG)
                         .show();
-                return;
             } else if (error) {
                 try {
                     String errorResponse = response.getString("error_msg");
                     Toast.makeText(getActivity(), errorResponse, Toast.LENGTH_LONG)
                             .show();
-                    return;
                 } catch (JSONException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println(mJsonString);
+                System.out.println(result);
                 parseJsonResult(result);
 
 
@@ -369,6 +443,10 @@ public class RecipeResults extends Fragment {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param result
+     */
     private void parseJsonResult(String result) {
         try {
             JSONObject recipe = new JSONObject(result);
@@ -385,6 +463,13 @@ public class RecipeResults extends Fragment {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param params
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @NonNull
     private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
