@@ -209,6 +209,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             mRecipeDB = ((ProfileActivity) getActivity()).getDB();
         }
         mUserRecipes = mRecipeDB.getRecipes();
+        mSearchResults = new ArrayList<>();
         mUserIngredientsFromDB = mRecipeDB.getIngredients();
         Log.d("# ingredients from db: ", String.valueOf(mUserIngredientsFromDB.size()));
         mUserInventory = new ArrayList<>();
@@ -219,7 +220,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     /**
      * {@inheritDoc}
      * Links the search box and button to the RecipeSearch class to provide functionality.
-     *
+     *x
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -313,6 +314,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                     case (R.id.radioPlanner): // meal planner
                         mDisplayList.clear();
                         mRadioButton.setVisibility(View.VISIBLE);
+                        mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             Recipe tempRecipe = mUserRecipes.get(k);
                             int year = tempRecipe.mDate.get(Calendar.YEAR);
@@ -325,13 +327,20 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
                     case (R.id.radioSearch): // search
                         mDisplayList.clear();
-                        mDisplayList.addAll(mSearchResults);
+                        //mViewPager.setVisibility(View.VISIBLE);
+                        if(mSearchResults != null) {
+                            mDisplayList.addAll(mSearchResults);
+                        }
+                        if(mSearchResults.size() == 0) {
+                            mViewPager.setVisibility(mView.VISIBLE);
+                        }
                         populateList(mDisplayList);
                         break;
                     case (R.id.radioFav): // favorites
                         Log.d("radioFav clicked", "");
                         mDisplayList.clear();
                         mRadioButton.setVisibility(View.VISIBLE);
+                        mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             if (mUserRecipes.get(k).getIsFav()) {
                                 mDisplayList.add(mUserRecipes.get(k));
@@ -522,7 +531,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         Collections.sort(mSuggestedIngredients);
         mDisplayList.clear();
         addIngredientFromText();
-        mViewPager.setVisibility(View.GONE);
+        mViewPager.setVisibility(mView.GONE);
         String encodedIngredient = "";
         for (int i = 0; i < mIngredientsToSearch.size(); i++) {
             encodedIngredient += "&allowedIngredient[]=" + mIngredientsToSearch.get(i).replace(" ", "+");
@@ -581,13 +590,6 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             if (mUserRecipes.size() > 0) {
                 boolean add = true;
                 for (int k = 0; k < mUserRecipes.size(); k++) {
-                    // Same ID and already favorite
-                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
-                            mUserRecipes.get(k).getIsFav() == tempRecipe.getIsFav()) {
-                        add = false;
-                        Toast.makeText(getActivity(), "This recipe is already one of your favorites.",
-                                Toast.LENGTH_LONG).show();
-                    }
                     // Same ID, but not yet favorite then set existing recipes boolean.
                     if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
                             mUserRecipes.get(k).getIsFav() != tempRecipe.getIsFav()) {
@@ -893,7 +895,6 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
          */
         @Override
         protected void onPostExecute(String result) {
-            mSearchResults = new ArrayList<>();
             mJsonString = result;
             if (dialog.isShowing()) {
                 dialog.dismiss();
