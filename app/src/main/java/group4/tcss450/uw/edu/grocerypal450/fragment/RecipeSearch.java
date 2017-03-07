@@ -219,7 +219,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     /**
      * {@inheritDoc}
      * Links the search box and button to the RecipeSearch class to provide functionality.
-     *
+     *x
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -313,6 +313,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                     case (R.id.radioPlanner): // meal planner
                         mDisplayList.clear();
                         mRadioButton.setVisibility(View.VISIBLE);
+                        mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             Recipe tempRecipe = mUserRecipes.get(k);
                             int year = tempRecipe.mDate.get(Calendar.YEAR);
@@ -325,13 +326,17 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
                     case (R.id.radioSearch): // search
                         mDisplayList.clear();
-                        mDisplayList.addAll(mSearchResults);
+                        //mViewPager.setVisibility(View.VISIBLE);
+                        if(mSearchResults != null) {
+                            mDisplayList.addAll(mSearchResults);
+                        }
                         populateList(mDisplayList);
                         break;
                     case (R.id.radioFav): // favorites
                         Log.d("radioFav clicked", "");
                         mDisplayList.clear();
                         mRadioButton.setVisibility(View.VISIBLE);
+                        mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
                             if (mUserRecipes.get(k).getIsFav()) {
                                 mDisplayList.add(mUserRecipes.get(k));
@@ -522,7 +527,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         Collections.sort(mSuggestedIngredients);
         mDisplayList.clear();
         addIngredientFromText();
-        mViewPager.setVisibility(View.GONE);
+        mViewPager.setVisibility(mView.GONE);
         String encodedIngredient = "";
         for (int i = 0; i < mIngredientsToSearch.size(); i++) {
             encodedIngredient += "&allowedIngredient[]=" + mIngredientsToSearch.get(i).replace(" ", "+");
