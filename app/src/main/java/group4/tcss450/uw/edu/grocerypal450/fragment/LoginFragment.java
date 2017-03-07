@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -145,13 +144,18 @@ public class LoginFragment extends Fragment {
 
     /**
      * Check to make sure the name entered is not empty and in valid form.
-     * @param string
+     * @param string is the name entered
      * @return True if name is not empty and between 3 and 50 characters.
      */
     private boolean validateName(String string) {
         return (!TextUtils.isEmpty(string) || string.length() < 3 || string.length() > 50);
     }
 
+    /**
+     * Handle the login proces.
+     * @param name is the name
+     * @param password is the password
+     */
     private void loginProcess(String name, String password) {
         AsyncTask<String, Void, String> task = new LoginTask();
         task.execute(LOGIN_URL, name, password);
@@ -170,6 +174,9 @@ public class LoginFragment extends Fragment {
         ft.commit();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -206,14 +213,14 @@ public class LoginFragment extends Fragment {
                 urlConnection.setDoOutput(true);
                 OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
                 //set key/value pairs to be used in POST request
-                ArrayList<Pair> params = new ArrayList<Pair>();
+                ArrayList<Pair> params = new ArrayList<>();
                 params.add(new Pair("name", strings[1]));
                 params.add(new Pair("password", strings[2]));
                 wr.write(getQuery(params));
                 wr.flush();
                 InputStream content = urlConnection.getInputStream();
                 BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
-                String s = "";
+                String s;
                 while ((s = buffer.readLine()) != null) {
                     response += s;
                 }

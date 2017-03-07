@@ -249,9 +249,12 @@ public class ProfileActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
-
+    /** Double back button pressed. */
     boolean doubleBackToExitPressedOnce = false;
 
+    /**
+     * Handles the back button pressed.
+     */
     @Override
     public void onBackPressed() {
         if (mProfileFragment != null && mProfileFragment.isVisible()) {
@@ -300,9 +303,11 @@ public class ProfileActivity extends AppCompatActivity {
         mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
         ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG);
         ft.addToBackStack(LoginFragment.TAG).commit();
-
-
     }
+
+    /**
+     * Handles to logout button.
+     */
     public void goToLogout() {
         SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
         mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
