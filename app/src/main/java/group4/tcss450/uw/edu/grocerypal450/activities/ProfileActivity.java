@@ -7,11 +7,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,10 +31,8 @@ import java.util.ArrayList;
 import group4.tcss450.uw.edu.grocerypal450.R;
 import group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.LoginFragment;
-import group4.tcss450.uw.edu.grocerypal450.fragment.PlannerFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ProfileFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.RecipeSearch;
-import group4.tcss450.uw.edu.grocerypal450.fragment.SettingsFragment;
 import group4.tcss450.uw.edu.grocerypal450.fragment.ShoppingListFragment;
 import group4.tcss450.uw.edu.grocerypal450.models.GroceryDB;
 
@@ -119,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void addDrawerItems() {
         String[] drawerItems = getResources().getStringArray(R.array.nav_drawer_items);
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, drawerItems);
         mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -135,9 +131,6 @@ public class ProfileActivity extends AppCompatActivity {
                         ft.replace(R.id.fragmentContainer, searchFragment, RecipeSearch.TAG);
                         ft.addToBackStack(RecipeSearch.TAG).commit();
                         break;
-                    case "Meal Planner":
-                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
-                        break;
                     case "Ingredient Inventory":
                         InventoryFragment inventory = new InventoryFragment();
                         ft.replace(R.id.fragmentContainer, inventory, InventoryFragment.TAG);
@@ -148,19 +141,10 @@ public class ProfileActivity extends AppCompatActivity {
                         ft.replace(R.id.fragmentContainer, shoppingFragment, ShoppingListFragment.TAG);
                         ft.addToBackStack(ShoppingListFragment.TAG).commit();
                         break;
-                    case "Settings":
-                        Toast.makeText(ProfileActivity.this, itemClicked, Toast.LENGTH_SHORT).show();
-                        break;
                     case "Log Out":
                         goToLogin();
                         break;
                 }
-/*                FragmentTransaction transaction = getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, tempFrag, tempFrag.getClass().TAG)
-                        .addToBackStack(null);
-                // Commit the transaction
-                transaction.commit();*/
                 mDrawerLayout.closeDrawer(mDrawerList);
             }
         });
@@ -243,11 +227,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         // Activate the navigation drawer toggle
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return (mDrawerToggle.onOptionsItemSelected(item)) || super.onOptionsItemSelected(item);
     }
 
     /**
