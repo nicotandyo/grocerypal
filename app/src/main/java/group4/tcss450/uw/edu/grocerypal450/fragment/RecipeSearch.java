@@ -419,11 +419,47 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             }
         });
 
-        mPages = new Vector<>();
+        final ImageView chevleft = (ImageView) mView.findViewById(R.id.left_nav);
+        final ImageView chevright = (ImageView) mView.findViewById(R.id.right_nav);
 
+        mPages = new Vector<>();
         mPages.add(mSuggestedList);
         mPages.add(mSearchList);
         mViewPager = (ViewPager) mView.findViewById(R.id.view_pager);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                int page = mViewPager.getCurrentItem();
+                switch (page) {
+                    case (0): // meal planner
+
+                        chevleft.setVisibility(mView.INVISIBLE);
+                        getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
+                        break;
+
+                    case (1): // favorites
+                        chevleft.setVisibility(mView.VISIBLE);
+                        chevright.setVisibility(mView.VISIBLE);
+                        getActivity().setTitle(getResources().getString(R.string.page_search_list));
+                        break;
+                    case (2): // favorites
+                        chevright.setVisibility(mView.INVISIBLE);
+                        getActivity().setTitle(getResources().getString(R.string.page_inventory_list));
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mPagerAdapter = new ViewPagerAdapter(mView.getContext(), mPages);
         mViewPager.setAdapter(mPagerAdapter);
 
@@ -950,4 +986,3 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         return result.toString();
     }
 }
-

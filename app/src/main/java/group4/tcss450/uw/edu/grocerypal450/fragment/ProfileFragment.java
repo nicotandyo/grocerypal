@@ -70,6 +70,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
+        getActivity().setTitle(getResources().getString(R.string.grocerypal_title));
         mShowName = (TextView) v.findViewById(R.id.showName);
         updateContent(mNameEmail.get(0));
         Button b = (Button) v.findViewById(R.id.goToSearch);
