@@ -437,13 +437,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                         getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
                         break;
 
-                    case (1): // search
-
-                        getActivity().setTitle(getResources().getString(R.string.page_search_list));
-                        chevleft.setVisibility(mView.INVISIBLE);
-
-                        break;
-                    case (2): // favorites
+                    case (1): // favorites
                         chevleft.setVisibility(mView.VISIBLE);
                         chevright.setVisibility(mView.VISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_search_list));

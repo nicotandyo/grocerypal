@@ -33,9 +33,6 @@
     <string name="btn_shoppingList">Shopping List</string>
     <string name="btn_inventory">Inventory</string>
     <string name="inventory">Inventory</string>
-    <string name="page_suggested_list">Suggested Ingredients</string>
-    <string name="page_search_list">Ingredients To Search</string>
-    <string name="page_inventory_list">My Inventory Ingredients</string>
     <string name="text_add">Add</string>
     <string name="text_remove">Remove</string>
     <string name="text_addIngredientsToList"> Add Ingredients to List</string>
