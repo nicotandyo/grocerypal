@@ -320,7 +320,6 @@ public class ProfileActivity extends AppCompatActivity {
         SharedPreferences mPrefs = getSharedPreferences(getString(R.string.SHARED_PREFS), Context.MODE_PRIVATE);
         mPrefs.edit().putString(getString(R.string.LOGGED_USER), "").apply();
         mPrefs.edit().putBoolean(getString(R.string.IS_LOGGED_IN), false).apply();
-        ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG);
-        ft.addToBackStack(LoginFragment.TAG).commit();
+        ft.replace(R.id.fragmentContainer, fragment, LoginFragment.TAG).commit();
     }
 }
