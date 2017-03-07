@@ -14,15 +14,31 @@ import java.util.Vector;
  * @author Patrick Fitzgerald
  */
 public class ViewPagerAdapter extends PagerAdapter {
-
+    /**
+     * The application context.
+     */
     private Context mContext;
+    /**
+     * Vector view for the pages.
+     */
     private Vector<View> pages;
 
+    /**
+     * Constructor of ViewPagerAdapter.
+     * @param context is the context
+     * @param pages is the vector view
+     */
     public ViewPagerAdapter(Context context, Vector<View> pages) {
         this.mContext=context;
         this.pages=pages;
     }
 
+    /**
+     * {@inheritDoc}
+     * @param container
+     * @param position
+     * @return
+     */
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View page = pages.get(position);
@@ -30,16 +46,32 @@ public class ViewPagerAdapter extends PagerAdapter {
         return page;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public int getCount() {
         return pages.size();
     }
 
+    /**
+     * {@inheritDoc}
+     * @param view
+     * @param object
+     * @return
+     */
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view.equals(object);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param container
+     * @param position
+     * @param object
+     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);

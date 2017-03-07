@@ -113,6 +113,17 @@ public class GroceryDB {
         return rowId != -1;
     }
 
+    /**
+     * Remove recipe from the recipe table.
+     * @param recipe is the recipe
+     * @return true or false
+     */
+    public boolean removeRecipe(Recipe recipe) {
+        return mDB.delete(RECIPE_TABLE, "recipeId = ? ",
+                new String[] {String.valueOf(recipe.getRecipeId())}) > 0;
+
+    }
+
 
     /**
      * Close the database.

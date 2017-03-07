@@ -624,89 +624,97 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * @param position
      */
     @Override
-    public void onPlannerClicked(final int position) {
-        Recipe tempRecipe = mDisplayList.get(position);
-        if(!mRecipeDB.isRecipeExist(tempRecipe)) {
-            mRecipeDB.insertRecipe(tempRecipe);
-        }
-        // Calendar object can't be null so 1900 is what all recipes are set to when parsed from JSON.
-        // Calendar YEAR = 1900 indicates recipe not added to planner.
-        if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
-            Calendar curCal = new GregorianCalendar();
-            int year = curCal.get(Calendar.YEAR);
-            int month = curCal.get(Calendar.MONTH);
-            int day = curCal.get(Calendar.DAY_OF_MONTH);
-
-            DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
-                /**
-                 * {@inheritDoc}
-                 * @param view
-                 * @param year
-                 * @param month
-                 * @param day
-                 */
-                @Override
-                public void onDateSet(DatePicker view, int year, int month, int day) {
-                    Recipe tempRecipe = mDisplayList.get(position);
-                    tempRecipe.mDate.set(year, month + 1, day);
-                }
-            };
-            boolean add = true;
-            // if user recipe list empty then add.
-            if (mUserRecipes.size() == 0) {
-                add = true;
+    public void onPlannerClicked(final int position, final boolean tf) {
+        if(!tf) {
+            Recipe tempRecipe = mDisplayList.get(position);
+            if (!mRecipeDB.isRecipeExist(tempRecipe)) {
+                mRecipeDB.insertRecipe(tempRecipe);
             }
-            //if user list contains recipes
-            if (mUserRecipes.size() > 0) {
-                //cycle thru user recipe list
-                for (int k = 0; k < mUserRecipes.size(); k++) {
-                    // Recipe already in user list but date not set
-                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
-                            Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) == 1900) {
-                        mUserRecipes.get(k).mDate.set(Calendar.YEAR, tempRecipe.mDate.
-                                get(Calendar.YEAR));
-                        mUserRecipes.get(k).mDate.set(Calendar.MONTH, tempRecipe.mDate.
-                                get(Calendar.MONTH));
-                        mUserRecipes.get(k).mDate.set(Calendar.DAY_OF_MONTH, tempRecipe.mDate.
-                                get(Calendar.DAY_OF_MONTH));
-                        add = false;
+            // Calendar object can't be null so 1900 is what all recipes are set to when parsed from JSON.
+            // Calendar YEAR = 1900 indicates recipe not added to planner.
+            if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
+                Calendar curCal = new GregorianCalendar();
+                int year = curCal.get(Calendar.YEAR);
+                int month = curCal.get(Calendar.MONTH);
+                int day = curCal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+                    /**
+                     * {@inheritDoc}
+                     *
+                     * @param view
+                     * @param year
+                     * @param month
+                     * @param day
+                     */
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int day) {
+                        Recipe tempRecipe = mDisplayList.get(position);
+                        tempRecipe.mDate.set(year, month + 1, day);
                     }
-                    // recipe already in user list with date set, make sure its not same date.
-                    if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
-                            Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) != 1900) {
-                        // if same recipe trying to set for same day
-                        if (mUserRecipes.get(k).mDate.
-                                get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
-                                mUserRecipes.get(k).mDate.
-                                        get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.
-                                        get(Calendar.DAY_OF_MONTH) &&
-                                mUserRecipes.get(k).mDate.
-                                        get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                };
+                boolean add = true;
+                // if user recipe list empty then add.
+                if (mUserRecipes.size() == 0) {
+                    add = true;
+                }
+                //if user list contains recipes
+                if (mUserRecipes.size() > 0) {
+                    //cycle thru user recipe list
+                    for (int k = 0; k < mUserRecipes.size(); k++) {
+                        // Recipe already in user list but date not set
+                        if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                                Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) == 1900) {
+                            mUserRecipes.get(k).mDate.set(Calendar.YEAR, tempRecipe.mDate.
+                                    get(Calendar.YEAR));
+                            mUserRecipes.get(k).mDate.set(Calendar.MONTH, tempRecipe.mDate.
+                                    get(Calendar.MONTH));
+                            mUserRecipes.get(k).mDate.set(Calendar.DAY_OF_MONTH, tempRecipe.mDate.
+                                    get(Calendar.DAY_OF_MONTH));
                             add = false;
                         }
-                        // if some recipe already set on a specific date
-                        if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.
-                                get(Calendar.MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) ==
-                                        tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
-                                mUserRecipes.get(k).mDate.get(Calendar.YEAR) ==
-                                        tempRecipe.mDate.get(Calendar.YEAR)) {
-                            add = false;
-                            Toast.makeText(getActivity(),
-                                    "You already have a recipe set on this date.",
-                                    Toast.LENGTH_LONG).show();
+                        // recipe already in user list with date set, make sure its not same date.
+                        if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
+                                Integer.valueOf(mUserRecipes.get(k).mDate.get(Calendar.YEAR)) != 1900) {
+                            // if same recipe trying to set for same day
+                            if (mUserRecipes.get(k).mDate.
+                                    get(Calendar.MONTH) == tempRecipe.mDate.get(Calendar.MONTH) &&
+                                    mUserRecipes.get(k).mDate.
+                                            get(Calendar.DAY_OF_MONTH) == tempRecipe.mDate.
+                                            get(Calendar.DAY_OF_MONTH) &&
+                                    mUserRecipes.get(k).mDate.
+                                            get(Calendar.YEAR) == tempRecipe.mDate.get(Calendar.YEAR)) {
+                                add = false;
+                            }
+                            // if some recipe already set on a specific date
+                            if (mUserRecipes.get(k).mDate.get(Calendar.MONTH) == tempRecipe.mDate.
+                                    get(Calendar.MONTH) &&
+                                    mUserRecipes.get(k).mDate.get(Calendar.DAY_OF_MONTH) ==
+                                            tempRecipe.mDate.get(Calendar.DAY_OF_MONTH) &&
+                                    mUserRecipes.get(k).mDate.get(Calendar.YEAR) ==
+                                            tempRecipe.mDate.get(Calendar.YEAR)) {
+                                add = false;
+                                Toast.makeText(getActivity(),
+                                        "You already have a recipe set on this date.",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 }
-            }
-            if (add) {
-                mUserRecipes.add(tempRecipe);
-                mAdapter.notifyDataSetChanged();
-            }
+                if (add) {
+                    mUserRecipes.add(tempRecipe);
+                    mAdapter.notifyDataSetChanged();
+                }
 
-            DatePickerDialog hi = new DatePickerDialog(mView.getContext(), dateListener, year, month, day);
+                DatePickerDialog hi = new DatePickerDialog(mView.getContext(), dateListener, year, month, day);
 
-            hi.show();
+                hi.show();
+            }
+        } else {
+            Recipe tempRecipe = mDisplayList.get(position);
+            if (mRecipeDB.isRecipeExist(tempRecipe)) {
+                mRecipeDB.removeRecipe(tempRecipe);
+            }
         }
     }
 
