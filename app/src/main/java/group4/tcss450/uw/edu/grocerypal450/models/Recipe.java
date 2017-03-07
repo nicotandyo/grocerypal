@@ -68,7 +68,9 @@ public class Recipe implements Serializable {
      * Construct empty Recipe object.
      */
     public Recipe () {
-        mDate = new GregorianCalendar();
+        //set to not show in planner or favorites by default
+        mDate = new GregorianCalendar(1900, 1, 1);
+        isFavorite = false;
     }
 
     /**
@@ -138,13 +140,13 @@ public class Recipe implements Serializable {
 
     public void setIsFav(boolean tf) { isFavorite = tf; }
 
-    /*
-    public void setDate(Date date) {
+
+    public void setDate(Calendar date) {
         mDate = date;
     }
 
-    public Date getDate() { return mDate; }
-    */
+    public Calendar getDate() { return mDate; }
+
 
     public void setNumServings(int num) {
         mNumServings = num;
