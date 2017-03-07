@@ -432,11 +432,18 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 int page = mViewPager.getCurrentItem();
                 switch (page) {
                     case (0): // meal planner
+
                         chevleft.setVisibility(mView.INVISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
                         break;
 
                     case (1): // search
+
+                        getActivity().setTitle(getResources().getString(R.string.page_search_list));
+                        chevleft.setVisibility(mView.INVISIBLE);
+
+                        break;
+                    case (2): // favorites
                         chevleft.setVisibility(mView.VISIBLE);
                         chevright.setVisibility(mView.VISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_search_list));
@@ -985,4 +992,3 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         return result.toString();
     }
 }
-

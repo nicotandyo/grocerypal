@@ -105,10 +105,14 @@ public class Recipe implements Serializable {
         return mImage;
     }
 
+    /**
+     * Get the favorites status.
+     * @return true or false
+     */
     public boolean getIsFav() { return isFavorite; }
     /**
      * Set the recipe name.
-     * @param recipeName
+     * @param recipeName is the recipe name
      */
     public void setRecipeName(String recipeName) {
         mRecipeName = recipeName;
@@ -116,7 +120,7 @@ public class Recipe implements Serializable {
 
     /**
      * Set the recipe id.
-     * @param recipeId
+     * @param recipeId is the recipe id
      */
     public void setRecipeId(String recipeId) {
         mRecipeId = recipeId;
@@ -124,7 +128,7 @@ public class Recipe implements Serializable {
 
     /**
      * Set the ingredient's associated with this recipe.
-     * @param recipeIngredients
+     * @param recipeIngredients is the recipe ingredients
      */
     public void setIngredients(ArrayList<String> recipeIngredients) {
         mIngredients = recipeIngredients;
@@ -132,62 +136,116 @@ public class Recipe implements Serializable {
 
     /**
      * Set the image url.
-     * @param imageUrl
+     * @param imageUrl is the url of the image
      */
     public void setImage(String imageUrl) {
         mImage = imageUrl;
     }
 
+    /**
+     * Set the favorites status.
+     * @param tf is the status
+     */
     public void setIsFav(boolean tf) { isFavorite = tf; }
 
-
+    /**
+     * Set the date.
+     * @param date is the date
+     */
     public void setDate(Calendar date) {
         mDate = date;
     }
 
+    /**
+     * Get the date.
+     * @return a calendar representing the date
+     */
     public Calendar getDate() { return mDate; }
 
-
+    /**
+     * Set the number of servings of a recipe.
+     * @param num is the number of servings
+     */
     public void setNumServings(int num) {
         mNumServings = num;
     }
 
+    /**
+     * Get the number of servings.
+     * @return the number of servings
+     */
     public int getNumServings() {
         return mNumServings;
     }
 
+    /**
+     * Set the total time required to make a recipe.
+     * @param time is the required time in seconds
+     */
     public void setTotalTime(int time) {
         mTotalTime = time;
     }
 
+    /**
+     * Get the total time required to make a recipe.
+     * @return the total time in seconds
+     */
     public int getTotalTime() {
         return mTotalTime;
     }
 
+    /**
+     * Set the cuisine type.
+     * @param cuisine is the cuisine
+     */
     public void setCuisine(String cuisine) {
         mCuisine = cuisine;
     }
 
+    /**
+     * Get the cuisine type.
+     * @return the cuisine type in String
+     */
     public String getCuisine() {
         return mCuisine;
     }
 
+    /**
+     * Set the rating of a recipe.
+     * @param rating is the rating
+     */
     public void setRating(float rating) {
         mRating = rating;
     }
 
+    /**
+     * Get the rating of a recipe.
+     * @return the rating
+     */
     public float getRating() {
         return mRating;
     }
 
+    /**
+     * Set the URL of the recipe.
+     * @param url is the url of the recipe
+     */
     public void setRecipeUrl(String url) {
         mRecipeUrl = url;
     }
 
+    /**
+     * Get the recipe URL.
+     * @return the recipe URL.
+     */
     public String getRecipeUrl() {
         return mRecipeUrl;
     }
 
+    /**
+     * Get the String representation of the recipe.
+     * @return the String representation
+     */
     @Override
     public String toString() {
         return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();

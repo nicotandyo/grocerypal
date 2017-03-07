@@ -62,6 +62,10 @@ public class ShoppingListFragment extends Fragment{
         // Required empty public constructor
     }
 
+    /**
+     * {@inheritDoc}
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +73,6 @@ public class ShoppingListFragment extends Fragment{
             mShoplistDB = ((ProfileActivity) getActivity()).getDB();
         }
         List<Ingredient> list = mShoplistDB.getIngredients();
-        //System.out.println(list.toString());
         for(Ingredient i: list) {
             if(!i.isInventory()) {
                 mList.add(i);
@@ -90,6 +93,7 @@ public class ShoppingListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_shopping_list, container, false);
+        getActivity().setTitle(getResources().getString(R.string.shoppinglist_title));
         final String[] ingredients = getResources().getStringArray(R.array.auto_complete_ingredients);
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(getActivity().getBaseContext(),
@@ -377,6 +381,10 @@ public class ShoppingListFragment extends Fragment{
             Button moveInven = (Button)view.findViewById(R.id.saveToInven_btn);
 
             decrement.setOnClickListener(new View.OnClickListener(){
+                /**
+                 * {@inheritDoc}
+                 * @param v
+                 */
                 @Override
                 public void onClick(View v) {
                     Log.d("DECREMENT", "ITEM");
@@ -400,6 +408,10 @@ public class ShoppingListFragment extends Fragment{
                 }
             });
             increment.setOnClickListener(new View.OnClickListener(){
+                /**
+                 * {@inheritDoc}
+                 * @param v
+                 */
                 @Override
                 public void onClick(View v) {
                     Log.d("INCREMENT", "ITEM");
@@ -422,6 +434,10 @@ public class ShoppingListFragment extends Fragment{
                 }
             });
             moveInven.setOnClickListener(new View.OnClickListener(){
+                /**
+                 * {@inheritDoc}
+                 * @param v
+                 */
                 @Override
                 public void onClick(View v) {
                     Log.d("MOVE TO INVEN", "ITEM");

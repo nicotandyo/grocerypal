@@ -661,6 +661,12 @@
      DROP TABLE IF EXISTS %1$s_Recipes
     </string>
     <string name="logout_txt">Logout</string>
+    <string name="page_suggested_list">Suggested Ingredients</string>
+    <string name="page_search_list">Ingredients To Search</string>
+    <string name="page_inventory_list">My Inventory Ingredients</string>
+    <string name="inventory_title">Inventory</string>
+    <string name="shoppinglist_title">Shopping List</string>
+    <string name="grocerypal_title">GroceryPal</string>
 
 </resources>
 
