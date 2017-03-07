@@ -78,11 +78,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
         } else {
             Log.d("else set delete", "");
-            int year = tempRecipe.mDate.get(Calendar.YEAR);
-            int month = tempRecipe.mDate.get(Calendar.MONTH);
-            int day = tempRecipe.mDate.get(Calendar.DAY_OF_MONTH);
+            String year = String.valueOf(tempRecipe.mDate.get(Calendar.YEAR));
+            String month = String.valueOf(tempRecipe.mDate.get(Calendar.MONTH));
+            String day = String.valueOf(tempRecipe.mDate.get(Calendar.DAY_OF_MONTH));
             StringBuilder str = new StringBuilder();
-            str.append(month + "-" + day + "-" + year);
+            str.append("Recipe Planned For: " + month + "-" + day + "-" + year);
             customViewHolder.dateText.setText(str);
             customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_delete);
         }
