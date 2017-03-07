@@ -61,6 +61,9 @@ import group4.tcss450.uw.edu.grocerypal450.models.Recipe;
  * This class allows the user to enter a search query
  * that is used by the web service to call the Yummly API
  * for a set of recipes.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class RecipeSearch extends Fragment {
     /**
@@ -410,14 +413,25 @@ public class RecipeSearch extends Fragment {
      * calls the Yummly API to get a response based off of the user's search parameters.
      */
     private class RegisterTask extends AsyncTask<String, Void, String> {
+        /**
+         * The progress dialog.
+         */
         private ProgressDialog dialog = new ProgressDialog(getActivity());
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected void onPreExecute() {
             this.dialog.setMessage("Searching.");
             this.dialog.show();
         }
 
+        /**
+         * {@inheritDoc}
+         * @param strings
+         * @return
+         */
         @Override
         protected String doInBackground(String... strings) {
             if (strings.length < 2) {
@@ -454,6 +468,10 @@ public class RecipeSearch extends Fragment {
             return response;
         }
 
+        /**
+         * {@inheritDoc}
+         * @param result
+         */
         @Override
         protected void onPostExecute(String result) {
             mJsonString = result;
@@ -489,6 +507,12 @@ public class RecipeSearch extends Fragment {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * @param params
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     private String getQuery(ArrayList<Pair> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;

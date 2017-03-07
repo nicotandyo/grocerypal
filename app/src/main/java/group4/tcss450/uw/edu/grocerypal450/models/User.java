@@ -2,6 +2,9 @@ package group4.tcss450.uw.edu.grocerypal450.models;
 
 /**
  * This class is used to create Objects that represent a User.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class User {
     /**
@@ -15,7 +18,7 @@ public class User {
 
     /**
      * Create a new user with given name and email.
-     * @param name
+     * @param name is the name of the user
       */
     public User(String name) {
         this.name = name;
@@ -32,7 +35,7 @@ public class User {
 
     /**
      * Set this user's password
-     * @param thePassword
+     * @param thePassword is the password of the user
      */
     public void setPassword(String thePassword) {
         this.password = thePassword;

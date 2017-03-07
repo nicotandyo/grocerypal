@@ -40,6 +40,9 @@ import group4.tcss450.uw.edu.grocerypal450.activities.ProfileActivity;
  * User input has verification for formatting.
  * The user also has the option go to the register fragment
  * to create a new account.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class LoginFragment extends Fragment {
 

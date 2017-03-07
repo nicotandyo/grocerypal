@@ -5,6 +5,9 @@ import java.io.Serializable;
 
 /**
  * Encapsulates a tuple from the Ingredient table.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class Ingredient implements Serializable {
     /** The ingredient. */

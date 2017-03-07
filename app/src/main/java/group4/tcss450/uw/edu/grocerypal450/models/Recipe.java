@@ -8,6 +8,9 @@ import java.util.Date;
 /**
  * This class will be used to model a recipe returned as JSON
  * from a Yummly API call to a Java object for handling within the app.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class Recipe implements Serializable {
 
@@ -27,20 +30,33 @@ public class Recipe implements Serializable {
      * Image URL to load image from.
      */
     public String mImage;
-
-
+    /**
+     * True if isFavorite, false otherwise.
+     */
     public boolean isFavorite;
-
+    /**
+     * The date.
+     */
     public Date mDate;
-
+    /**
+     * The number of servings.
+     */
     public int mNumServings;
-
+    /**
+     * The total time required.
+     */
     public int mTotalTime;
-
+    /**
+     * The cuisine type.
+     */
     public String mCuisine;
-
+    /**
+     * The rating.
+     */
     public float mRating;
-
+    /**
+     * The url of the recipe.
+     */
     public String mRecipeUrl;
 
 

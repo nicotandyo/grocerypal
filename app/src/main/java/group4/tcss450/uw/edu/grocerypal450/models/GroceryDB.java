@@ -15,6 +15,9 @@ import group4.tcss450.uw.edu.grocerypal450.R;
 
 /**
  * The class for the Ingredient and Recipe table.
+ * @author Michael Lambion
+ * @author Nico Tandyo
+ * @author Patrick Fitzgerald
  */
 public class GroceryDB {
     /** The version of the DB. */
