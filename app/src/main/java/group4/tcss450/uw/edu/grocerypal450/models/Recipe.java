@@ -3,7 +3,9 @@ package group4.tcss450.uw.edu.grocerypal450.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * This class will be used to model a recipe returned as JSON
@@ -34,10 +36,11 @@ public class Recipe implements Serializable {
      * True if isFavorite, false otherwise.
      */
     public boolean isFavorite;
+
     /**
      * The date.
      */
-    public Date mDate;
+    public Calendar mDate;
     /**
      * The number of servings.
      */
@@ -65,7 +68,7 @@ public class Recipe implements Serializable {
      * Construct empty Recipe object.
      */
     public Recipe () {
-
+        mDate = new GregorianCalendar();
     }
 
     /**
@@ -133,17 +136,15 @@ public class Recipe implements Serializable {
         mImage = imageUrl;
     }
 
-    public void setIsFav(boolean tf) {
-        isFavorite = tf;
-    }
+    public void setIsFav(boolean tf) { isFavorite = tf; }
 
+    /*
     public void setDate(Date date) {
         mDate = date;
     }
 
-    public Date getDate() {
-        return mDate;
-    }
+    public Date getDate() { return mDate; }
+    */
 
     public void setNumServings(int num) {
         mNumServings = num;
@@ -190,6 +191,8 @@ public class Recipe implements Serializable {
         return mRecipeName + " ID:" + mRecipeId + " \nIngredients:" + mIngredients.toString();
 
     }
+
+
 
 }
 

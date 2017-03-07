@@ -45,11 +45,13 @@ public class PlannerFragment extends Fragment {
         List<Recipe> allRecipes = mDB.getRecipes();
         for(int i = 0; i < allRecipes.size(); i++) {
             Recipe r = allRecipes.get(i);
+            /*
             if(r.getDate() != null) {
                 mPlanner.add(r);
                 //debug print
                 System.out.println(r.toString());
             }
+            */
         }
     }
 
