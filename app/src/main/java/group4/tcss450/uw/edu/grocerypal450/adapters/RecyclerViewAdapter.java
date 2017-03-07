@@ -45,8 +45,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      * The grocery database.
      */
     private GroceryDB mDB;
+    /**
+     * Custom interface.
+     */
     private MyCustomInterface mCustomInterface;
+    /**
+     * Toggle button for the meal planner.
+     */
+    private boolean mPlannerToggle = false;
 
+    /**
+     * Constructor for the RecyclerViewAdapter.
+     * @param context is the context
+     * @param theList is the list of recipes
+     * @param theInterface is the custom interface
+     */
     public RecyclerViewAdapter(Context context, List<Recipe> theList, MyCustomInterface theInterface) {
         mDB = ((ProfileActivity) context).getDB();
         mRecipeSearchResults = theList;
@@ -82,6 +95,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .into(customViewHolder.imageView);
 
         customViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 FragmentTransaction ft = ((FragmentActivity) mContext).getFragmentManager().beginTransaction();
@@ -113,11 +130,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // onClickListenr for planner button
         customViewHolder.plannerButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * {@inheritDoc}
+             * @param v
+             */
             @Override
             public void onClick(View v) {
                 int position = customViewHolder.getLayoutPosition();
                 Log.d("planner clicked ", "inside adapter");
-                mCustomInterface.onPlannerClicked(position);
+
+                mPlannerToggle ^= true;
+                if(mPlannerToggle) {
+                    tempRecipe.mDate.set(1900,1,1);
+                    customViewHolder.dateText.setText("");
+                    customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
+                }
+                mCustomInterface.onPlannerClicked(position, mPlannerToggle);
             }
         });
 
@@ -155,11 +183,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     class CustomViewHolder extends RecyclerView.ViewHolder {
         /** The image view. */
         protected ImageView imageView;
-
+        /** The recipe planner button. */
         protected ImageButton plannerButton;
+        /** The favorites button. */
         protected ImageButton favButton;
-
+        /** TextView for the view holder. */
         protected TextView textView;
+        /** TextView for the date. */
         protected TextView dateText;
 
         /**
