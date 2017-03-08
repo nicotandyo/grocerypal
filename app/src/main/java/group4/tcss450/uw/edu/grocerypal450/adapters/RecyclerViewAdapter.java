@@ -143,11 +143,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                 mPlannerToggle ^= true;
                 if(mPlannerToggle) {
-                    tempRecipe.mDate.set(1900,1,1);
+                    Log.d("REMOVE", "Planner");
+                    tempRecipe.mDate.set(1900, 1, 1);
                     customViewHolder.dateText.setText("");
                     customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
                 }
                 mCustomInterface.onPlannerClicked(position, mPlannerToggle);
+
+
             }
         });
 

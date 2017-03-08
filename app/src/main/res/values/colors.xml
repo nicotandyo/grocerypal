@@ -4,7 +4,10 @@
     <color name="inputBackground">#B4BDED</color>
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="colorPrimaryLight">#C8E6C9</color>
-    <color name="colorAccent">#03A9F4</color>
+    <color name="colorPrimaryNotAsLight">#9ED78F</color>
+    <color name="colorPrimaryLight2">#6CB359</color>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="colorAccentLight">#5AE0EC</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#A6A6A6</color>

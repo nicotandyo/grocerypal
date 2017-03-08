@@ -638,9 +638,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             // mUserRecipe list is empty then add favorite.
             if (mUserRecipes.size() == 0) {
                 mUserRecipes.add(tempRecipe);
-            }
-            // if mUserRecipe list contains recipes compare so as not to add duplicate.
-            if (mUserRecipes.size() > 0) {
+            } else if (mUserRecipes.size() > 0) { // if mUserRecipe list contains recipes compare so as not to add duplicate.
                 boolean add = true;
                 for (int k = 0; k < mUserRecipes.size(); k++) {
                     // Same ID, but not yet favorite then set existing recipes boolean.
@@ -680,7 +678,8 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      */
     @Override
     public void onPlannerClicked(final int position, final boolean tf) {
-        if(!tf) {
+        if(tf == false) {
+            Log.d("ADDING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (!mRecipeDB.isRecipeExist(tempRecipe)) {
                 mRecipeDB.insertRecipe(tempRecipe);
@@ -766,9 +765,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 hi.show();
             }
         } else {
+            Log.d("REMOVING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (mRecipeDB.isRecipeExist(tempRecipe)) {
                 mRecipeDB.removeRecipe(tempRecipe);
+                mUserRecipes.remove(tempRecipe);
             }
         }
     }
