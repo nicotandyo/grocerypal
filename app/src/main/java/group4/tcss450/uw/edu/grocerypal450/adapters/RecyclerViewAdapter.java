@@ -118,7 +118,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d("date = ", String.valueOf(tempRecipe.mDate.get(Calendar.MONTH)));
         if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
 
-            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
+            customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
         } else {
             Log.d("else set delete", "");
             String year = String.valueOf(tempRecipe.mDate.get(Calendar.YEAR));
@@ -127,7 +127,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             StringBuilder str = new StringBuilder();
             str.append("Recipe Planned For: " + month + "-" + day + "-" + year);
             customViewHolder.dateText.setText(str);
-            customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_delete);
+            customViewHolder.plannerButton.setImageResource(R.drawable.ic_minus_red);
         }
 
         // onClickListenr for planner button
@@ -145,7 +145,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if(mPlannerToggle) {
                     tempRecipe.mDate.set(1900,1,1);
                     customViewHolder.dateText.setText("");
-                    customViewHolder.plannerButton.setImageResource(android.R.drawable.ic_input_add);
+                    customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
                 }
                 mCustomInterface.onPlannerClicked(position, mPlannerToggle);
             }
