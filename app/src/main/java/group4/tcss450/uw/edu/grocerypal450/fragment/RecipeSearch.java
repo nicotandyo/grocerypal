@@ -320,6 +320,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 switch (id) {
                     case (R.id.radioPlanner): // meal planner
                         mDisplayList.clear();
+                        mChevRight.setVisibility(View.GONE);
                         mRadioButton.setVisibility(View.VISIBLE);
                         mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
@@ -349,6 +350,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                     case (R.id.radioFav): // favorites
                         Log.d("radioFav clicked", "");
                         mDisplayList.clear();
+                        mChevRight.setVisibility(View.GONE);
                         mRadioButton.setVisibility(View.VISIBLE);
                         mViewPager.setVisibility(View.GONE);
                         for (int k = 0; k < mUserRecipes.size(); k++) {
