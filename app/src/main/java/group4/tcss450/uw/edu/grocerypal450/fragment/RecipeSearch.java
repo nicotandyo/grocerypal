@@ -680,7 +680,8 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      */
     @Override
     public void onPlannerClicked(final int position, final boolean tf) {
-        if(!tf) {
+        if(tf == false) {
+            Log.d("ADDING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (!mRecipeDB.isRecipeExist(tempRecipe)) {
                 mRecipeDB.insertRecipe(tempRecipe);
@@ -758,17 +759,19 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 }
                 if (add) {
                     mUserRecipes.add(tempRecipe);
-                    mAdapter.notifyDataSetChanged();
+                    //mAdapter.notifyDataSetChanged();
                 }
 
                 DatePickerDialog hi = new DatePickerDialog(mView.getContext(), dateListener, year, month, day);
 
                 hi.show();
             }
-        } else {
+        } else if(tf == true){
+            Log.d("REMOVING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (mRecipeDB.isRecipeExist(tempRecipe)) {
                 mRecipeDB.removeRecipe(tempRecipe);
+                //mAdapter.notifyDataSetChanged();
             }
         }
     }
