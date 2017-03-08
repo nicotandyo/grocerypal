@@ -77,7 +77,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recipe_card_layout, null);
-        //view.setLayoutParams(new LinearLayout.LayoutParams(RecyclerView.LayoutParams.FILL_PARENT, RecyclerView.LayoutParams.FILL_PARENT));
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         CustomViewHolder viewHolder = new CustomViewHolder(view);
         return viewHolder;
     }
@@ -153,9 +153,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         // Set appropriate icon depending on status of isFav value.
         if (tempRecipe.getIsFav()) {
-            customViewHolder.favButton.setImageResource(R.drawable.heart_full);
+            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_full);
         } else {
-            customViewHolder.favButton.setImageResource(R.drawable.heart_transparent);
+            customViewHolder.favButton.setImageResource(R.drawable.ic_heart_empty);
         }
         // onClickListener for fav button.
 
