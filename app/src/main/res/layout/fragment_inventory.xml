@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/invenBg"
+    android:background="@color/colorPrimaryLight2"
     android:orientation="vertical"
     tools:context="group4.tcss450.uw.edu.grocerypal450.fragment.InventoryFragment"
     android:weightSum="1">
@@ -37,13 +37,13 @@
             android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:background="@drawable/invenbtn"
+            android:background="@drawable/btninvencustom"
             android:id="@+id/inventoryAddBtn" />
 
         <Button
             android:text="@string/text_remove"
             android:textColor="@color/white"
-            android:background="@drawable/invenbtn"
+            android:background="@drawable/btninvencustom"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:id="@+id/inventoryRemoveBtn" />
