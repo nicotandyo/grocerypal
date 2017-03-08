@@ -285,10 +285,12 @@ public class RecipeResults extends Fragment {
                 if(i.getIngredient().toLowerCase().equals(list.get(position))) {
                     if(i.isInventory()) {
                         addShopping.setBackgroundResource(0);
-                        view.setBackgroundColor(Color.parseColor("#C6FE5C"));
+                        //view.setBackgroundColor(Color.parseColor("#C6FE5C"));
+                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight2));
                     } else {
                         addInventory.setBackgroundResource(0);
-                        view.setBackgroundColor(Color.parseColor("#929cdd"));
+                        //view.setBackgroundColor(Color.parseColor("#929cdd"));
+                        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                     }
                 } else {
                     addInventory.setOnClickListener(new View.OnClickListener(){

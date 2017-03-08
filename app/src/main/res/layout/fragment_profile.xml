@@ -38,7 +38,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:background="@color/colorAccent"
+            android:background="@drawable/btnprofilecustom"
             android:text="@string/search"
             android:textColor="@color/black" />
         <Button
@@ -46,7 +46,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:background="@color/colorAccent"
+            android:background="@drawable/btnprofilecustom"
             android:text="@string/btn_inventory"
             android:textColor="@color/black" />
         <Button
@@ -54,7 +54,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:background="@color/colorAccent"
+            android:background="@drawable/btnprofilecustom"
             android:text="@string/btn_shoppingList"
             android:textColor="@color/black" />
 
