@@ -443,7 +443,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 switch (page) {
                     case (0): // meal planner
 
-                        chevleft.setVisibility(mView.INVISIBLE);
+                        chevleft.setVisibility(mView.GONE);
                         getActivity().setTitle(getResources().getString(R.string.page_suggested_list));
                         break;
 
@@ -453,7 +453,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                         getActivity().setTitle(getResources().getString(R.string.page_search_list));
                         break;
                     case (2): // favorites
-                        mChevRight.setVisibility(mView.INVISIBLE);
+                        mChevRight.setVisibility(mView.GONE);
                         getActivity().setTitle(getResources().getString(R.string.page_inventory_list));
                         break;
                 }
