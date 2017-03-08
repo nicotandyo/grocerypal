@@ -688,7 +688,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             // Calendar object can't be null so 1900 is what all recipes are set to when parsed from JSON.
             // Calendar YEAR = 1900 indicates recipe not added to planner.
             if (Integer.valueOf(tempRecipe.mDate.get(Calendar.YEAR)) == 1900) {
-                Calendar curCal = new GregorianCalendar();
+                final Calendar curCal = new GregorianCalendar();
                 int year = curCal.get(Calendar.YEAR);
                 int month = curCal.get(Calendar.MONTH);
                 int day = curCal.get(Calendar.DAY_OF_MONTH);
@@ -704,8 +704,13 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                      */
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int day) {
+                        Log.d("int day = ", String.valueOf(day));
                         Recipe tempRecipe = mDisplayList.get(position);
-                        tempRecipe.mDate.set(year, month + 1, day);
+                        tempRecipe.mDate.set(year, month, day);
+                        Log.d("tempRecipe date ", String.valueOf(tempRecipe.mDate.get(Calendar.DAY_OF_MONTH)));
+                        curCal.set(year, month, day);
+                        tempRecipe.mDate.set(Calendar.DAY_OF_WEEK, curCal.get(Calendar.DAY_OF_WEEK));
+                        curCal.clear();
                     }
                 };
                 boolean add = true;
