@@ -192,6 +192,8 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
     private ImageView mPlusImage;
 
+    private ImageView mChevRight;
+
     /**
      * Constructor for the RecipeSearch fragment.
      */
@@ -266,6 +268,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             @Override
             public void onClick(View v) {
                 mViewPager.setVisibility(View.VISIBLE);
+                mChevRight.setVisibility(View.VISIBLE);
             }
         });
 
@@ -427,7 +430,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         });
 
         final ImageView chevleft = (ImageView) mView.findViewById(R.id.left_nav);
-        final ImageView chevright = (ImageView) mView.findViewById(R.id.right_nav);
+        mChevRight = (ImageView) mView.findViewById(R.id.right_nav);
 
         mPages = new Vector<>();
         mPages.add(mSuggestedList);
@@ -446,11 +449,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
                     case (1): // favorites
                         chevleft.setVisibility(mView.VISIBLE);
-                        chevright.setVisibility(mView.VISIBLE);
+                        mChevRight.setVisibility(mView.VISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_search_list));
                         break;
                     case (2): // favorites
-                        chevright.setVisibility(mView.INVISIBLE);
+                        mChevRight.setVisibility(mView.INVISIBLE);
                         getActivity().setTitle(getResources().getString(R.string.page_inventory_list));
                         break;
                 }
@@ -576,9 +579,10 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         mSearchButton.setVisibility(mView.GONE);
         mEditText.setVisibility(mView.GONE);
         mPlusImage.setVisibility(mView.GONE);
-        mRadioButton.setVisibility(mView.GONE);
+        mRadioButton.setVisibility(mView.VISIBLE);
         addIngredientFromText();
         mViewPager.setVisibility(mView.GONE);
+        mChevRight.setVisibility(mView.GONE);
         String encodedIngredient = "";
         for (int i = 0; i < mIngredientsToSearch.size(); i++) {
             encodedIngredient += "&allowedIngredient[]=" + mIngredientsToSearch.get(i).replace(" ", "+");
