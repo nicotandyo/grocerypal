@@ -9,6 +9,6 @@
     android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingRight="?android:attr/listPreferredItemPaddingRight"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:drawableLeft="@android:drawable/ic_input_delete"
+    android:drawableLeft="@drawable/ic_minus_red"
     android:drawablePadding="5dp"
     android:minHeight="?android:attr/listPreferredItemHeightSmall" />

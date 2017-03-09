@@ -121,11 +121,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
         } else {
             Log.d("else set delete", "");
-            String year = String.valueOf(tempRecipe.mDate.get(Calendar.YEAR));
-            String month = String.valueOf(tempRecipe.mDate.get(Calendar.MONTH));
-            String day = String.valueOf(tempRecipe.mDate.get(Calendar.DAY_OF_MONTH));
+
+            String[] daysOfWeek = {"SAT", "SUN", "MON", "TUES", "WED", "THURS", "FRI"};
+            String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUNE", "JULY", "AUG", "SEPT", "OCT", "NOV", "DEC"};
+
+            int weekday = tempRecipe.mDate.get(Calendar.DAY_OF_WEEK);
+            Log.d("Day of week,", String.valueOf(tempRecipe.mDate.get(Calendar.DAY_OF_WEEK)));
+
+            int theMonth = tempRecipe.mDate.get(Calendar.MONTH);
+            Log.d("month", String.valueOf(tempRecipe.mDate.get(Calendar.MONTH)));
+
+            String day = daysOfWeek[weekday];
+            int year = tempRecipe.mDate.get(Calendar.YEAR);
+
+            String month = months[theMonth];
+            int date = tempRecipe.mDate.get(Calendar.DAY_OF_MONTH);
+            Log.d("int day = ", String.valueOf(tempRecipe.mDate.get(Calendar.DAY_OF_MONTH)));
+
             StringBuilder str = new StringBuilder();
-            str.append("Recipe Planned For: " + month + "-" + day + "-" + year);
+            str.append(day + " " + month  + " " + date + ", " + year);
             customViewHolder.dateText.setText(str);
             customViewHolder.plannerButton.setImageResource(R.drawable.ic_minus_red);
         }
