@@ -643,12 +643,15 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 for (int k = 0; k < mUserRecipes.size(); k++) {
                     // Same ID, but not yet favorite then set existing recipes boolean.
                     if (mUserRecipes.get(k).getRecipeId().equals(tempRecipe.getRecipeId()) &&
-                            mUserRecipes.get(k).getIsFav() != tempRecipe.getIsFav()) {
+                            !mUserRecipes.get(k).getIsFav()) {
                         add = false;
                         mUserRecipes.get(k).setIsFav(true);
+                        break;
                     }
                 }
                 if (add) {
+                    Log.d("adding recipe", ">>>>>>>>>>>>>");
+                    mUserRecipes.remove(tempRecipe);
                     mUserRecipes.add(tempRecipe);
                 }
             }
