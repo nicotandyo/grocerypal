@@ -34,7 +34,7 @@
             android:layout_alignBottom="@+id/recipeSearch"
             android:layout_alignRight="@+id/recipeSearch"
             android:layout_alignTop="@+id/recipeSearch"
-            android:src="@android:drawable/ic_input_add"
+            android:src="@drawable/ic_green_plus"
             android:textColor="@color/black" />
 
 
