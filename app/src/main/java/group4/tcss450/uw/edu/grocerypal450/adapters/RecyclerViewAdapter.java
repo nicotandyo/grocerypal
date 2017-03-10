@@ -50,10 +50,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      * Custom interface.
      */
     private MyCustomInterface mCustomInterface;
-    /**
-     * Toggle button for the meal planner.
-     */
-    private boolean mPlannerToggle = false;
 
     /**
      * Constructor for the RecyclerViewAdapter.
@@ -155,14 +151,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 int position = customViewHolder.getLayoutPosition();
                 Log.d("planner clicked ", "inside adapter");
                 boolean a = false;
-
-                //mPlannerToggle ^= true;
-//                if(mPlannerToggle) {
-//                    Log.d("REMOVE", "Planner");
-//                    tempRecipe.mDate.set(1900, 1, 1);
-//                    customViewHolder.dateText.setText("");
-//                    customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
-//                }
                 a = mCustomInterface.onPlannerClicked(position);
                 if(a) {
                     tempRecipe.mDate.set(1900, 1, 1);
@@ -203,6 +191,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return (null != mRecipeSearchResults ? mRecipeSearchResults.size() : 0);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param position
+     * @return
+     */
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     /**
      * Custom view holder for the RecyclerView.
      */
