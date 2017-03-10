@@ -154,15 +154,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 int position = customViewHolder.getLayoutPosition();
                 Log.d("planner clicked ", "inside adapter");
+                int a = 0;
 
-                mPlannerToggle ^= true;
-                if(mPlannerToggle) {
-                    Log.d("REMOVE", "Planner");
+                //mPlannerToggle ^= true;
+//                if(mPlannerToggle) {
+//                    Log.d("REMOVE", "Planner");
+//                    tempRecipe.mDate.set(1900, 1, 1);
+//                    customViewHolder.dateText.setText("");
+//                    customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
+//                }
+                a = mCustomInterface.onPlannerClicked(position);
+                if(a==10) {
                     tempRecipe.mDate.set(1900, 1, 1);
                     customViewHolder.dateText.setText("");
                     customViewHolder.plannerButton.setImageResource(R.drawable.ic_green_plus);
                 }
-                mCustomInterface.onPlannerClicked(position, mPlannerToggle);
 
 
             }
