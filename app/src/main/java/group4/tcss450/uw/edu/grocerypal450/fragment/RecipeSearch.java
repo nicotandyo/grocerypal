@@ -636,9 +636,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         //if does not exist in DB, insert, otherwise get favorites setting from existing Recipe
         if(!isExist) {
             mRecipeDB.insertRecipe(mDisplayList.get(position));
-        } else {
-            tempRecipe.setIsFav(mRecipeMap.get(tempRecipe.getRecipeId()).getIsFav());
-        }
+        } 
 
         // Setting isFav from false to true
 
