@@ -122,7 +122,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         } else {
             Log.d("else set delete", "");
 
-            String[] daysOfWeek = {"SAT", "SUN", "MON", "TUES", "WED", "THURS", "FRI"};
+            String[] daysOfWeek = {"SAT", "SUN", "MON", "TUES", "WED", "THURS", "FRI", "SAT"};
             String[] months = {"JAN", "FEB", "MAR", "APR", "MAY", "JUNE", "JULY", "AUG", "SEPT", "OCT", "NOV", "DEC"};
 
             int weekday = tempRecipe.mDate.get(Calendar.DAY_OF_WEEK);
