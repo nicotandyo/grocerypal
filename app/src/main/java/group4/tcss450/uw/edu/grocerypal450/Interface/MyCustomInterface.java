@@ -17,5 +17,5 @@ public interface MyCustomInterface {
      * Handles the click on the Meal Planner button.
      * @param position is the position
      */
-    int onPlannerClicked(int position);
+    boolean onPlannerClicked(int position);
 }

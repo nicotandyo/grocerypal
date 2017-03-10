@@ -692,7 +692,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * @param position
      */
     @Override
-    public int onPlannerClicked(final int position) {
+    public boolean onPlannerClicked(final int position) {
             Log.d("ADDING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (!mRecipeDB.isRecipeExist(tempRecipe)) {
@@ -788,10 +788,10 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 if (mRecipeDB.isRecipeExist(tempRecipe)) {
                     mRecipeDB.removeRecipe(tempRecipe);
                     mUserRecipes.remove(tempRecipe);
-                    return 10;
+                    return true;
                 }
             }
-        return 0;
+        return false;
         }
 
 
