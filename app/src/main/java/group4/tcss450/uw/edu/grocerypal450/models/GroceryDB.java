@@ -316,6 +316,10 @@ public class GroceryDB {
         return list;
     }
 
+    /**
+     * Returns a list of Recipe objects from the local Recipe table.
+     * @return list
+     */
     public List<Recipe> getRecipes() {
 
 
@@ -397,6 +401,11 @@ public class GroceryDB {
         return numRow > 0;
     }
 
+    /**
+     * Check if a given recipe's ID exists within the Recipes table.
+     * @param recipe
+     * @return
+     */
     public boolean isRecipeExist(Recipe recipe) {
         String query = "SELECT * FROM " + mUsername + "_Recipes WHERE recipeId = '" + recipe.getRecipeId() + "'";
         Cursor  cursor = mDB.rawQuery(query,null);

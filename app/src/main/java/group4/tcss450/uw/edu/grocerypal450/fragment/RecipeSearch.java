@@ -188,13 +188,21 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * RadioButton for the meal planner, favorites, and search.
      */
     private RadioButton mRadioButton;
-
+    /**
+     * Reference to search button on fragment.
+     */
     private Button mSearchButton;
-
+    /**
+     * Reference to the plus-icon ImageView in the EditText.
+     */
     private ImageView mPlusImage;
-
+    /**
+     * Reference to the right chevron used to indicate the user can swipe right.
+     */
     private ImageView mChevRight;
-
+    /**
+     * HashMap of all recipes existing in the user's DB to check against incoming search results.
+     */
     private HashMap<String, Recipe> mRecipeMap;
 
     /**
@@ -324,6 +332,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 int id = rg.getCheckedRadioButtonId();
+                //handle behavior of each radio button within recipe search
                 switch (id) {
                     case (R.id.radioPlanner): // meal planner
                         mDisplayList.clear();
@@ -636,9 +645,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         //if does not exist in DB, insert, otherwise get favorites setting from existing Recipe
         if(!isExist) {
             mRecipeDB.insertRecipe(mDisplayList.get(position));
-        } else {
-            tempRecipe.setIsFav(mRecipeMap.get(tempRecipe.getRecipeId()).getIsFav());
-        }
+        } 
 
         // Setting isFav from false to true
 
@@ -1002,12 +1009,6 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                     }
 
                 }
-//                for(Recipe r: mSearchResults) {
-//                    if(mRecipeMap.containsKey(r.getRecipeId())) {
-//                        r.setIsFav(mRecipeMap.get(r.getRecipeId()).getIsFav());
-//                        r.setDate(mRecipeMap.get(r.getRecipeId()).getDate());
-//                    }
-//                }
                 mDisplayList.addAll(mSearchResults);
                 populateList(mDisplayList);
             }
