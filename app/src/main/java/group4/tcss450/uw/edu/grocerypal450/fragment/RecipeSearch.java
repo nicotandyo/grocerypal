@@ -690,8 +690,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
      * @param position
      */
     @Override
-    public void onPlannerClicked(final int position, final boolean tf) {
-        if(tf == false) {
+    public boolean onPlannerClicked(final int position) {
             Log.d("ADDING", "RECIPE");
             Recipe tempRecipe = mDisplayList.get(position);
             if (!mRecipeDB.isRecipeExist(tempRecipe)) {
@@ -782,16 +781,17 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 DatePickerDialog hi = new DatePickerDialog(mView.getContext(), dateListener, year, month, day);
 
                 hi.show();
+            } else {
+                Log.d("REMOVING", "RECIPE");
+                if (mRecipeDB.isRecipeExist(tempRecipe)) {
+                    mRecipeDB.removeRecipe(tempRecipe);
+                    mUserRecipes.remove(tempRecipe);
+                    return true;
+                }
             }
-        } else {
-            Log.d("REMOVING", "RECIPE");
-            Recipe tempRecipe = mDisplayList.get(position);
-            if (mRecipeDB.isRecipeExist(tempRecipe)) {
-                mRecipeDB.removeRecipe(tempRecipe);
-                mUserRecipes.remove(tempRecipe);
-            }
+        return false;
         }
-    }
+
 
     /**
      * Setup the user inventory list.
