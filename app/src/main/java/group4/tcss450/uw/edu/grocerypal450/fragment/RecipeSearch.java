@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -194,6 +195,8 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
 
     private ImageView mChevRight;
 
+    private HashMap<String, Recipe> mRecipeMap;
+
     /**
      * Constructor for the RecipeSearch fragment.
      */
@@ -214,7 +217,11 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
         if (mRecipeDB == null) {
             mRecipeDB = ((ProfileActivity) getActivity()).getDB();
         }
+        mRecipeMap = new HashMap<String, Recipe>();
         mUserRecipes = mRecipeDB.getRecipes();
+        for(Recipe r: mUserRecipes) {
+            mRecipeMap.put(r.getRecipeId(), r);
+        }
         mSearchResults = new ArrayList<>();
         mUserIngredientsFromDB = mRecipeDB.getIngredients();
         Log.d("# ingredients from db: ", String.valueOf(mUserIngredientsFromDB.size()));
@@ -625,8 +632,12 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
     @Override
     public void onFavClicked(int position) {
         Recipe tempRecipe = mDisplayList.get(position);
-        if(!mRecipeDB.isRecipeExist(mDisplayList.get(position))) {
+        boolean isExist = mRecipeDB.isRecipeExist(mDisplayList.get(position));
+        //if does not exist in DB, insert, otherwise get favorites setting from existing Recipe
+        if(!isExist) {
             mRecipeDB.insertRecipe(mDisplayList.get(position));
+        } else {
+            tempRecipe.setIsFav(mRecipeMap.get(tempRecipe.getRecipeId()).getIsFav());
         }
 
         // Setting isFav from false to true
@@ -652,6 +663,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 if (add) {
                     Log.d("adding recipe", ">>>>>>>>>>>>>");
                     mUserRecipes.remove(tempRecipe);
+                    mRecipeMap.put(tempRecipe.getRecipeId(), tempRecipe);
                     mUserRecipes.add(tempRecipe);
                 }
             }
@@ -765,6 +777,7 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 }
                 if (add) {
                     mUserRecipes.add(tempRecipe);
+                    mRecipeMap.put(tempRecipe.getRecipeId(), tempRecipe);
                     mAdapter.notifyDataSetChanged();
                 }
 
@@ -836,7 +849,6 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 newRecipe.setRecipeId(jsonRecipe.getString("id"));
                 newRecipe.setRecipeName(jsonRecipe.getString("recipeName"));
-                newRecipe.mDate.set(1900, 1, 1);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("ingredients");
 
                 String small_image = jsonRecipe.getJSONObject("imageUrlsBySize").getString("90");
@@ -982,6 +994,20 @@ public class RecipeSearch extends Fragment implements MyCustomInterface {
             } else {
                 System.out.println(mJsonString);
                 mSearchResults = parseResults(mJsonString);
+                for(int i = 0; i < mSearchResults.size(); i++) {
+                    Recipe r = mSearchResults.get(i);
+                    //if recipe already exists in mUserRecipes, swap with existing Recipe object
+                    if(mRecipeMap.containsKey(r.getRecipeId())) {
+                        mSearchResults.set(i, mRecipeMap.get(r.getRecipeId()));
+                    }
+
+                }
+//                for(Recipe r: mSearchResults) {
+//                    if(mRecipeMap.containsKey(r.getRecipeId())) {
+//                        r.setIsFav(mRecipeMap.get(r.getRecipeId()).getIsFav());
+//                        r.setDate(mRecipeMap.get(r.getRecipeId()).getDate());
+//                    }
+//                }
                 mDisplayList.addAll(mSearchResults);
                 populateList(mDisplayList);
             }
